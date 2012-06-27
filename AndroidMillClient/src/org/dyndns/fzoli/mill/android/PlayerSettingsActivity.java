@@ -44,7 +44,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		return false;
 	}
 	
-	private void initScreen() {
+	private void initScreen() { //TODO
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		setPreferenceScreen(root);
 		final Preference commonPref = new Preference(this);

@@ -80,11 +80,11 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		root.addPreference(emailPref);
 	}
 	
-	private boolean isModified() {
+	private boolean isModified() { //TODO
 		return false;
 	}
 	
-	private void showPasswordDialog() {
+	private void showPasswordDialog() { //TODO
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(R.string.password);
 		alert.setMessage(R.string.password_input); 
@@ -96,6 +96,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
+				//OK
 				String password = input.getText().toString();
 				PlayerAccountSettingsActivity.super.onBackPressed();
 			}
@@ -105,7 +106,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
-				// Canceled.
+				//Cancel
 				PlayerAccountSettingsActivity.super.onBackPressed();
 			}
 			
