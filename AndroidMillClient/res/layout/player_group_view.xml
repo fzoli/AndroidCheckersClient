@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+	<ImageView android:id="@+id/ivStatus"
+		android:paddingLeft="5dp"
+		android:paddingTop="5dp"
+		android:layout_centerVertical="true"
+		android:layout_alignParentLeft="true"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:src="@drawable/group_collapsed" />
+	<TextView android:id="@+id/tvName"
+		android:height="40dp"
+		android:textSize="18sp"
+		android:text="Group Name"
+		android:layout_centerVertical="true"
+		android:gravity="center_vertical"
+		android:textStyle="bold"
+		android:layout_marginLeft="10dp"
+		android:layout_toRightOf="@+id/ivStatus"
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content" />
+</RelativeLayout>
