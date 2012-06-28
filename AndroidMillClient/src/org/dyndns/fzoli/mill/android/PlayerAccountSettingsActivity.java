@@ -2,6 +2,7 @@ package org.dyndns.fzoli.mill.android;
 
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
+import org.dyndns.fzoli.mill.common.InputValidator;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
@@ -107,9 +109,15 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				CharSequence val = (CharSequence)newValue;
-				emailPref.setSummary(val); //TODO: InputValidator
-				return true;
+				String email = newValue.toString();
+				if (InputValidator.isEmailValid(email)) {
+					emailPref.setSummary(email);
+					return true;
+				}
+				else {
+					Toast.makeText(PlayerAccountSettingsActivity.this, R.string.email_format, Toast.LENGTH_SHORT).show();
+					return false;
+				}
 			}
 			
 		});
