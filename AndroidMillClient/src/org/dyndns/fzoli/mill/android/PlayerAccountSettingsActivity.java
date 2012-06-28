@@ -2,6 +2,7 @@ package org.dyndns.fzoli.mill.android;
 
 import org.dyndns.fzoli.android.widget.ConfirmDialog;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
+import org.dyndns.fzoli.mill.android.activity.MillModelActivityUtil;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
@@ -97,7 +98,9 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	
 	private boolean isPasswordsOk() {
 		if (passwd1Pref != null && passwd2Pref != null) {
-			
+			String p1 = passwd1Pref.getText();
+			String p2 = passwd2Pref.getText();
+			return p1.equals(p2) && InputValidator.isPasswordValid(p1);
 		}
 		return false;
 	}
@@ -122,7 +125,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		passwordScreen.setTitle(R.string.password);
 		userDatas.addPreference(passwordScreen);
 		passwd1Pref = new EditTextPreference(this);
-		setPasswordType(passwd1Pref.getEditText());
+		setPasswordType(passwd1Pref.getEditText(), InputValidator.MAX_PASSWORD_LENGTH);
 		passwd1Pref.setTitle(R.string.password);
 		passwd1Pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			
@@ -141,7 +144,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		});
 		passwordScreen.addPreference(passwd1Pref);
 		passwd2Pref = new EditTextPreference(this);
-		setPasswordType(passwd2Pref.getEditText());
+		setPasswordType(passwd2Pref.getEditText(), InputValidator.MAX_PASSWORD_LENGTH);
 		passwd2Pref.setTitle(R.string.password_again);
 		passwd2Pref.setEnabled(false);
 		passwd2Pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
@@ -250,7 +253,12 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	private void setPasswordType(EditText et) {
+		setPasswordType(et, 0);
+	}
+	
+	private void setPasswordType(EditText et, int max) {
 		et.setSingleLine();
+		if (max > 0) MillModelActivityUtil.addLengthFilter(et, max);
 		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
 	}
 	
