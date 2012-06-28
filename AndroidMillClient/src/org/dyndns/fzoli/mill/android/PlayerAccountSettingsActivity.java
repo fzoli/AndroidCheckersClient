@@ -33,7 +33,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	private EditTextPreference emailPref, passwd1Pref, passwd2Pref;
 	
 	private interface PasswordDialogEvent {
-		void onClick(EditText input);
+		void onClick(String password);
 	}
 	
 	@Override
@@ -159,6 +159,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 		});
 		passwordScreen.addPreference(passwd2Pref);
+		final Preference validatePref = new Preference(this);
 		emailPref = new EditTextPreference(this);
 		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		emailPref.setTitle(R.string.email);
@@ -174,6 +175,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 						if (getModel().isEmailFree(email)) {
 							emailPref.setSummary(email);
 							tvWarning.setVisibility(View.GONE);
+							validatePref.setEnabled(false);
 							return true;
 						}
 						else {
@@ -204,7 +206,6 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		final PreferenceCategory userActions = new PreferenceCategory(this);
 		userActions.setTitle(R.string.user_actions);
 		root.addPreference(userActions);
-		final Preference validatePref = new Preference(this);
 		validatePref.setTitle(R.string.validate_email);
 		validatePref.setSummary(R.string.validate_email_sum);
 		validatePref.setEnabled(!getEmail().isEmpty() && !getPlayer().isValidated());
@@ -234,25 +235,6 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		Toast.makeText(PlayerAccountSettingsActivity.this, res, Toast.LENGTH_SHORT).show();
 	}
 	
-	private void showClosePasswordDialog() {
-		showPasswordDialog(new PasswordDialogEvent() {
-			
-			@Override
-			public void onClick(EditText input) {
-				/*String password = input.getText().toString();*/
-				PlayerAccountSettingsActivity.super.onBackPressed();
-			}
-			
-		}, new PasswordDialogEvent() {
-			
-			@Override
-			public void onClick(EditText input) {
-				PlayerAccountSettingsActivity.super.onBackPressed();
-			}
-			
-		});
-	}
-	
 	private void setPasswordType(EditText et) {
 		setPasswordType(et, 0);
 	}
@@ -263,7 +245,25 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
 	}
 	
-	private void showPasswordDialog(final PasswordDialogEvent ok, final PasswordDialogEvent cancel) { //TODO
+	private void showClosePasswordDialog() { // TODO
+		showPasswordDialog(new PasswordDialogEvent() {
+			
+			@Override
+			public void onClick(String password) {
+				PlayerAccountSettingsActivity.super.onBackPressed();
+			}
+			
+		}, new Runnable() {
+			
+			@Override
+			public void run() {
+				PlayerAccountSettingsActivity.super.onBackPressed();
+			}
+			
+		});
+	}
+	
+	private void showPasswordDialog(final PasswordDialogEvent ok, final Runnable cancel) {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(R.string.password);
 		alert.setMessage(R.string.password_input); 
@@ -274,7 +274,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
-				if (ok != null) ok.onClick(input);
+				if (ok != null) ok.onClick(input.getText().toString());
 			}
 			
 		});
@@ -282,7 +282,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
-				if (cancel != null) cancel.onClick(input);
+				if (cancel != null) cancel.run();
 			}
 			
 		});
