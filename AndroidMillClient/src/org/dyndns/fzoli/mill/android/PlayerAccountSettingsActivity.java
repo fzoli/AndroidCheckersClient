@@ -173,6 +173,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 					if (!email.isEmpty()) {
 						if (getModel().isEmailFree(email)) {
 							emailPref.setSummary(email);
+							tvWarning.setVisibility(View.GONE);
 							return true;
 						}
 						else {
@@ -187,6 +188,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 						}
 						else {
 							emailPref.setSummary(email);
+							tvWarning.setVisibility(View.VISIBLE);
 							return true;
 						}
 					}
