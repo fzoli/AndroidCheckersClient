@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.mill.android;
 
+import org.dyndns.fzoli.android.widget.ConfirmDialog;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
@@ -21,6 +22,7 @@ import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -155,6 +157,22 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		userActions.addPreference(validatePref);
 		final Preference suspendPref = new Preference(this);
 		suspendPref.setTitle(R.string.account_suspend);
+		suspendPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				new ConfirmDialog(PlayerAccountSettingsActivity.this, android.R.drawable.ic_dialog_alert, getString(R.string.account_suspend), getString(R.string.account_suspend_warning), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						
+					}
+					
+				}).show();
+				return true;
+			}
+			
+		});
 		userActions.addPreference(suspendPref);
 	}
 	
