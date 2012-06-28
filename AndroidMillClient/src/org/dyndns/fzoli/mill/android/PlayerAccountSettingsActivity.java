@@ -128,9 +128,14 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				//TODO: InputValidator
-				passwd2Pref.setEnabled(!newValue.toString().isEmpty());
-				return true;
+				if (InputValidator.isPasswordValid(newValue.toString())) {
+					passwd2Pref.setEnabled(true);
+					return true;
+				}
+				else {
+					showToast(R.string.password_format);
+					return false;
+				}
 			}
 			
 		});
@@ -143,7 +148,10 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				//TODO: InputValidator
+				if (!passwd1Pref.getText().equals(newValue.toString())) {
+					showToast(R.string.password_not_match);
+					return false;
+				}
 				return true;
 			}
 			
