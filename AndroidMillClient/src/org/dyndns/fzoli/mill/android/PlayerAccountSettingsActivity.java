@@ -119,10 +119,30 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		passwd1Pref = new EditTextPreference(this);
 		setPasswordType(passwd1Pref.getEditText());
 		passwd1Pref.setTitle(R.string.password);
+		passwd1Pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				//TODO: InputValidator
+				passwd2Pref.setEnabled(!newValue.toString().isEmpty());
+				return true;
+			}
+			
+		});
 		passwordScreen.addPreference(passwd1Pref);
 		passwd2Pref = new EditTextPreference(this);
 		setPasswordType(passwd2Pref.getEditText());
 		passwd2Pref.setTitle(R.string.password_again);
+		passwd2Pref.setEnabled(false);
+		passwd2Pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				//TODO: InputValidator
+				return true;
+			}
+			
+		});
 		passwordScreen.addPreference(passwd2Pref);
 		emailPref = new EditTextPreference(this);
 		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
@@ -217,6 +237,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	private void setPasswordType(EditText et) {
+		et.setSingleLine();
 		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
 	}
 	
@@ -225,7 +246,6 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setTitle(R.string.password);
 		alert.setMessage(R.string.password_input); 
 		final EditText input = new EditText(this);
-		input.setSingleLine();
 		setPasswordType(input);
 		alert.setView(input);
 		
