@@ -96,6 +96,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		emailPref.setTitle(R.string.email);
 		emailPref.setSummary(e.getPlayer().getEmail());
+		emailPref.setText(e.getPlayer().getEmail());
 		userDatas.addPreference(emailPref);
 		PreferenceCategory userActions = new PreferenceCategory(this);
 		userActions.setTitle(R.string.user_actions);
