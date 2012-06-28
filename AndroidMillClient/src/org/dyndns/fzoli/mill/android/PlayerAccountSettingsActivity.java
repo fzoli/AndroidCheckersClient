@@ -10,6 +10,8 @@ import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
+import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
+import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 import org.dyndns.fzoli.mvc.client.model.CachedModel;
 
 import android.app.AlertDialog;
@@ -23,6 +25,7 @@ import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +41,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setTitle(R.string.common);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.account_settings);
@@ -209,6 +213,30 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		validatePref.setTitle(R.string.validate_email);
 		validatePref.setSummary(R.string.validate_email_sum);
 		validatePref.setEnabled(!getEmail().isEmpty() && !getPlayer().isValidated());
+		validatePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				showPasswordDialog(new PasswordDialogEvent() {
+					
+					@Override
+					public void onClick(String password) {
+						setProgressBarIndeterminateVisibility(true);
+						getModel().revalidateEmail(InputValidator.md5Hex(password), true, new ModelActionListener<Integer>() {
+							
+							@Override
+							public void modelActionPerformed(ModelActionEvent<Integer> e) { //TODO
+								setProgressBarIndeterminateVisibility(false);
+							}
+							
+						});
+					}
+					
+				}, null);
+				return true;
+			}
+			
+		});
 		userActions.addPreference(validatePref);
 		final Preference suspendPref = new Preference(this);
 		suspendPref.setTitle(R.string.account_suspend);
@@ -220,7 +248,22 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						
+						showPasswordDialog(new PasswordDialogEvent() {
+							
+							@Override
+							public void onClick(String password) {
+								setProgressBarIndeterminateVisibility(true);
+								getModel().suspendAccount(InputValidator.md5Hex(password), true, new ModelActionListener<Integer>() {
+									
+									@Override
+									public void modelActionPerformed(ModelActionEvent<Integer> e) { //TODO
+										setProgressBarIndeterminateVisibility(false);
+									}
+									
+								});
+							}
+							
+						}, null);
 					}
 					
 				}).show();
@@ -245,11 +288,11 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
 	}
 	
-	private void showClosePasswordDialog() { // TODO
+	private void showClosePasswordDialog() {
 		showPasswordDialog(new PasswordDialogEvent() {
 			
 			@Override
-			public void onClick(String password) {
+			public void onClick(String password) { //TODO
 				PlayerAccountSettingsActivity.super.onBackPressed();
 			}
 			
