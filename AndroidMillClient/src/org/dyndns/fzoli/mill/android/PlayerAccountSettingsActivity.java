@@ -3,6 +3,7 @@ package org.dyndns.fzoli.mill.android;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
+import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
@@ -20,7 +21,6 @@ import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -89,6 +89,11 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		return emailPref == null ? false : !emailPref.getText().equalsIgnoreCase(getEmail());
 	}
 	
+	@Override
+	public PlayerModel getModel() {
+		return (PlayerModel) super.getModel();
+	}
+	
 	private void initScreen(PlayerData e) {
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		setPreferenceScreen(root);
@@ -111,11 +116,29 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
 				String email = newValue.toString();
 				if (InputValidator.isEmailValid(email)) {
-					emailPref.setSummary(email);
-					return true;
+					if (!email.isEmpty()) {
+						if (getModel().isEmailFree(email)) {
+							emailPref.setSummary(email);
+							return true;
+						}
+						else {
+							showToast(R.string.email_not_free);
+							return false;
+						}
+					}
+					else {
+						if (getPlayer().isValidated()) {
+							showToast(R.string.email_not_changed);
+							return false;
+						}
+						else {
+							emailPref.setSummary(email);
+							return true;
+						}
+					}
 				}
 				else {
-					Toast.makeText(PlayerAccountSettingsActivity.this, R.string.email_format, Toast.LENGTH_SHORT).show();
+					showToast(R.string.email_format);
 					return false;
 				}
 			}
@@ -133,6 +156,10 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		final Preference suspendPref = new Preference(this);
 		suspendPref.setTitle(R.string.account_suspend);
 		userActions.addPreference(suspendPref);
+	}
+	
+	private void showToast(int res) {
+		Toast.makeText(PlayerAccountSettingsActivity.this, res, Toast.LENGTH_SHORT).show();
 	}
 	
 	private void showClosePasswordDialog() {
@@ -182,9 +209,18 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.show();
 	}
 	
+	private Player getPlayer() {
+		try {
+			return getModel().getCache().getPlayer();
+		}
+		catch (Exception e) {
+			return null;
+		}
+	}
+	
 	private String getEmail() {
 		try {
-			return getModel().getCache().getPlayer().getEmail();
+			return getPlayer().getEmail();
 		}
 		catch (Exception e) {
 			return "";

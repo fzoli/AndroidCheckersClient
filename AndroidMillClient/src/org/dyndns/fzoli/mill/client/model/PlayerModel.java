@@ -37,6 +37,13 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
         askModel(createSignOutRequest(), callback);
     }
     
+    public boolean isEmailFree(String email) {
+        RequestMap m = new RequestMap();
+        m.setFirst(KEY_REQUEST, REQ_IS_EMAIL_FREE);
+        m.setFirst(KEY_VALUE, email);
+        return askModel(m) == 1 ? true : false;
+    }
+    
     public void setPlayerState(PlayerState state, ModelActionListener<Integer> callback) {
         RequestMap m = new RequestMap();
         m.setFirst(KEY_REQUEST, REQ_SET_PLAYER_STATE);

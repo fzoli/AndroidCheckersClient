@@ -90,4 +90,5 @@
     <string name="password_input">Enter your current password!</string>
     <string name="account_suspend">Suspend account</string>
     <string name="account_suspend_warning">Your personal data and permission will be removed.\nAre you sure?</string>
+    <string name="email_not_changed">E-mail was not changed.</string>
 </resources>
