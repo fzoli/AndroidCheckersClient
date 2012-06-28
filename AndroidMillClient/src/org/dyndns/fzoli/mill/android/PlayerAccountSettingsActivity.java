@@ -22,7 +22,6 @@ import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,7 +29,7 @@ import android.widget.Toast;
 public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
 	private TextView tvWarning;
-	private EditTextPreference emailPref;
+	private EditTextPreference emailPref, passwd1Pref, passwd2Pref;
 	
 	private interface PasswordDialogEvent {
 		void onClick(EditText input);
@@ -88,7 +87,14 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	private boolean isModified() {
-		return emailPref == null ? false : !emailPref.getText().equalsIgnoreCase(getEmail());
+		return emailPref == null || passwd1Pref == null ? false : !emailPref.getText().equalsIgnoreCase(getEmail()) || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
+	}
+	
+	private boolean isPasswordsOk() {
+		if (passwd1Pref != null && passwd2Pref != null) {
+			
+		}
+		return false;
 	}
 	
 	@Override
@@ -107,6 +113,17 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		userPref.setTitle(R.string.username);
 		userPref.setSummary(e.getPlayerName());
 		userDatas.addPreference(userPref);
+		PreferenceScreen passwordScreen = getPreferenceManager().createPreferenceScreen(this);
+		passwordScreen.setTitle(R.string.password);
+		userDatas.addPreference(passwordScreen);
+		passwd1Pref = new EditTextPreference(this);
+		setPasswordType(passwd1Pref.getEditText());
+		passwd1Pref.setTitle(R.string.password);
+		passwordScreen.addPreference(passwd1Pref);
+		passwd2Pref = new EditTextPreference(this);
+		setPasswordType(passwd2Pref.getEditText());
+		passwd2Pref.setTitle(R.string.password_again);
+		passwordScreen.addPreference(passwd2Pref);
 		emailPref = new EditTextPreference(this);
 		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		emailPref.setTitle(R.string.email);
@@ -199,13 +216,17 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		});
 	}
 	
+	private void setPasswordType(EditText et) {
+		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
+	}
+	
 	private void showPasswordDialog(final PasswordDialogEvent ok, final PasswordDialogEvent cancel) { //TODO
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(R.string.password);
 		alert.setMessage(R.string.password_input); 
 		final EditText input = new EditText(this);
 		input.setSingleLine();
-		input.setTransformationMethod(PasswordTransformationMethod.getInstance());
+		setPasswordType(input);
 		alert.setView(input);
 		
 		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
