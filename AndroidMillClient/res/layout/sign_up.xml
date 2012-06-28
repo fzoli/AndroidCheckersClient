@@ -53,7 +53,7 @@
 			    	android:textAppearance="?android:attr/textAppearanceMedium" />
 		    	<org.dyndns.fzoli.android.widget.ProgressEditTextLayout android:layout_width="match_parent"
 		    		android:layout_height="wrap_content"
-		    		android:inputType="textEmailAddress"
+		    		android:inputType="text|textEmailAddress"
 		    		android:id="@+id/etlEmail" />
 			    <Button android:text="@string/sign_up"
 			    	android:id="@+id/btSignUp"
