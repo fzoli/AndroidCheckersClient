@@ -87,7 +87,12 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	private boolean isModified() {
-		return emailPref == null || passwd1Pref == null ? false : !emailPref.getText().equalsIgnoreCase(getEmail()) || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
+		try {
+			return !emailPref.getText().equalsIgnoreCase(getEmail()) || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
+		}
+		catch (NullPointerException ex) {
+			return false;
+		}
 	}
 	
 	private boolean isPasswordsOk() {
