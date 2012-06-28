@@ -151,7 +151,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		final Preference validatePref = new Preference(this);
 		validatePref.setTitle(R.string.validate_email);
 		validatePref.setSummary(R.string.validate_email_sum);
-		validatePref.setEnabled(!getEmail().isEmpty());
+		validatePref.setEnabled(!getEmail().isEmpty() && !getPlayer().isValidated());
 		userActions.addPreference(validatePref);
 		final Preference suspendPref = new Preference(this);
 		suspendPref.setTitle(R.string.account_suspend);
