@@ -19,12 +19,18 @@ import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
-
+	
 	private TextView tvWarning;
+	private EditTextPreference emailPref;
+	
+	private interface PasswordDialogEvent {
+		void onClick(EditText input);
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 					tvWarning.setText(R.string.validate_warning);
 					tvWarning.setVisibility(View.VISIBLE);
 				}
-				if (e.getPlayer().getEmail().isEmpty()) {
+				if (getEmail().isEmpty()) {
 					tvWarning.setText(R.string.empty_email_warning);
 					tvWarning.setVisibility(View.VISIBLE);
 				}
@@ -77,36 +83,46 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		}
 	}
 	
-	private boolean isModified() { //TODO
-		return false;
+	private boolean isModified() {
+		return emailPref == null ? false : !emailPref.getText().equalsIgnoreCase(getEmail());
 	}
 	
 	private void initScreen(PlayerData e) {
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		setPreferenceScreen(root);
-		PreferenceCategory userDatas = new PreferenceCategory(this);
+		final PreferenceCategory userDatas = new PreferenceCategory(this);
 		userDatas.setTitle(R.string.user_datas);
 		root.addPreference(userDatas);
-		Preference userPref = new Preference(this);
+		final Preference userPref = new Preference(this);
 		userPref.setEnabled(false);
 		userPref.setTitle(R.string.username);
 		userPref.setSummary(e.getPlayerName());
 		userDatas.addPreference(userPref);
-		EditTextPreference emailPref = new EditTextPreference(this);
+		emailPref = new EditTextPreference(this);
 		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		emailPref.setTitle(R.string.email);
-		emailPref.setSummary(e.getPlayer().getEmail());
-		emailPref.setText(e.getPlayer().getEmail());
+		emailPref.setSummary(getEmail());
+		emailPref.setText(getEmail());
+		emailPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference preference, Object newValue) {
+				CharSequence val = (CharSequence)newValue;
+				emailPref.setSummary(val); //TODO: InputValidator
+				return true;
+			}
+			
+		});
 		userDatas.addPreference(emailPref);
-		PreferenceCategory userActions = new PreferenceCategory(this);
+		final PreferenceCategory userActions = new PreferenceCategory(this);
 		userActions.setTitle(R.string.user_actions);
 		root.addPreference(userActions);
-		Preference validatePref = new Preference(this);
+		final Preference validatePref = new Preference(this);
 		validatePref.setTitle(R.string.validate_email);
 		validatePref.setSummary(R.string.validate_email_sum);
-		validatePref.setEnabled(!e.getPlayer().getEmail().isEmpty());
+		validatePref.setEnabled(!getEmail().isEmpty());
 		userActions.addPreference(validatePref);
-		Preference suspendPref = new Preference(this);
+		final Preference suspendPref = new Preference(this);
 		suspendPref.setTitle(R.string.account_suspend);
 		userActions.addPreference(suspendPref);
 	}
@@ -158,8 +174,13 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.show();
 	}
 	
-	private interface PasswordDialogEvent {
-		void onClick(EditText input);
+	private String getEmail() {
+		try {
+			return getModel().getCache().getPlayer().getEmail();
+		}
+		catch (Exception e) {
+			return "";
+		}
 	}
 	
 }
