@@ -89,6 +89,6 @@
     <string name="validate_warning">Kérem, érvényesítse e-mail címét!</string>
     <string name="password_input">Adja meg jelenlegi jelszavát!</string>
     <string name="account_suspend">Fiók felfüggesztése</string>
-    <string name="account_suspend_warning">Személyes adatai és jogai elvésznek.\nBiztos benne?</string>
+    <string name="account_suspend_warning">Ha felfüggeszti fiókját, személyes adatai és jogosultságai elvésznek.\n\nBiztos benne?</string>
     <string name="email_not_changed">E-mail címe nem változott.</string>
 </resources>

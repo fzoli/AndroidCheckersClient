@@ -89,6 +89,6 @@
     <string name="validate_warning">Please validate your e-mail!</string>
     <string name="password_input">Enter your current password!</string>
     <string name="account_suspend">Suspend account</string>
-    <string name="account_suspend_warning">Your personal data and permission will be removed.\nAre you sure?</string>
+    <string name="account_suspend_warning">If you suspend your account, your personal data and permission will be removed.\n\nAre you sure?</string>
     <string name="email_not_changed">E-mail was not changed.</string>
 </resources>
