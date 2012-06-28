@@ -56,6 +56,11 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	@Override
+	public PlayerModel getModel() {
+		return (PlayerModel) super.getModel();
+	}
+	
+	@Override
 	public boolean processModelData(PlayerData e) {
 		if (super.processModelData(e)) {
 			if (e.isCaptchaValidated()) {
@@ -98,16 +103,10 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	
 	private boolean isPasswordsOk() {
 		if (passwd1Pref != null && passwd2Pref != null) {
-			String p1 = passwd1Pref.getText();
-			String p2 = passwd2Pref.getText();
-			return p1.equals(p2) && InputValidator.isPasswordValid(p1);
+			String p = passwd1Pref.getText();
+			return p.equals(passwd2Pref.getText()) && InputValidator.isPasswordValid(p);
 		}
 		return false;
-	}
-	
-	@Override
-	public PlayerModel getModel() {
-		return (PlayerModel) super.getModel();
 	}
 	
 	private void initScreen(PlayerData e) {
