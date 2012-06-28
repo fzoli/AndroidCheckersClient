@@ -14,6 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -47,9 +48,20 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	@Override
 	public boolean processModelData(PlayerData e) {
 		if (super.processModelData(e)) {
-			if (e.isCaptchaValidated()) initScreen(e);
-			else startActivity(new Intent(this, PlayerSettingsCaptchaActivity.class));
-			if (!e.getPlayer().isValidated()) tvWarning.setVisibility(View.VISIBLE);
+			if (e.isCaptchaValidated()) {
+				if (!e.getPlayer().isValidated()) {
+					tvWarning.setText(R.string.validate_warning);
+					tvWarning.setVisibility(View.VISIBLE);
+				}
+				if (e.getPlayer().getEmail().isEmpty()) {
+					tvWarning.setText(R.string.empty_email_warning);
+					tvWarning.setVisibility(View.VISIBLE);
+				}
+				initScreen(e);
+			}
+			else {
+				startActivity(new Intent(this, PlayerSettingsCaptchaActivity.class));
+			}
 			return true;
 		}
 		return false;
@@ -58,33 +70,66 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	@Override
 	public void onBackPressed() {
 		if (isModified()) {
-			showPasswordDialog();
+			showClosePasswordDialog();
 		}
 		else {
 			super.onBackPressed();
 		}
 	}
 	
-	private void initScreen(PlayerData e) {
-		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
-		setPreferenceScreen(root);
-		Preference userPref = new Preference(this);
-		userPref.setEnabled(false);
-		userPref.setTitle(R.string.username);
-		userPref.setSummary(e.getPlayerName());
-		root.addPreference(userPref);
-		EditTextPreference emailPref = new EditTextPreference(this);
-		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-		emailPref.setTitle(R.string.email);
-		emailPref.setSummary(e.getPlayer().getEmail());
-		root.addPreference(emailPref);
-	}
-	
 	private boolean isModified() { //TODO
 		return false;
 	}
 	
-	private void showPasswordDialog() { //TODO
+	private void initScreen(PlayerData e) {
+		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
+		setPreferenceScreen(root);
+		PreferenceCategory userDatas = new PreferenceCategory(this);
+		userDatas.setTitle(R.string.user_datas);
+		root.addPreference(userDatas);
+		Preference userPref = new Preference(this);
+		userPref.setEnabled(false);
+		userPref.setTitle(R.string.username);
+		userPref.setSummary(e.getPlayerName());
+		userDatas.addPreference(userPref);
+		EditTextPreference emailPref = new EditTextPreference(this);
+		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+		emailPref.setTitle(R.string.email);
+		emailPref.setSummary(e.getPlayer().getEmail());
+		userDatas.addPreference(emailPref);
+		PreferenceCategory userActions = new PreferenceCategory(this);
+		userActions.setTitle(R.string.user_actions);
+		root.addPreference(userActions);
+		Preference validatePref = new Preference(this);
+		validatePref.setTitle(R.string.validate_email);
+		validatePref.setSummary(R.string.validate_email_sum);
+		validatePref.setEnabled(!e.getPlayer().getEmail().isEmpty());
+		userActions.addPreference(validatePref);
+		Preference suspendPref = new Preference(this);
+		suspendPref.setTitle(R.string.account_suspend);
+		userActions.addPreference(suspendPref);
+	}
+	
+	private void showClosePasswordDialog() {
+		showPasswordDialog(new PasswordDialogEvent() {
+			
+			@Override
+			public void onClick(EditText input) {
+				/*String password = input.getText().toString();*/
+				PlayerAccountSettingsActivity.super.onBackPressed();
+			}
+			
+		}, new PasswordDialogEvent() {
+			
+			@Override
+			public void onClick(EditText input) {
+				PlayerAccountSettingsActivity.super.onBackPressed();
+			}
+			
+		});
+	}
+	
+	private void showPasswordDialog(final PasswordDialogEvent ok, final PasswordDialogEvent cancel) { //TODO
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle(R.string.password);
 		alert.setMessage(R.string.password_input); 
@@ -96,9 +141,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
-				//OK
-				String password = input.getText().toString();
-				PlayerAccountSettingsActivity.super.onBackPressed();
+				if (ok != null) ok.onClick(input);
 			}
 			
 		});
@@ -106,13 +149,16 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
-				//Cancel
-				PlayerAccountSettingsActivity.super.onBackPressed();
+				if (cancel != null) cancel.onClick(input);
 			}
 			
 		});
 
 		alert.show();
+	}
+	
+	private interface PasswordDialogEvent {
+		void onClick(EditText input);
 	}
 	
 }

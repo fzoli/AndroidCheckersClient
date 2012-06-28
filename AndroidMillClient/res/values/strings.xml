@@ -79,7 +79,15 @@
     <string name="online">Online</string>
     <string name="invisible">Invisible</string>
     <string name="user_settings">User settings</string>
+    <string name="user_setting_options">User setting options</string>
+    <string name="user_datas">User datas</string>
+    <string name="user_actions">User actions</string>
+    <string name="validate_email">Validate e-mail</string>
+    <string name="validate_email_sum">Send validation email again</string>
     <string name="common">Common</string>
+    <string name="empty_email_warning">Please enter your e-mail!</string>
     <string name="validate_warning">Please validate your e-mail!</string>
     <string name="password_input">Enter your current password!</string>
+    <string name="account_suspend">Suspend account</string>
+    <string name="account_suspend_warning">Your personal data and permission will be removed.\nAre you sure?</string>
 </resources>

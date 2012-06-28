@@ -79,7 +79,15 @@
     <string name="online">Elérhető</string>
     <string name="invisible">Láthatatlan</string>
     <string name="user_settings">Felhasználói beállítások</string>
+    <string name="user_setting_options">Felhasználói beállítások lehetőségei</string>
+    <string name="user_datas">Felhasználói adatok</string>
+    <string name="user_actions">Felhasználói műveletek</string>
+    <string name="validate_email">E-mail validálás</string>
+    <string name="validate_email_sum">Érvényesítő e-mail újraküldése</string>
     <string name="common">Általános</string>
+    <string name="empty_email_warning">Kérem, adja meg e-mail címét!</string>
     <string name="validate_warning">Kérem, érvényesítse e-mail címét!</string>
     <string name="password_input">Adja meg jelenlegi jelszavát!</string>
+    <string name="account_suspend">Fiók felfüggesztése</string>
+    <string name="account_suspend_warning">Személyes adatai és jogai elvésznek.\nBiztos benne?</string>
 </resources>

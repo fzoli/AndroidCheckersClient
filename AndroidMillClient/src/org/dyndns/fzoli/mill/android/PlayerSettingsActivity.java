@@ -10,6 +10,7 @@ import org.dyndns.fzoli.mvc.client.model.CachedModel;
 
 import android.content.Intent;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
@@ -47,6 +48,9 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	private void initScreen() { //TODO
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		setPreferenceScreen(root);
+		final PreferenceCategory optionsPref = new PreferenceCategory(this);
+		optionsPref.setTitle(R.string.user_setting_options);
+		root.addPreference(optionsPref);
 		final Preference commonPref = new Preference(this);
 		commonPref.setTitle(R.string.common);
 		commonPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -58,7 +62,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			}
 			
 		});
-		root.addPreference(commonPref);
+		optionsPref.addPreference(commonPref);
 	}
 	
 }
