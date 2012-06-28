@@ -221,12 +221,12 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 					
 					@Override
 					public void onClick(String password) {
-						setProgressBarIndeterminateVisibility(true);
+						setIndicator(true);
 						getModel().revalidateEmail(InputValidator.md5Hex(password), true, new ModelActionListener<Integer>() {
 							
 							@Override
 							public void modelActionPerformed(ModelActionEvent<Integer> e) { //TODO
-								setProgressBarIndeterminateVisibility(false);
+								setIndicator(false);
 							}
 							
 						});
@@ -252,12 +252,12 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 							
 							@Override
 							public void onClick(String password) {
-								setProgressBarIndeterminateVisibility(true);
+								setIndicator(true);
 								getModel().suspendAccount(InputValidator.md5Hex(password), true, new ModelActionListener<Integer>() {
 									
 									@Override
 									public void modelActionPerformed(ModelActionEvent<Integer> e) { //TODO
-										setProgressBarIndeterminateVisibility(false);
+										setIndicator(false);
 									}
 									
 								});
@@ -349,6 +349,17 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		catch (Exception e) {
 			return "";
 		}
+	}
+	
+	private void setIndicator(final boolean visible) {
+		runOnUiThread(new Runnable() {
+			
+			@Override
+			public void run() {
+				setProgressBarIndeterminateVisibility(visible);
+			}
+			
+		});
 	}
 	
 }
