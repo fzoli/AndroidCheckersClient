@@ -72,4 +72,8 @@ public class Player extends BasePlayer {
         return null;
     }
     
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    
 }

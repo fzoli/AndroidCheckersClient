@@ -28,6 +28,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -102,7 +103,16 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	
 	private boolean isModified() {
 		try {
-			return !emailPref.getText().equalsIgnoreCase(getEmail()) || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
+			return !isEmailModified() || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
+		}
+		catch (NullPointerException ex) {
+			return false;
+		}
+	}
+	
+	private boolean isEmailModified() { //TODO: valamiért miniig false return
+		try {
+			return emailPref.getText().equalsIgnoreCase(getEmail());
 		}
 		catch (NullPointerException ex) {
 			return false;
@@ -110,11 +120,13 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	private boolean isPasswordsOk() {
-		if (passwd1Pref != null && passwd2Pref != null) {
+		try {
 			String p = passwd1Pref.getText();
 			return p.equals(passwd2Pref.getText()) && InputValidator.isPasswordValid(p);
 		}
-		return false;
+		catch (NullPointerException ex) {
+			return false;
+		}
 	}
 	
 	private void initScreen(PlayerData e) {
@@ -292,6 +304,36 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
 	}
 	
+	private void sendEmail(String password, final String email) {
+		setIndicator(true);
+		getModel().setEmail(InputValidator.md5Hex(password), email, true, new ModelActionListener<Integer>() {
+			
+			@Override
+			public void modelActionPerformed(ModelActionEvent<Integer> e) {
+				new IntegerMillModelActivityAdapter(PlayerAccountSettingsActivity.this, e) {
+					
+					@Override
+					public void onEvent(int e) {
+						setIndicator(false);
+						switch(getReturn(e)) {
+							case OK:
+								getPlayer().setEmail(email);
+								finish();
+								break;
+							case EMAIL_NOT_FREE:
+								showToast(R.string.email_not_free);
+								break;
+							default:
+								showToast(R.string.email_format);
+						}
+					}
+					
+				};
+			}
+			
+		});
+	}
+	
 	private void sendPassword(String oldPassword, String newPassword, final boolean finish) {
 		final int newLength = newPassword.length();
 		final String newPasswordHash = InputValidator.md5Hex(newPassword);
@@ -336,8 +378,11 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 			@Override
 			public void onClick(String password) { //TODO
-				if (isPasswordsOk()) sendPassword(password, passwd1Pref.getText(), true);
-				else PlayerAccountSettingsActivity.super.onBackPressed();
+				boolean saveEmail = isEmailModified();
+				Log.i("test", "saveEmail: "+saveEmail);
+				Log.i("test", "savePassword: "+isPasswordsOk());
+				if (isPasswordsOk()) sendPassword(password, passwd1Pref.getText(), !saveEmail);
+				if (saveEmail) sendEmail(password, emailPref.getText());
 			}
 			
 		}, new Runnable() {
@@ -380,14 +425,14 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 		});
 
-		alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
-			
-			@Override
-			public void onCancel(DialogInterface arg0) {
-				if (cancel != null) cancel.run();
-			}
-			
-		});
+//		alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+//			
+//			@Override
+//			public void onCancel(DialogInterface arg0) {
+//				if (cancel != null) cancel.run();
+//			}
+//			
+//		});
 		
 		alert.show();
 	}
