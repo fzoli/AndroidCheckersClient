@@ -103,16 +103,16 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	
 	private boolean isModified() {
 		try {
-			return !isEmailModified() || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
+			return isEmailModified() || (!passwd1Pref.getText().isEmpty() && isPasswordsOk());
 		}
 		catch (NullPointerException ex) {
 			return false;
 		}
 	}
 	
-	private boolean isEmailModified() { //TODO: valamiért miniig false return
+	private boolean isEmailModified() {
 		try {
-			return emailPref.getText().equalsIgnoreCase(getEmail());
+			return !emailPref.getText().equalsIgnoreCase(getEmail());
 		}
 		catch (NullPointerException ex) {
 			return false;
@@ -324,7 +324,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 								showToast(R.string.email_not_free);
 								break;
 							default:
-								showToast(R.string.email_format);
+								showToast(R.string.wrong_password);
 						}
 					}
 					
