@@ -91,4 +91,6 @@
     <string name="account_suspend">Suspend account</string>
     <string name="account_suspend_warning">If you suspend your account, your personal data and permission will be removed.\n\nAre you sure?</string>
     <string name="email_not_changed">E-mail was not changed.</string>
+    <string name="password_not_changed">Password was not changed.</string>
+    <string name="wrong_password">Wrong password, try again!</string>
 </resources>

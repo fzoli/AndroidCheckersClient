@@ -50,7 +50,11 @@ public class MillDatabaseHelper {
 	}
 	
 	public UserInfo findUserInfo(String user) {
-		return findUserInfo(user, getUserInfoList(false));
+		return findUserInfo(user, false);
+	}
+	
+	public UserInfo findUserInfo(String user, boolean filter) {
+		return findUserInfo(user, getUserInfoList(filter));
 	}
 	
 	public List<UserInfo> getUserInfoList(final boolean filter) {

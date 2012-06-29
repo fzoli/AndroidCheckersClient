@@ -2,9 +2,13 @@ package org.dyndns.fzoli.mill.android;
 
 import org.dyndns.fzoli.android.widget.ConfirmDialog;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
+import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityUtil;
+import org.dyndns.fzoli.mill.android.entity.UserInfo;
+import org.dyndns.fzoli.mill.android.service.MillDatabaseHelper;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
+import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
@@ -288,12 +292,52 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		et.setTransformationMethod(PasswordTransformationMethod.getInstance());
 	}
 	
+	private void sendPassword(String oldPassword, String newPassword, final boolean finish) {
+		final int newLength = newPassword.length();
+		final String newPasswordHash = InputValidator.md5Hex(newPassword);
+		setIndicator(true);
+		getModel().setPassword(InputValidator.md5Hex(oldPassword), newPasswordHash, true, new ModelActionListener<Integer>() {
+			
+			@Override
+			public void modelActionPerformed(ModelActionEvent<Integer> e) {
+				new IntegerMillModelActivityAdapter(PlayerAccountSettingsActivity.this, e) {
+					
+					@Override
+					public void onEvent(int e) {
+						setIndicator(false);
+						switch(getReturn(e)) {
+							case OK:
+								MillDatabaseHelper db = getConnectionBinder().getDatabaseHelper();
+								UserInfo ui = db.findUserInfo(getPlayer().getPlayerName(), true);
+								if (ui != null && db.getUserInfoSettings().isSavePassword()) {
+									ui.setPassword(newPasswordHash, newLength);
+									db.store(ui);
+								}
+								if (finish) finish();
+								break;
+							case NO_CHANGE:
+								showToast(R.string.password_not_changed);
+								if (finish) finish();
+								else setIndicator(false);
+								break;
+							default:
+								showToast(R.string.wrong_password);
+						}
+					}
+					
+				};
+			}
+			
+		});
+	}
+	
 	private void showClosePasswordDialog() {
 		showPasswordDialog(new PasswordDialogEvent() {
 			
 			@Override
 			public void onClick(String password) { //TODO
-				PlayerAccountSettingsActivity.super.onBackPressed();
+				if (isPasswordsOk()) sendPassword(password, passwd1Pref.getText(), true);
+				else PlayerAccountSettingsActivity.super.onBackPressed();
 			}
 			
 		}, new Runnable() {
@@ -317,7 +361,13 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		alert.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
 			
 			public void onClick(DialogInterface dialog, int whichButton) {
-				if (ok != null) ok.onClick(input.getText().toString());
+				String password = input.getText().toString();
+				if (InputValidator.isPasswordValid(password)) {
+					if (ok != null) ok.onClick(password);
+				}
+				else {
+					showToast(R.string.wrong_password);
+				}
 			}
 			
 		});
@@ -330,7 +380,20 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 		});
 
+		alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
+			
+			@Override
+			public void onCancel(DialogInterface arg0) {
+				if (cancel != null) cancel.run();
+			}
+			
+		});
+		
 		alert.show();
+	}
+	
+	private PlayerReturn getReturn(int i) {
+		return getEnumValue(PlayerReturn.class, i);
 	}
 	
 	private Player getPlayer() {

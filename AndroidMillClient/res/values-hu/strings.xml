@@ -91,4 +91,6 @@
     <string name="account_suspend">Fiók felfüggesztése</string>
     <string name="account_suspend_warning">Ha felfüggeszti fiókját, személyes adatai és jogosultságai elvésznek.\n\nBiztos benne?</string>
     <string name="email_not_changed">E-mail címe nem változott.</string>
+    <string name="password_not_changed">Jelszava nem változott.</string>
+    <string name="wrong_password">Hibás jelszó, próbálja újra!</string>
 </resources>
