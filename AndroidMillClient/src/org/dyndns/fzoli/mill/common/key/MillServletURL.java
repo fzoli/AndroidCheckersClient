@@ -10,4 +10,6 @@ public interface MillServletURL {
     
     String CONTROLLER = "/Controller";
     
+    String VALIDATOR = "/Validator";
+    
 }

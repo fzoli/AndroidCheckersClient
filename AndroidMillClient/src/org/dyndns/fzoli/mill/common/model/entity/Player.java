@@ -75,5 +75,9 @@ public class Player extends BasePlayer {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setValidated(boolean validated) {
+        this.validated = validated;
+    }
     
 }

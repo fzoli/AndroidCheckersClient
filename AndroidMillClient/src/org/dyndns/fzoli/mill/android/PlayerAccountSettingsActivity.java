@@ -241,8 +241,22 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 						getModel().revalidateEmail(InputValidator.md5Hex(password), true, new ModelActionListener<Integer>() {
 							
 							@Override
-							public void modelActionPerformed(ModelActionEvent<Integer> e) { //TODO
+							public void modelActionPerformed(ModelActionEvent<Integer> e) {
 								setIndicator(false);
+								new IntegerMillModelActivityAdapter(PlayerAccountSettingsActivity.this, e) {
+									
+									@Override
+									public void onEvent(int e) {
+										switch(getReturn(e)) {
+											case NO_CHANGE: //TODO: nem fog kelleni az eseménykezelés után
+												getPlayer().setValidated(true);
+												break;
+											case ERROR:
+												showToast(R.string.controller_error);
+										}
+									}
+									
+								};
 							}
 							
 						});
@@ -318,6 +332,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 						switch(getReturn(e)) {
 							case OK:
 								getPlayer().setEmail(email);
+								getPlayer().setValidated(false);
 								finish();
 								break;
 							case EMAIL_NOT_FREE:
