@@ -22,6 +22,16 @@
 		<activity android:name=".PlayerSettingsActivity" />
 		<activity android:name=".SettingsActivity" />
 		<activity android:name=".ConnectivityActivity" />
-		<service android:name=".MillConnectionService" />
+		<service android:name=".MillConnectionService">
+			<intent-filter>
+				<action android:name="org.dyndns.fzoli.mill.UPDATE_URL" />
+			</intent-filter>
+		</service>
+		<receiver android:name=".BootIntentFilter">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<category android:name="android.intent.category.HOME" />
+			</intent-filter>
+		</receiver>
 	</application>
 </manifest>

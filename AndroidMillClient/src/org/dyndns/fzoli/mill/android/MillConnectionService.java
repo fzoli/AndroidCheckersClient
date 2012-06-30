@@ -63,7 +63,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	
 	@Override
 	public Connection<Object, Object> createConnection() {
-		if (helper == null) initHelper();
+		initHelper();
 		ConnectionSettings settings = helper.getConnectionSettings();
 		System.setProperty("networkaddress.cache.ttl", "0");
 		System.setProperty("networkaddress.cache.negative.ttl", "0");
@@ -75,6 +75,12 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		started = true;
+		String action = intent.getAction();
+		if (action != null && action.equals("org.dyndns.fzoli.mill.UPDATE_URL")) {
+			updateUrl(true);
+			return START_NOT_STICKY;
+		}
+		updateUrl(false);
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
@@ -98,6 +104,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	}
 	
 	public void initHelper() {
+		if (helper != null) return;
 		File dbFile = new File(getDir("database", Context.MODE_PRIVATE), "settings.odb");
 		if (!dbFile.exists()) try {
 			dbFile.createNewFile();
@@ -113,6 +120,12 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		db.close();
 		db = null;
 		helper = null;
+	}
+	
+	public void updateUrl(boolean close) {
+		initHelper();
+		//TODO
+		if (close) closeHelper();
 	}
 	
 }
