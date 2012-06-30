@@ -12,6 +12,7 @@ import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
+import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent.PlayerEventType;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
@@ -38,6 +39,7 @@ import android.widget.Toast;
 public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
 	private TextView tvWarning;
+	private Preference validatePref;
 	private EditTextPreference emailPref, passwd1Pref, passwd2Pref;
 	
 	private interface PasswordDialogEvent {
@@ -67,6 +69,15 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	@Override
 	public PlayerModel getModel() {
 		return (PlayerModel) super.getModel();
+	}
+	
+	@Override
+	public boolean processModelChange(PlayerEvent e) {
+		if (super.processModelChange(e)) {
+			if (e.getType().equals(PlayerEventType.VALIDATE)) validated();
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
@@ -129,6 +140,13 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		}
 	}
 	
+	private void validated() {
+		if (tvWarning == null || validatePref == null) return;
+		getPlayer().setValidated(true);
+		tvWarning.setVisibility(View.GONE);
+		validatePref.setEnabled(false);
+	}
+	
 	private void initScreen(PlayerData e) {
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		setPreferenceScreen(root);
@@ -179,7 +197,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			
 		});
 		passwordScreen.addPreference(passwd2Pref);
-		final Preference validatePref = new Preference(this);
+		validatePref = new Preference(this);
 		emailPref = new EditTextPreference(this);
 		emailPref.getEditText().setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
 		emailPref.setTitle(R.string.email);
@@ -248,10 +266,8 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 									@Override
 									public void onEvent(int e) {
 										switch(getReturn(e)) {
-											case NO_CHANGE: //TODO: nem fog kelleni az eseménykezelés után
-												getPlayer().setValidated(true);
-												tvWarning.setVisibility(View.GONE);
-												validatePref.setEnabled(false);
+											case NO_CHANGE:
+												validated();
 												break;
 											case ERROR:
 												showToast(R.string.controller_error);

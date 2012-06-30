@@ -9,7 +9,10 @@ import org.dyndns.fzoli.mill.common.model.entity.Player;
 public class PlayerEvent extends BaseOnlinePojo {
 
     public enum PlayerEventType {
-        COMMON, SIGNIN, SIGNOUT
+        COMMON,
+        SIGNIN,
+        SIGNOUT,
+        VALIDATE
     }
     
     private PlayerEventType type;
@@ -20,6 +23,11 @@ public class PlayerEvent extends BaseOnlinePojo {
         type = PlayerEventType.COMMON;
     }
 
+    public PlayerEvent(Player player, PlayerEventType t) {
+        super(player);
+        type = t;
+    }
+    
     public PlayerEvent(Player player, String changedPlayer, boolean signIn) {
         super(player);
         this.changedPlayer = changedPlayer;
