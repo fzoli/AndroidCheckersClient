@@ -98,6 +98,9 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                             p = findPlayer(l, e.getChangedPlayer());
                             if (p != null) p.setOnline(false);
                             break;
+                        case VALIDATE:
+                            if(po.getPlayer() != null) po.getPlayer().setValidated(true);
+                            break;
                     }
                 }
             }
