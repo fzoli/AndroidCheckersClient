@@ -410,10 +410,8 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		showPasswordDialog(new PasswordDialogEvent() {
 			
 			@Override
-			public void onClick(String password) { //TODO
+			public void onClick(String password) {
 				boolean saveEmail = isEmailModified();
-				Log.i("test", "saveEmail: "+saveEmail);
-				Log.i("test", "savePassword: "+isPasswordsOk());
 				if (isPasswordsOk()) sendPassword(password, passwd1Pref.getText(), !saveEmail);
 				if (saveEmail) sendEmail(password, emailPref.getText());
 			}
