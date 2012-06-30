@@ -250,6 +250,8 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 										switch(getReturn(e)) {
 											case NO_CHANGE: //TODO: nem fog kelleni az eseménykezelés után
 												getPlayer().setValidated(true);
+												tvWarning.setVisibility(View.GONE);
+												validatePref.setEnabled(false);
 												break;
 											case ERROR:
 												showToast(R.string.controller_error);
