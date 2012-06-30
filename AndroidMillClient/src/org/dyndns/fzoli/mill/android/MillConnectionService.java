@@ -75,12 +75,6 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		started = true;
-		String action = intent.getAction();
-		if (action != null && action.equals("org.dyndns.fzoli.mill.UPDATE_URL")) {
-			updateUrl(true);
-			return START_NOT_STICKY;
-		}
-		updateUrl(false);
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
@@ -120,12 +114,6 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		db.close();
 		db = null;
 		helper = null;
-	}
-	
-	public void updateUrl(boolean close) {
-		initHelper();
-		//TODO
-		if (close) closeHelper();
 	}
 	
 }
