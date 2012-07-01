@@ -73,7 +73,13 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	@Override
 	public boolean processModelChange(PlayerEvent e) {
 		if (super.processModelChange(e)) {
-			if (e.getType().equals(PlayerEventType.VALIDATE)) validated();
+			switch (e.getType()) {
+				case VALIDATE:
+					validated();
+					break;
+				case INVALIDATE:
+					invalidated();
+			}
 			return true;
 		}
 		return false;
@@ -144,6 +150,20 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		getPlayer().setValidated(true);
 		setWarning(false);
 		validatePref.setEnabled(false);
+	}
+	
+	private void invalidated() {
+		if (tvWarning != null) {
+			setWarning(true);
+			tvWarning.setText(R.string.empty_email_warning);
+		}
+		if (emailPref != null) {
+			emailPref.setText("");
+			emailPref.setSummary("");
+		}
+		if (validatePref != null) {
+			validatePref.setEnabled(false);
+		}
 	}
 	
 	private void setWarning(boolean visible) {

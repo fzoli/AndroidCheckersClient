@@ -101,6 +101,12 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                         case VALIDATE:
                             if(po.getPlayer() != null) po.getPlayer().setValidated(true);
                             break;
+                        case INVALIDATE:
+                            if(po.getPlayer() != null) {
+                                po.getPlayer().setEmail("");
+                                po.getPlayer().setValidated(false);
+                            }
+                            break;
                     }
                 }
             }
