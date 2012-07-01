@@ -85,11 +85,11 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 			if (e.isCaptchaValidated()) {
 				if (!e.getPlayer().isValidated()) {
 					tvWarning.setText(R.string.validate_warning);
-					tvWarning.setVisibility(View.VISIBLE);
+					setWarning(true);
 				}
 				if (getEmail().isEmpty()) {
 					tvWarning.setText(R.string.empty_email_warning);
-					tvWarning.setVisibility(View.VISIBLE);
+					setWarning(true);
 				}
 				initScreen(e);
 			}
@@ -140,10 +140,15 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 	}
 	
 	private void validated() {
-		if (tvWarning == null || validatePref == null) return;
+		if (validatePref == null) return;
 		getPlayer().setValidated(true);
-		tvWarning.setVisibility(View.GONE);
+		setWarning(false);
 		validatePref.setEnabled(false);
+	}
+	
+	private void setWarning(boolean visible) {
+		if (tvWarning == null) return;
+		tvWarning.setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 	
 	private void initScreen(PlayerData e) {
@@ -211,7 +216,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 					if (!email.isEmpty()) {
 						if (getModel().isEmailFree(email)) {
 							emailPref.setSummary(email);
-							tvWarning.setVisibility(View.GONE);
+							setWarning(false);
 							validatePref.setEnabled(false);
 							return true;
 						}
@@ -227,7 +232,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 						}
 						else {
 							emailPref.setSummary(email);
-							tvWarning.setVisibility(View.VISIBLE);
+							setWarning(true);
 							return true;
 						}
 					}
@@ -265,6 +270,9 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 									@Override
 									public void onEvent(int e) {
 										switch(getReturn(e)) {
+											case OK:
+												setWarning(false);
+												break;
 											case NO_CHANGE:
 												validated();
 												break;
