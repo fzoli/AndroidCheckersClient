@@ -93,4 +93,5 @@
     <string name="email_not_changed">E-mail was not changed.</string>
     <string name="password_not_changed">Password was not changed.</string>
     <string name="wrong_password">Wrong password, try again!</string>
+    <string name="not_usable">You can not use this option.</string>
 </resources>

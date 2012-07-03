@@ -340,8 +340,22 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 								getModel().suspendAccount(InputValidator.md5Hex(password), true, new ModelActionListener<Integer>() {
 									
 									@Override
-									public void modelActionPerformed(ModelActionEvent<Integer> e) { //TODO
+									public void modelActionPerformed(ModelActionEvent<Integer> e) {
 										setIndicator(false);
+										new IntegerMillModelActivityAdapter(PlayerAccountSettingsActivity.this, e) {
+											
+											@Override
+											public void onEvent(int e) {
+												switch(getReturn(e)) {
+													case NOT_OK:
+														showToast(R.string.wrong_password);
+														break;
+													case NO_CHANGE:
+														showToast(R.string.not_usable);
+												}
+											}
+											
+										};
 									}
 									
 								});
