@@ -7,7 +7,8 @@ package org.dyndns.fzoli.mill.common.permission;
 public enum Permission {
     STATISTICS_HIDE,
     INVISIBLE_STATUS_DETECT,
-    INACTIVE_PLAYER_DETECT,
+    SUSPENDED_PLAYER_DETECT,
+    HIDDEN_PLAYER_DETECT,
     HIDDENABLE,
     CHAT_EVERYONE,
     SYSTEM_MESSAGE,

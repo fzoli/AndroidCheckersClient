@@ -12,8 +12,8 @@ import org.dyndns.fzoli.mill.android.service.MillConnectionBinder.LoginMode;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.BasePlayer;
+import org.dyndns.fzoli.mill.common.model.entity.OnlineStatus;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
-import org.dyndns.fzoli.mill.common.model.entity.PlayerState;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
@@ -193,10 +193,10 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 				public void onClick(DialogInterface dialog, int which) {
 					switch (which) {
 						case 0:
-							setPlayerState(PlayerState.ONLINE);
+							setOnlineStatus(OnlineStatus.ONLINE);
 							break;
 						case 1:
-							setPlayerState(PlayerState.INVISIBLE);
+							setOnlineStatus(OnlineStatus.INVISIBLE);
 					}
 				}
 				
@@ -282,8 +282,8 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		}
 	}
 	
-	private void setPlayerState(final PlayerState ps) {
-		getModel().setPlayerState(ps, new ModelActionListener<Integer>() {
+	private void setOnlineStatus(final OnlineStatus ps) {
+		getModel().setOnlineStatus(ps, new ModelActionListener<Integer>() {
 			
 			@Override
 			public void modelActionPerformed(ModelActionEvent<Integer> e) {
@@ -293,7 +293,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 					public void onEvent(int e) {
 						switch (getReturn(e)) {
 							case OK: //TODO: Status és State ugyan az...
-								pa.setStatus(0, ps.equals(PlayerState.ONLINE) ? Status.ONLINE : Status.INVISIBLE);
+								pa.setStatus(0, ps.equals(OnlineStatus.ONLINE) ? Status.ONLINE : Status.INVISIBLE);
 						}
 					}
 					

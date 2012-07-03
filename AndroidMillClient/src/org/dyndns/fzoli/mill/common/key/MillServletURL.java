@@ -12,4 +12,6 @@ public interface MillServletURL {
     
     String VALIDATOR = "/Validator";
     
+    String LANGUAGE = "/Language";
+    
 }

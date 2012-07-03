@@ -21,6 +21,6 @@ public interface PlayerKeys extends BaseKeys {
     String REQ_SIGN_OUT = "sign_out";
     String REQ_SIGN_IN = "sign_in";
     String REQ_SAFE_SIGN_IN = "safe_sign_in";
-    String REQ_SET_PLAYER_STATE = "set_player_state";
+    String REQ_SET_ONLINE_STATUS = "set_online_status";
     
 }
