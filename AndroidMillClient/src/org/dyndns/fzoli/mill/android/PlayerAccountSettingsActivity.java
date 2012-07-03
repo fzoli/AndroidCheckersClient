@@ -299,6 +299,9 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 												getModel().getCache().setCaptchaValidated(false);
 												startCaptchaActivity(false);
 												break;
+											case NOT_OK:
+												showToast(R.string.wrong_password);
+												break;
 											case NO_CHANGE:
 												validated();
 												break;
