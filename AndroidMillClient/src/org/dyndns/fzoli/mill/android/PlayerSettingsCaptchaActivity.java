@@ -10,6 +10,8 @@ import org.dyndns.fzoli.mvc.client.connection.Connection;
 
 public class PlayerSettingsCaptchaActivity extends AbstractCaptchaActivity<PlayerEvent, PlayerData> {
 	
+	public static final String KEY_FORCE = "force";
+	
 	@Override
 	public PlayerModel createModel(Connection<Object, Object> connection) {
 		return new PlayerModel(connection);
@@ -31,12 +33,21 @@ public class PlayerSettingsCaptchaActivity extends AbstractCaptchaActivity<Playe
 		getContextUtil().openHome();
 	}
 	
+	private boolean isForce() {
+		return getIntent().getBooleanExtra(KEY_FORCE, false);
+	}
+	
 	@Override
 	public void onBackPressed() {
 		Player p = getModel().getCache().getPlayer();
 		if (HomeActivity.isSigningIn(getContextUtil())) { // ha éppen bejelentkezés volt
 			if (p != null) { // ha be van jelentkezve
-				if (p.isValidated()) close(); // és validálva van, akkor kiléphet
+				if (isForce()) { // ha kényszerítve van a captcha megadására
+					if (p.isValidated()) close(); // és validálva van, akkor kiléphet
+				}
+				else { // ha nincs kényszerítve, akkor kiléphet
+					close();
+				}
 			}
 			else { // ha nincs bejelentkezve, kilépés
 				close();

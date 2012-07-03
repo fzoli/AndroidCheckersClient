@@ -99,11 +99,17 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 				initScreen(e);
 			}
 			else {
-				startActivity(new Intent(this, PlayerSettingsCaptchaActivity.class));
+				startCaptchaActivity(true);
 			}
 			return true;
 		}
 		return false;
+	}
+	
+	private void startCaptchaActivity(boolean force) {
+		Intent i = new Intent(this, PlayerSettingsCaptchaActivity.class);
+		i.putExtra(PlayerSettingsCaptchaActivity.KEY_FORCE, force);
+		startActivity(i);
 	}
 	
 	@Override
@@ -290,7 +296,8 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 									public void onEvent(int e) {
 										switch(getReturn(e)) {
 											case OK:
-												setWarning(false);
+												getModel().getCache().setCaptchaValidated(false);
+												startCaptchaActivity(false);
 												break;
 											case NO_CHANGE:
 												validated();
@@ -377,7 +384,8 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 							case OK:
 								getPlayer().setEmail(email);
 								getPlayer().setValidated(false);
-								finish();
+								getModel().getCache().setCaptchaValidated(false);
+								startCaptchaActivity(false);
 								break;
 							case EMAIL_NOT_FREE:
 								showToast(R.string.email_not_free);
