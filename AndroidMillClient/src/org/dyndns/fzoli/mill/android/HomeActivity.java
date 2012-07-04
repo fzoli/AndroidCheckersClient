@@ -161,16 +161,48 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		return (PlayerModel) super.getModel();
 	}
 	
+	private void updateAdapter(String playerName) {
+		if (adapter.findPlayerInfo(playerName) == null) {
+			PlayerData data = getModel().loadPlayer(playerName);
+			BasePlayer p = data.getAskedPlayer();
+			int group;
+			PlayerInfo.Status status;
+			switch (data.getAskedPlayerList()) {
+				case BLOCKED_PLAYERS:
+					group = R.string.blocked_users;
+					status = Status.BLOCKED;
+					break;
+				case POSSIBLE_FRIENDS:
+					group = R.string.possible_friends;
+					status = Status.INVISIBLE;
+					break;
+				case WISHED_FRIENDS:
+					group = R.string.wished_friends;
+					status = Status.INVISIBLE;
+				default:
+					group = R.string.friends;
+					status = Status.ONLINE;
+			}
+			addPlayer(p, status, group, true);
+		}
+	}
+	
+	private void addPlayer(BasePlayer p, PlayerInfo.Status status, int group, boolean update) {
+		if (update) {
+			adapter.setItem(new PlayerInfo(status, p.getPlayerName(), p.getName(), getString(group), null));
+		}
+		else {
+			adapter.addItem(new PlayerInfo(status, p.getPlayerName(), p.getName(), getString(group), null));
+		}
+	}
+	
 	@Override
 	public boolean processModelChange(PlayerEvent e) {
 		if (super.processModelChange(e)) {
 			if (e.getType() != null) {
 				switch(e.getType()) {
 					case SIGNIN:
-						if (adapter.findPlayerInfo(e.getChangedPlayer()) == null) {
-							BasePlayer p = getModel().loadPlayer(e.getChangedPlayer());
-							adapter.setItem(new PlayerInfo(PlayerInfo.Status.ONLINE, p.getPlayerName(), p.getName(), getString(R.string.friends), null));
-						}
+						updateAdapter(e.getChangedPlayer());
 						adapter.setStatus(e.getChangedPlayer(), PlayerInfo.Status.ONLINE);
 						break;
 					case SIGNOUT:
@@ -178,6 +210,9 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 						break;
 					case SUSPEND:
 						adapter.removeItem(adapter.findPlayerInfo(e.getChangedPlayer()));
+						break;
+					case UNSUSPEND:
+						updateAdapter(e.getChangedPlayer());
 						break;
 				}
 			}
@@ -220,18 +255,18 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			});
 			//felhasználólista inicializálása
 			adapter = new PlayerGroupAdapter(this);
-			final String friends = getString(R.string.friends);
-			final String wishedFriends = getString(R.string.wished_friends);
-			final String blockedUsers = getString(R.string.blocked_users);
 			Player p = getModel().getCache().getPlayer();
 			for (BasePlayer bp : p.getFriendList()) {
-				adapter.addItem(new PlayerInfo(bp.isOnline() ? Status.ONLINE : Status.OFFLINE, bp.getPlayerName(), bp.getName(), friends, null));
+				addPlayer(bp, bp.isOnline() ? Status.ONLINE : Status.OFFLINE, R.string.friends, false);
 			}
 			for (BasePlayer bp : p.getFriendWishList()) {
-				adapter.addItem(new PlayerInfo(Status.INVISIBLE, bp.getPlayerName(), bp.getName(), wishedFriends, null));
+				addPlayer(bp, Status.INVISIBLE, R.string.wished_friends, false);
+			}
+			for (BasePlayer bp : p.getPossibleFriends()) {
+				addPlayer(bp, Status.INVISIBLE, R.string.possible_friends, false);
 			}
 			for (BasePlayer bp : p.getBlockedUserList()) {
-				adapter.addItem(new PlayerInfo(Status.BLOCKED, bp.getPlayerName(), bp.getName(), blockedUsers, null));
+				addPlayer(bp, Status.BLOCKED, R.string.blocked_users, false);
 			}
 			setListAdapter(adapter);
 			

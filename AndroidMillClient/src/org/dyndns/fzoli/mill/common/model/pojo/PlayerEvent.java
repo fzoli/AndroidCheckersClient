@@ -14,7 +14,8 @@ public class PlayerEvent extends BaseOnlinePojo {
         SIGNOUT,
         VALIDATE,
         INVALIDATE,
-        SUSPEND
+        SUSPEND,
+        UNSUSPEND
     }
     
     private PlayerEventType type;

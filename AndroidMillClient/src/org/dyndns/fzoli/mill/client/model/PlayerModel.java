@@ -21,10 +21,10 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
         super(connection, ModelKeys.PLAYER, PlayerEvent.class, PlayerData.class);
     }
 
-    public BasePlayer loadPlayer(String playerName) {
+    public PlayerData loadPlayer(String playerName) {
         RequestMap m = new RequestMap();
         m.setFirst(KEY_USER, playerName);
-        return getProperties(m).getAskedPlayer();
+        return getProperties(m);
     }
     
     public int signIn(String user, String password, boolean hash) {
@@ -87,6 +87,19 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
         setProperty(m, callback);
     }
     
+    private List<BasePlayer> findPlayerList(PlayerData.PlayerList type) {
+        switch (type) {
+            case BLOCKED_PLAYERS:
+                return getCache().getPlayer().getBlockedUserList();
+            case WISHED_FRIENDS:
+                return getCache().getPlayer().getFriendWishList();
+            case POSSIBLE_FRIENDS:
+                return getCache().getPlayer().getPossibleFriends();
+            default:
+                return getCache().getPlayer().getFriendList();
+        }
+    }
+    
     @Override
     protected void updateCache(List<PlayerEvent> list, PlayerData po) {
         try {
@@ -98,23 +111,33 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                     switch (e.getType()) {
                         case SIGNIN:
                             p = findPlayer(l, e.getChangedPlayer());
-                            if (p != null) p.setOnline(true);
+                            if (p != null) {
+                                p.setOnline(true);
+                            }
+                            else {
+                                PlayerData data = loadPlayer(e.getChangedPlayer());
+                                findPlayerList(data.getAskedPlayerList()).add(data.getAskedPlayer());
+                            }
                             break;
                         case SIGNOUT:
                             p = findPlayer(l, e.getChangedPlayer());
                             if (p != null) p.setOnline(false);
                             break;
                         case VALIDATE:
-                            if(po.getPlayer() != null) po.getPlayer().setValidated(true);
+                            po.getPlayer().setValidated(true);
                             break;
                         case INVALIDATE:
-                            if(po.getPlayer() != null) {
-                                po.getPlayer().setEmail("");
-                                po.getPlayer().setValidated(false);
-                            }
+                            po.getPlayer().setEmail("");
+                            po.getPlayer().setValidated(false);
                             break;
                         case SUSPEND:
-                            //TODO
+                            p = findPlayer(l, e.getChangedPlayer());
+                            if (p != null) {
+                                po.getPlayer().getFriendList().remove(p);
+                                po.getPlayer().getFriendWishList().remove(p);
+                                po.getPlayer().getBlockedUserList().remove(p);
+                                po.getPlayer().getPossibleFriends().remove(p);
+                            }
                             break;
                     }
                 }

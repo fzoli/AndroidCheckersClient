@@ -73,6 +73,7 @@
     <string name="server_kick">Ki lett jelentkeztetve</string>
     <string name="friends">Ismerősök</string>
     <string name="wished_friends">Ismerősnek jelöltek</string>
+    <string name="possible_friends">Lehetséges barátok</string>
     <string name="blocked_users">Tiltott felhasználók</string>
     <string name="empty_list">Üres lista.</string>
     <string name="state_change">Állapotváltás</string>

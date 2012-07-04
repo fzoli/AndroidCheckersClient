@@ -14,10 +14,19 @@ public class PlayerData extends BaseOnlinePojo implements BaseCaptchaPojo {
     private boolean captchaValidated;
     
     private BasePlayer askedPlayer;
+    private PlayerList askedPlayerList;
     
-    public PlayerData(BasePlayer askedPlayer) {
+    public static enum PlayerList {
+        FRIENDS,
+        WISHED_FRIENDS,
+        POSSIBLE_FRIENDS,
+        BLOCKED_PLAYERS
+    }
+    
+    public PlayerData(BasePlayer askedPlayer, PlayerList askedPlayerList) {
         super("");
         this.askedPlayer = askedPlayer;
+        this.askedPlayerList = askedPlayerList;
     }
     
     public PlayerData(Player player, boolean captchaValidated, int captchaWidth) {
@@ -29,6 +38,10 @@ public class PlayerData extends BaseOnlinePojo implements BaseCaptchaPojo {
     
     public BasePlayer getAskedPlayer() {
         return askedPlayer;
+    }
+
+    public PlayerList getAskedPlayerList() {
+        return askedPlayerList;
     }
     
     public Player getPlayer() {

@@ -73,6 +73,7 @@
     <string name="server_kick">You have been kicked</string>
     <string name="friends">Friends</string>
     <string name="wished_friends">Wished friends</string>
+    <string name="possible_friends">Possible friends</string>
     <string name="blocked_users">Blocked users</string>
     <string name="empty_list">Empty list.</string>
     <string name="state_change">State change</string>
