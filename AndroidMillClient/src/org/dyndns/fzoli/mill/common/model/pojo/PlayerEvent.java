@@ -25,15 +25,19 @@ public class PlayerEvent extends BaseOnlinePojo {
         type = PlayerEventType.COMMON;
     }
 
-    public PlayerEvent(Player player, PlayerEventType t) {
+    public PlayerEvent(Player player, PlayerEventType type) {
         super(player);
-        type = t;
+        this.type = type;
+    }
+    
+    public PlayerEvent(Player player, String changedPlayer, PlayerEventType type) {
+        super(player);
+        this.changedPlayer = changedPlayer;
+        this.type = type;
     }
     
     public PlayerEvent(Player player, String changedPlayer, boolean signIn) {
-        super(player);
-        this.changedPlayer = changedPlayer;
-        type = signIn ? PlayerEventType.SIGNIN : PlayerEventType.SIGNOUT;
+        this(player, changedPlayer, signIn ? PlayerEventType.SIGNIN : PlayerEventType.SIGNOUT);
     }
 
     public PlayerEventType getType() {

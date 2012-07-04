@@ -168,7 +168,8 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 				switch(e.getType()) {
 					case SIGNIN:
 						if (adapter.findPlayerInfo(e.getChangedPlayer()) == null) {
-							//TODO: adat lekérése
+							BasePlayer p = getModel().loadPlayer(e.getChangedPlayer());
+							adapter.setItem(new PlayerInfo(PlayerInfo.Status.ONLINE, p.getPlayerName(), p.getName(), getString(R.string.friends), null));
 						}
 						adapter.setStatus(e.getChangedPlayer(), PlayerInfo.Status.ONLINE);
 						break;
@@ -176,7 +177,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 						adapter.setStatus(e.getChangedPlayer(), PlayerInfo.Status.OFFLINE);
 						break;
 					case SUSPEND:
-						//TODO: törölni a listából
+						adapter.removeItem(adapter.findPlayerInfo(e.getChangedPlayer()));
 						break;
 				}
 			}

@@ -48,6 +48,16 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 		notifyDataSetChanged();
 	}
 	
+	public void removeItem(PlayerInfo pi) {
+		if (pi == null) return;
+		for (List<PlayerInfo> ls : CHILDRENS) {
+			for (PlayerInfo p : ls) {
+				if (pi.equals(p)) ls.remove(p);
+			}
+		}
+		notifyDataSetChanged();
+	}
+	
 	private void chkGroup(String s) {
 		if (!GROUPS.contains(s)) {
             GROUPS.add(s);

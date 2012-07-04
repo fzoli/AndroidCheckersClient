@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.mill.common.model.pojo;
 
+import org.dyndns.fzoli.mill.common.model.entity.BasePlayer;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 
 /**
@@ -12,13 +13,24 @@ public class PlayerData extends BaseOnlinePojo implements BaseCaptchaPojo {
     private int captchaWidth;
     private boolean captchaValidated;
     
+    private BasePlayer askedPlayer;
+    
+    public PlayerData(BasePlayer askedPlayer) {
+        super("");
+        this.askedPlayer = askedPlayer;
+    }
+    
     public PlayerData(Player player, boolean captchaValidated, int captchaWidth) {
         super(player);
         this.player = player;
         this.captchaWidth = captchaWidth;
         this.captchaValidated = captchaValidated;
     }
-
+    
+    public BasePlayer getAskedPlayer() {
+        return askedPlayer;
+    }
+    
     public Player getPlayer() {
         return player;
     }
