@@ -12,6 +12,7 @@ import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
+import org.dyndns.fzoli.mill.common.permission.Permissions;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
@@ -324,6 +325,7 @@ public class PlayerAccountSettingsActivity extends AbstractMillOnlineBundlePrefe
 		userActions.addPreference(validatePref);
 		final Preference suspendPref = new Preference(this);
 		suspendPref.setTitle(R.string.account_suspend);
+		suspendPref.setEnabled(getPlayer().getPermissionMask(false) != Permissions.ROOT);
 		suspendPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			
 			@Override
