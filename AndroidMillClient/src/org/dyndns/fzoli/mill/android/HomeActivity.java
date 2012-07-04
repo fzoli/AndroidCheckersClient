@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.mill.android;
 
+import java.util.Map;
+
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineExpandableListActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityUtil;
@@ -38,6 +40,23 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	private PlayerAdapter pa;
 	private PlayerGroupAdapter adapter;
 	
+	private static final String KEY_IS_SIGNING_IN = "is_signing_in";
+	private static final String KEY_LAST_HOME_LIST_INDEX = "last_home_list_index";
+	
+	@Override
+	public void onPause() {
+		if (getConnectionBinder() != null && adapter != null) {
+			Integer index = adapter.getLastExpandedGroupPosition();
+			if (index != null) {
+				getConnectionBinder().getVars().put(KEY_LAST_HOME_LIST_INDEX, index.toString());
+			}
+			else {
+				getConnectionBinder().getVars().remove(KEY_LAST_HOME_LIST_INDEX);
+			}
+		}
+		super.onPause();
+	}
+	
 	@Override
 	public boolean onConnectionBinded() {
 		// ha egy előző ablakban már megjelent a kapcsolódás hiba ablak és kilépésre mentek,
@@ -50,8 +69,6 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		}
 		return super.onConnectionBinded();
 	}
-	
-	private static String KEY_IS_SIGNING_IN = "is_signing_in";
 	
 	@SuppressWarnings("unchecked")
 	public static boolean isSigningIn(MillModelActivityUtil util) {
@@ -127,6 +144,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	@Override
 	public void onBackPressed() {
 		if (getConnectionBinder() != null && getConnectionBinder().getLoginMode() == LoginMode.SIGNED_IN) {
+			getConnectionBinder().getVars().remove(KEY_LAST_HOME_LIST_INDEX);
 			getConnectionBinder().setLoginMode(LoginMode.SIGNING_OUT);
 			setProgressDialog(true);
 			rebindConnectionService();
@@ -234,7 +252,15 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	}
 	
 	private void initAdapter() {
-		adapter = new PlayerGroupAdapter(this);
+		Integer index = null;
+		if (adapter != null) index = adapter.getLastExpandedGroupPosition();
+		if (index == null) {
+			Map<String, String> vars = getConnectionBinder().getVars();
+			String indexString = vars.get(KEY_LAST_HOME_LIST_INDEX);
+			index = (indexString != null) ? Integer.parseInt(indexString) : null;
+		}
+		adapter = new PlayerGroupAdapter(this, getExpandableListView());
+		if (index != null) adapter.setLastExpandedGroupPosition(index);
 		Player p = getModel().getCache().getPlayer();
 		for (BasePlayer bp : p.getFriendList()) {
 			addPlayer(bp, bp.isOnline() ? Status.ONLINE : Status.OFFLINE, R.string.friends, false);
@@ -249,6 +275,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			addPlayer(bp, Status.BLOCKED, R.string.blocked_users, false);
 		}
 		setListAdapter(adapter);
+		if (index != null) getExpandableListView().expandGroup(index);
 		if (adapter.isEmpty()) {
 			TextView tvEmpty = (TextView) findViewById(R.id.tvEmpty);
 			tvEmpty.setVisibility(View.VISIBLE);

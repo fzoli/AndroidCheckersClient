@@ -10,18 +10,49 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 
 	private final Context CONTEXT;
+	private final ExpandableListView VIEW;
 	private final List<String> GROUPS = new ArrayList<String>();
 	private final List<List<PlayerInfo>> CHILDRENS = new ArrayList<List<PlayerInfo>>();
 	
-	public PlayerGroupAdapter(Context context) {
+	private Integer lastExpandedGroupPosition;
+	
+	public PlayerGroupAdapter(Context context, ExpandableListView view) {
 		this.CONTEXT = context;
+		this.VIEW = view;
 	}
+	
+	public Integer getLastExpandedGroupPosition() {
+		return lastExpandedGroupPosition;
+	}
+	
+	public void setLastExpandedGroupPosition(Integer lastExpandedGroupPosition) {
+		this.lastExpandedGroupPosition = lastExpandedGroupPosition;
+	}
+	
+	@Override
+	public void onGroupCollapsed(int groupPosition) {
+		if (lastExpandedGroupPosition != null && lastExpandedGroupPosition.equals(groupPosition)) lastExpandedGroupPosition = null;
+		super.onGroupCollapsed(groupPosition);
+	}
+	
+    @Override
+    public void onGroupExpanded(int groupPosition) {
+        super.onGroupExpanded(groupPosition);
+        try {
+        	if (!lastExpandedGroupPosition.equals(groupPosition)) VIEW.collapseGroup(lastExpandedGroupPosition);
+        }
+        catch (NullPointerException ex) {
+        	;
+        }
+        lastExpandedGroupPosition = groupPosition;
+    }
 	
 	public void addItem(PlayerInfo p) {
         chkGroup(p.getGroup());
