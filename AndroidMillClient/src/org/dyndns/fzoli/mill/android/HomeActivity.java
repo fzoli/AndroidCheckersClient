@@ -161,32 +161,6 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		return (PlayerModel) super.getModel();
 	}
 	
-//	private void updateAdapter(String playerName) {
-//		if (adapter.findPlayerInfo(playerName) == null) {
-//			PlayerData data = getModel().loadPlayer(playerName);
-//			BasePlayer p = data.getAskedPlayer();
-//			int group;
-//			PlayerInfo.Status status;
-//			switch (data.getAskedPlayerList()) {
-//				case BLOCKED_PLAYERS:
-//					group = R.string.blocked_users;
-//					status = Status.BLOCKED;
-//					break;
-//				case POSSIBLE_FRIENDS:
-//					group = R.string.possible_friends;
-//					status = Status.INVISIBLE;
-//					break;
-//				case WISHED_FRIENDS:
-//					group = R.string.wished_friends;
-//					status = Status.INVISIBLE;
-//				default:
-//					group = R.string.friends;
-//					status = Status.ONLINE;
-//			}
-//			addPlayer(p, status, group, true);
-//		}
-//	}
-	
 	private void addPlayer(BasePlayer p, PlayerInfo.Status status, int group, boolean update) {
 		if (update) {
 			adapter.setItem(new PlayerInfo(status, p.getPlayerName(), p.getName(), getString(group), null));
@@ -202,14 +176,13 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			if (e.getType() != null) {
 				switch(e.getType()) {
 					case SIGNIN:
-//						updateAdapter(e.getChangedPlayer());
 						adapter.setStatus(e.getChangedPlayer(), PlayerInfo.Status.ONLINE);
 						break;
 					case SIGNOUT:
 						adapter.setStatus(e.getChangedPlayer(), PlayerInfo.Status.OFFLINE);
 						break;
 					case SUSPEND:
-						adapter.removeItem(adapter.findPlayerInfo(e.getChangedPlayer()));
+						adapter.removeItem(e.getChangedPlayer());
 						break;
 					case UNSUSPEND:
 						initAdapter();
