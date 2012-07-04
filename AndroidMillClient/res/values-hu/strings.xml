@@ -95,4 +95,5 @@
     <string name="password_not_changed">Jelszava nem változott.</string>
     <string name="wrong_password">Hibás jelszó, próbálja újra!</string>
     <string name="not_usable">Ezt az opciót nem használhatja.</string>
+    <string name="avatar">Avatar</string>
 </resources>
