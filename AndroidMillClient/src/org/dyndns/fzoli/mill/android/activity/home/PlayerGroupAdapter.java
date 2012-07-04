@@ -38,7 +38,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 	
 	@Override
 	public void onGroupCollapsed(int groupPosition) {
-		if (lastExpandedGroupPosition != null && lastExpandedGroupPosition.equals(groupPosition)) lastExpandedGroupPosition = null;
+		if (lastExpandedGroupPosition != null && lastExpandedGroupPosition.intValue() == groupPosition) lastExpandedGroupPosition = null;
 		super.onGroupCollapsed(groupPosition);
 	}
 	
@@ -46,7 +46,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
     public void onGroupExpanded(int groupPosition) {
         super.onGroupExpanded(groupPosition);
         try {
-        	if (!lastExpandedGroupPosition.equals(groupPosition)) VIEW.collapseGroup(lastExpandedGroupPosition);
+        	if (lastExpandedGroupPosition.intValue() != groupPosition) VIEW.collapseGroup(lastExpandedGroupPosition);
         }
         catch (NullPointerException ex) {
         	;
