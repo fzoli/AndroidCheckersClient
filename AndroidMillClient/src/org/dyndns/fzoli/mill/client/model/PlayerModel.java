@@ -1,7 +1,5 @@
 package org.dyndns.fzoli.mill.client.model;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import org.dyndns.fzoli.mill.common.key.ModelKeys;
 import org.dyndns.fzoli.mill.common.key.PlayerKeys;
