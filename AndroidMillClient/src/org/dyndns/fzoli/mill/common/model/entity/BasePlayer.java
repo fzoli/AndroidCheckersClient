@@ -15,13 +15,15 @@ public class BasePlayer {
     private String playerName;
     private Date signUpDate, signInDate;
     private PersonalData personalData;
+    private PlayerStatus playerStatus;
 
-    public BasePlayer(String playerName, Date signUpDate, Date signInDate, PersonalData personalData, boolean online) {
+    public BasePlayer(String playerName, Date signUpDate, Date signInDate, PersonalData personalData, PlayerStatus playerStatus, boolean online) {
         this.online = online;
         this.playerName = playerName;
         this.signUpDate = signUpDate;
         this.signInDate = signInDate;
         this.personalData = personalData;
+        this.playerStatus = playerStatus;
     }
 
     public String getName() {
@@ -32,6 +34,10 @@ public class BasePlayer {
     
     public boolean isOnline() {
         return online;
+    }
+
+    public PlayerStatus getPlayerStatus() {
+        return playerStatus;
     }
 
     public String getPlayerName() {
