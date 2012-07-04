@@ -161,31 +161,31 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		return (PlayerModel) super.getModel();
 	}
 	
-	private void updateAdapter(String playerName) {
-		if (adapter.findPlayerInfo(playerName) == null) {
-			PlayerData data = getModel().loadPlayer(playerName);
-			BasePlayer p = data.getAskedPlayer();
-			int group;
-			PlayerInfo.Status status;
-			switch (data.getAskedPlayerList()) {
-				case BLOCKED_PLAYERS:
-					group = R.string.blocked_users;
-					status = Status.BLOCKED;
-					break;
-				case POSSIBLE_FRIENDS:
-					group = R.string.possible_friends;
-					status = Status.INVISIBLE;
-					break;
-				case WISHED_FRIENDS:
-					group = R.string.wished_friends;
-					status = Status.INVISIBLE;
-				default:
-					group = R.string.friends;
-					status = Status.ONLINE;
-			}
-			addPlayer(p, status, group, true);
-		}
-	}
+//	private void updateAdapter(String playerName) {
+//		if (adapter.findPlayerInfo(playerName) == null) {
+//			PlayerData data = getModel().loadPlayer(playerName);
+//			BasePlayer p = data.getAskedPlayer();
+//			int group;
+//			PlayerInfo.Status status;
+//			switch (data.getAskedPlayerList()) {
+//				case BLOCKED_PLAYERS:
+//					group = R.string.blocked_users;
+//					status = Status.BLOCKED;
+//					break;
+//				case POSSIBLE_FRIENDS:
+//					group = R.string.possible_friends;
+//					status = Status.INVISIBLE;
+//					break;
+//				case WISHED_FRIENDS:
+//					group = R.string.wished_friends;
+//					status = Status.INVISIBLE;
+//				default:
+//					group = R.string.friends;
+//					status = Status.ONLINE;
+//			}
+//			addPlayer(p, status, group, true);
+//		}
+//	}
 	
 	private void addPlayer(BasePlayer p, PlayerInfo.Status status, int group, boolean update) {
 		if (update) {
@@ -202,7 +202,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			if (e.getType() != null) {
 				switch(e.getType()) {
 					case SIGNIN:
-						updateAdapter(e.getChangedPlayer());
+//						updateAdapter(e.getChangedPlayer());
 						adapter.setStatus(e.getChangedPlayer(), PlayerInfo.Status.ONLINE);
 						break;
 					case SIGNOUT:
@@ -212,7 +212,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 						adapter.removeItem(adapter.findPlayerInfo(e.getChangedPlayer()));
 						break;
 					case UNSUSPEND:
-						updateAdapter(e.getChangedPlayer());
+						initAdapter();
 						break;
 				}
 			}
@@ -253,30 +253,33 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 				}
 				
 			});
-			//felhasználólista inicializálása
-			adapter = new PlayerGroupAdapter(this);
-			Player p = getModel().getCache().getPlayer();
-			for (BasePlayer bp : p.getFriendList()) {
-				addPlayer(bp, bp.isOnline() ? Status.ONLINE : Status.OFFLINE, R.string.friends, false);
-			}
-			for (BasePlayer bp : p.getFriendWishList()) {
-				addPlayer(bp, Status.INVISIBLE, R.string.wished_friends, false);
-			}
-			for (BasePlayer bp : p.getPossibleFriends()) {
-				addPlayer(bp, Status.INVISIBLE, R.string.possible_friends, false);
-			}
-			for (BasePlayer bp : p.getBlockedUserList()) {
-				addPlayer(bp, Status.BLOCKED, R.string.blocked_users, false);
-			}
-			setListAdapter(adapter);
 			
-			if (adapter.isEmpty()) {
-				TextView tvEmpty = (TextView) findViewById(R.id.tvEmpty);
-				tvEmpty.setVisibility(View.VISIBLE);
-			}
+			initAdapter();
 			
 		}
 		return true;
+	}
+	
+	private void initAdapter() {
+		adapter = new PlayerGroupAdapter(this);
+		Player p = getModel().getCache().getPlayer();
+		for (BasePlayer bp : p.getFriendList()) {
+			addPlayer(bp, bp.isOnline() ? Status.ONLINE : Status.OFFLINE, R.string.friends, false);
+		}
+		for (BasePlayer bp : p.getFriendWishList()) {
+			addPlayer(bp, Status.INVISIBLE, R.string.wished_friends, false);
+		}
+		for (BasePlayer bp : p.getPossibleFriends()) {
+			addPlayer(bp, Status.INVISIBLE, R.string.possible_friends, false);
+		}
+		for (BasePlayer bp : p.getBlockedUserList()) {
+			addPlayer(bp, Status.BLOCKED, R.string.blocked_users, false);
+		}
+		setListAdapter(adapter);
+		if (adapter.isEmpty()) {
+			TextView tvEmpty = (TextView) findViewById(R.id.tvEmpty);
+			tvEmpty.setVisibility(View.VISIBLE);
+		}
 	}
 	
 	private boolean signIn(ModelActionEvent<PlayerData> e) {

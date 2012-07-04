@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.mill.client.model;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.dyndns.fzoli.mill.common.key.ModelKeys;
 import org.dyndns.fzoli.mill.common.key.PlayerKeys;
@@ -116,7 +118,9 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                             }
                             else {
                                 PlayerData data = loadPlayer(e.getChangedPlayer());
-                                findPlayerList(data.getAskedPlayerList()).add(data.getAskedPlayer());
+                                List<BasePlayer> ls = findPlayerList(data.getAskedPlayerList());
+                                ls.add(data.getAskedPlayer());
+                                BasePlayer.orderList(ls);
                             }
                             break;
                         case SIGNOUT:
