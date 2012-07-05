@@ -13,8 +13,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,10 +37,50 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 		btGallery = (Button) findViewById(R.id.btGallery);
 		ivAvatar = (ImageView) findViewById(R.id.ivAvatar);
 		
-		Display d = getWindowManager().getDefaultDisplay();
-		int size = Math.min(d.getWidth(), d.getHeight());
-		ivAvatar.setMinimumWidth(size); //TODO: a méretet beállítani rendesen
+
+		DisplayMetrics dm = getResources().getDisplayMetrics();
+		
+		int size = Math.min(dm.widthPixels, dm.heightPixels) - ((int) dm.density * 10);
+		
+		ivAvatar.setMaxWidth(size);
+		ivAvatar.setMaxHeight(size);
+		ivAvatar.setMinimumWidth(size);
 		ivAvatar.setMinimumHeight(size);
+		
+//		RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(size, size);
+//		svAvatar.setLayoutParams(rl);
+		
+		final ImageView switcherView = ivAvatar;
+	    switcherView.setOnTouchListener(new View.OnTouchListener() {
+
+	        public boolean onTouch(View arg0, MotionEvent event) {
+
+	        	float mx = 0,my = 0;
+	            float curX, curY;
+
+	            switch (event.getAction()) {
+
+	                case MotionEvent.ACTION_DOWN:
+	                    mx = event.getX();
+	                    my = event.getY();
+	                    break;
+	                case MotionEvent.ACTION_MOVE:
+	                    curX = event.getX();
+	                    curY = event.getY();
+	                    switcherView.scrollBy((int) (mx - curX), (int) (my - curY));
+	                    mx = curX;
+	                    my = curY;
+	                    break;
+	                case MotionEvent.ACTION_UP:
+	                    curX = event.getX();
+	                    curY = event.getY();
+	                    switcherView.scrollBy((int) (mx - curX), (int) (my - curY));
+	                    break;
+	            }
+
+	            return true;
+	        }
+	    });
 		
 		((Button)findViewById(R.id.btCancel)).setOnClickListener(new View.OnClickListener() {
 			
@@ -74,6 +116,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 				try {
 					Bitmap bitmap = decodeUri(data.getData());
 					Log.i("test", "img: "+bitmap.getHeight()+";"+bitmap.getWidth());
+					ivAvatar.setImageBitmap(bitmap);
 				} catch (Exception e) {
 					Log.i("test","ex",e);
 				}
