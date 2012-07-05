@@ -10,4 +10,6 @@ public interface ModelKeys {
     
     String PLAYER_BUILDER = "player_builder";
     
+    String PLAYER_AVATAR = "player_avatar";
+    
 }
