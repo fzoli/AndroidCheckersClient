@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlinePojo, PlayerAvatarData> {
 	
@@ -27,6 +28,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 	
 	private Button btGallery;
 	private ImageView ivAvatar;
+	private RelativeLayout rlAvatar;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -36,48 +38,40 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 		
 		btGallery = (Button) findViewById(R.id.btGallery);
 		ivAvatar = (ImageView) findViewById(R.id.ivAvatar);
+		rlAvatar = (RelativeLayout) findViewById(R.id.rlAvatar);
 		
-
 		DisplayMetrics dm = getResources().getDisplayMetrics();
+		int size = Math.min(dm.widthPixels, dm.heightPixels);
 		
-		int size = Math.min(dm.widthPixels, dm.heightPixels) - ((int) dm.density * 10);
+		rlAvatar.getLayoutParams().height = size;
+		rlAvatar.getLayoutParams().width = size;
 		
-		ivAvatar.setMaxWidth(size);
-		ivAvatar.setMaxHeight(size);
-		ivAvatar.setMinimumWidth(size);
-		ivAvatar.setMinimumHeight(size);
-		
-//		RelativeLayout.LayoutParams rl = new RelativeLayout.LayoutParams(size, size);
-//		svAvatar.setLayoutParams(rl);
-		
-		final ImageView switcherView = ivAvatar;
-	    switcherView.setOnTouchListener(new View.OnTouchListener() {
-
+		ivAvatar.setOnTouchListener(new View.OnTouchListener() {
+	    	
+	    	float mX = 0,mY = 0;
+	    	
 	        public boolean onTouch(View arg0, MotionEvent event) {
 
-	        	float mx = 0,my = 0;
 	            float curX, curY;
 
 	            switch (event.getAction()) {
-
 	                case MotionEvent.ACTION_DOWN:
-	                    mx = event.getX();
-	                    my = event.getY();
+	                    mX = event.getX();
+	                    mY = event.getY();
 	                    break;
 	                case MotionEvent.ACTION_MOVE:
 	                    curX = event.getX();
 	                    curY = event.getY();
-	                    switcherView.scrollBy((int) (mx - curX), (int) (my - curY));
-	                    mx = curX;
-	                    my = curY;
+	                    ivAvatar.scrollBy((int) (mX - curX), (int) (mY - curY));
+	                    mX = curX;
+	                    mY = curY;
 	                    break;
 	                case MotionEvent.ACTION_UP:
 	                    curX = event.getX();
 	                    curY = event.getY();
-	                    switcherView.scrollBy((int) (mx - curX), (int) (my - curY));
+	                    ivAvatar.scrollBy((int) (mX - curX), (int) (mY - curY));
 	                    break;
 	            }
-
 	            return true;
 	        }
 	    });
