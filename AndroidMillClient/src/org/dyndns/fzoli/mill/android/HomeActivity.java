@@ -274,7 +274,12 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			addPlayer(bp, Status.BLOCKED, R.string.blocked_users, false);
 		}
 		setListAdapter(adapter);
-		if (index != null) getExpandableListView().expandGroup(index);
+		try {
+			getExpandableListView().expandGroup(index);
+		}
+		catch (Exception ex) {
+			;
+		}
 		if (adapter.isEmpty()) {
 			TextView tvEmpty = (TextView) findViewById(R.id.tvEmpty);
 			tvEmpty.setVisibility(View.VISIBLE);
