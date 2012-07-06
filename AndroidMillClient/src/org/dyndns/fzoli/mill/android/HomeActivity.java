@@ -144,7 +144,6 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	@Override
 	public void onBackPressed() {
 		if (getConnectionBinder() != null && getConnectionBinder().getLoginMode() == LoginMode.SIGNED_IN) {
-			getConnectionBinder().getVars().remove(KEY_LAST_HOME_LIST_INDEX);
 			getConnectionBinder().setLoginMode(LoginMode.SIGNING_OUT);
 			setProgressDialog(true);
 			rebindConnectionService();
@@ -284,6 +283,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	
 	private boolean signIn(ModelActionEvent<PlayerData> e) {
 		try {
+			getConnectionBinder().getVars().remove(HomeActivity.KEY_LAST_HOME_LIST_INDEX);
 			setProgressMessage(R.string.signing_in);
 			UserInfo ui = getConnectionBinder().getUserInfo();
 			PlayerReturn ret = getReturn(getModel().signIn(ui.getUser(), ui.getPasswordHash(), true));
