@@ -8,22 +8,18 @@
 		android:layout_height="wrap_content"
 		android:layout_width="fill_parent">
 		<ImageView android:id="@+id/ivAvatar"
+			android:scaleType="matrix"
 			android:layout_centerVertical="true"
 			android:layout_centerHorizontal="true"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent"
 			android:src="@drawable/icon" />
-	    <ZoomControls android:id="@+id/zcAvatar"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_alignParentRight="true"
-			android:layout_alignParentBottom="true"
-			android:layout_marginRight="8dp" />
 		<Button android:id="@+id/btGallery"
 			android:text="@string/replace"
+			android:layout_marginRight="3dp"
 			android:layout_height="wrap_content"
 			android:layout_width="wrap_content"
-			android:layout_alignParentLeft="true"
+			android:layout_alignParentRight="true"
 			android:layout_alignParentBottom="true" />
 	</RelativeLayout>
     <RelativeLayout android:layout_marginLeft="10dp"

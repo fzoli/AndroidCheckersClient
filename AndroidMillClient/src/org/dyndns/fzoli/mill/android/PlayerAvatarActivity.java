@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +29,10 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 	private ImageView ivAvatar;
 	private RelativeLayout rlAvatar;
 	
+	private float mX = 0, mY = 0;
+	private Bitmap bmAvatar;
+	private int size = 0;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,39 +44,19 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 		rlAvatar = (RelativeLayout) findViewById(R.id.rlAvatar);
 		
 		DisplayMetrics dm = getResources().getDisplayMetrics();
-		int size = Math.min(dm.widthPixels, dm.heightPixels);
-		
+		size = Math.min(dm.widthPixels, dm.heightPixels);
+		Log.i("test", "rectangle size: "+size);
 		rlAvatar.getLayoutParams().height = size;
 		rlAvatar.getLayoutParams().width = size;
 		
 		ivAvatar.setOnTouchListener(new View.OnTouchListener() {
 	    	
-	    	float mX = 0,mY = 0;
-	    	
-	        public boolean onTouch(View arg0, MotionEvent event) {
-
-	            float curX, curY;
-
-	            switch (event.getAction()) {
-	                case MotionEvent.ACTION_DOWN:
-	                    mX = event.getX();
-	                    mY = event.getY();
-	                    break;
-	                case MotionEvent.ACTION_MOVE:
-	                    curX = event.getX();
-	                    curY = event.getY();
-	                    ivAvatar.scrollBy((int) (mX - curX), (int) (mY - curY));
-	                    mX = curX;
-	                    mY = curY;
-	                    break;
-	                case MotionEvent.ACTION_UP:
-	                    curX = event.getX();
-	                    curY = event.getY();
-	                    ivAvatar.scrollBy((int) (mX - curX), (int) (mY - curY));
-	                    break;
-	            }
+			@Override
+	        public boolean onTouch(View view, MotionEvent event) {
+	            onImageTouch(event);
 	            return true;
 	        }
+	        
 	    });
 		
 		((Button)findViewById(R.id.btCancel)).setOnClickListener(new View.OnClickListener() {
@@ -103,18 +86,57 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
 		switch (requestCode) {
 			case REQ_PICK:
-				Log.i("test", "pick " + data);
-				try {
-					Bitmap bitmap = decodeUri(data.getData());
-					Log.i("test", "img: "+bitmap.getHeight()+";"+bitmap.getWidth());
-					ivAvatar.setImageBitmap(bitmap);
-				} catch (Exception e) {
-					Log.i("test","ex",e);
-				}
+				onImageLoad(data.getData());
 				break;
+		}
+	}
+	
+	private void onImageTouch(MotionEvent event) {
+		float curX, curY;
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mX = event.getX();
+                mY = event.getY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                curX = event.getX();
+                curY = event.getY();
+                ivAvatar.scrollBy((int) (mX - curX), (int) (mY - curY));
+                limitScroll();
+                mX = curX;
+                mY = curY;
+                break;
+            case MotionEvent.ACTION_UP:
+                curX = event.getX();
+                curY = event.getY();
+                ivAvatar.scrollBy((int) (mX - curX), (int) (mY - curY));
+                limitScroll();
+                break;
+        }
+	}
+	
+	private void limitScroll() {
+		if (bmAvatar == null || ivAvatar == null) return;
+		int maxX = bmAvatar.getWidth() - size;
+		int maxY = bmAvatar.getHeight() - size;
+		if (ivAvatar.getScrollX() < 0) ivAvatar.scrollTo(0, ivAvatar.getScrollY()); //bal szegély
+		if (ivAvatar.getScrollX() > maxX) ivAvatar.scrollTo(maxX, ivAvatar.getScrollY()); //jobb szegély
+		if (ivAvatar.getScrollY() < 0) ivAvatar.scrollTo(ivAvatar.getScrollX(), 0); //felső szegély
+		if (ivAvatar.getScrollY() > maxY) ivAvatar.scrollTo(ivAvatar.getScrollX(), maxY); //alsó szegély
+	}
+	
+	private void onImageLoad(Uri selectedImage) {
+		try {
+			bmAvatar = decodeUri(selectedImage);
+			ivAvatar.setImageBitmap(bmAvatar);
+			Log.i("test", "load image "+bmAvatar.getWidth()+" x "+bmAvatar.getHeight());
+			mX = mY = 0;
+			ivAvatar.scrollTo(0, 0);
+		}
+		catch (Exception e) {
+			;
 		}
 	}
 	
@@ -126,8 +148,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
         BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
 
         // The new size we want to scale to
-        Display d = getWindowManager().getDefaultDisplay();
-        final int REQUIRED_SIZE = Math.max(d.getHeight(), d.getWidth());
+        final int REQUIRED_SIZE = size;
 
         // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
