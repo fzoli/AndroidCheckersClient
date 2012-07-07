@@ -15,7 +15,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -46,7 +45,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 		
 		DisplayMetrics dm = getResources().getDisplayMetrics();
 		size = Math.min(dm.widthPixels, dm.heightPixels);
-		Log.i("test", "rectangle size: "+size);
+
 		rlAvatar.getLayoutParams().height = size;
 		rlAvatar.getLayoutParams().width = size;
 		
@@ -132,9 +131,9 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 		try {
 			bmAvatar = decodeUri(selectedImage);
 			ivAvatar.setImageBitmap(bmAvatar);
-			Log.i("test", "load image "+bmAvatar.getWidth()+" x "+bmAvatar.getHeight());
-			mX = mY = 0;
-			ivAvatar.scrollTo(0, 0);
+			mX = (bmAvatar.getWidth() - size) / 2;
+			mY = (bmAvatar.getHeight() - size) / 2;
+			ivAvatar.scrollTo((int)mX, (int)mY);
 		}
 		catch (Exception e) {
 			;
