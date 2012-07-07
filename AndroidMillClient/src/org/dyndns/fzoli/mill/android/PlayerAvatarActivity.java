@@ -9,6 +9,7 @@ import org.dyndns.fzoli.mill.common.model.pojo.PlayerAvatarData;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -38,6 +39,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 		super.onCreate(savedInstanceState);
 		setTitle(R.string.avatar);
 		setContentView(R.layout.avatar);
+		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		
 		btGallery = (Button) findViewById(R.id.btGallery);
 		ivAvatar = (ImageView) findViewById(R.id.ivAvatar);
