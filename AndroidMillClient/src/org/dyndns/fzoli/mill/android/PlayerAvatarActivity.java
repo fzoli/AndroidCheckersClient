@@ -11,6 +11,7 @@ import org.dyndns.fzoli.mvc.client.connection.Connection;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -147,15 +148,13 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
 
-        // The new size we want to scale to
-        final int REQUIRED_SIZE = size;
-
         // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
+
         int scale = 1;
         while (true) {
-            if (width_tmp / 2 < REQUIRED_SIZE
-               || height_tmp / 2 < REQUIRED_SIZE) {
+            if (width_tmp / 2 < size
+               || height_tmp / 2 < size) {
                 break;
             }
             width_tmp /= 2;
@@ -166,7 +165,22 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
         // Decode with inSampleSize
         BitmapFactory.Options o2 = new BitmapFactory.Options();
         o2.inSampleSize = scale;
-        return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
+        Bitmap minimizedBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
+        
+        width_tmp = minimizedBitmap.getWidth();
+        height_tmp = minimizedBitmap.getHeight();
+        
+        float scaleWidth = ((float) size) / width_tmp;
+        float scaleHeight = ((float) size) / height_tmp;
+        float scaleMax = Math.max(scaleWidth, scaleHeight);
+        
+        // create matrix for the manipulation
+        Matrix matrix = new Matrix();
+        // resize the bit map
+        matrix.postScale(scaleMax, scaleMax);
+        
+        return Bitmap.createBitmap(minimizedBitmap, 0, 0, 
+        		width_tmp, height_tmp, matrix, true); 
 
     }
 
