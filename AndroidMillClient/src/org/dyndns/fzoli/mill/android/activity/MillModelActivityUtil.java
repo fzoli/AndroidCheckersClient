@@ -283,10 +283,6 @@ public class MillModelActivityUtil<EventObj, PropsObj> extends ConnectionActivit
 		context.bindService(intent, conn, ContextWrapper.BIND_AUTO_CREATE);
 	}
 	
-	public static <T> T getEnumValue(Class<T> clazz, int i) {
-		return clazz.getEnumConstants()[i];
-	}
-	
 	public static InputFilter[] createLengthFilter(InputFilter[] filter, int length) {
 		InputFilter[] f = Arrays.copyOf(filter, filter.length + 1);
 		f[f.length - 1] = new InputFilter.LengthFilter(length);

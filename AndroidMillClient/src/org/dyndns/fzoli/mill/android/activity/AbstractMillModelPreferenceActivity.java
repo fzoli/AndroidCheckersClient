@@ -3,6 +3,7 @@ package org.dyndns.fzoli.mill.android.activity;
 import org.dyndns.fzoli.android.widget.ProgressEditTextLayout;
 import org.dyndns.fzoli.mill.android.MillConnectionService;
 import org.dyndns.fzoli.mill.android.service.MillConnectionBinder;
+import org.dyndns.fzoli.mill.client.model.AbstractMillModel;
 import org.dyndns.fzoli.mvc.client.android.activity.AbstractConnectionPreferenceActivity;
 import org.dyndns.fzoli.mvc.client.android.service.ConnectionService;
 
@@ -72,7 +73,7 @@ public abstract class AbstractMillModelPreferenceActivity<EventObj, PropsObj> ex
 	}
 	
 	protected <T> T getEnumValue(Class<T> clazz, int i) {
-		return MillModelActivityUtil.getEnumValue(clazz, i);
+		return AbstractMillModel.getEnumValue(clazz, i);
 	}
 	
 	protected void setEtlProgress(final ProgressEditTextLayout etl) {

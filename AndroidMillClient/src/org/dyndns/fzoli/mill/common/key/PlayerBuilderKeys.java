@@ -4,7 +4,7 @@ package org.dyndns.fzoli.mill.common.key;
  *
  * @author zoli
  */
-public interface PlayerBuilderKeys extends BaseKeys {
+public interface PlayerBuilderKeys {
     
     String REQ_SET_USER = "set_user";
     String REQ_SET_EMAIL = "set_email";

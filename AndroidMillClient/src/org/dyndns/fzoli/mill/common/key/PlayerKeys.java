@@ -4,7 +4,7 @@ package org.dyndns.fzoli.mill.common.key;
  *
  * @author zoli
  */
-public interface PlayerKeys extends BaseKeys {
+public interface PlayerKeys {
     
     String KEY_USER = "user";
     String KEY_PASSWORD = "password";

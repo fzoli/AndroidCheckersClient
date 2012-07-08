@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineActivity;
 import org.dyndns.fzoli.mill.client.model.PlayerAvatarModel;
-import org.dyndns.fzoli.mill.common.model.pojo.BaseOnlinePojo;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerAvatarData;
+import org.dyndns.fzoli.mill.common.model.pojo.PlayerAvatarEvent;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
 
 import android.content.Intent;
@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlinePojo, PlayerAvatarData> {
+public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvatarEvent, PlayerAvatarData> {
 	
 	private static final int REQ_PICK = 1;
 	
@@ -90,7 +90,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<BaseOnlineP
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 			case REQ_PICK:
-				onImageLoad(data.getData());
+				if (data != null) onImageLoad(data.getData());
 				break;
 		}
 	}
