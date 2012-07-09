@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 	private Button btGallery;
 	private TextView tvAvatar;
 	private ImageView ivAvatar;
+	private ProgressBar pbAvatar;
 	private RelativeLayout rlAvatar;
 	
 	private float mX = 0, mY = 0;
@@ -50,6 +52,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		btGallery = (Button) findViewById(R.id.btGallery);
 		tvAvatar = (TextView) findViewById(R.id.tvAvatar);
 		ivAvatar = (ImageView) findViewById(R.id.ivAvatar);
+		pbAvatar = (ProgressBar) findViewById(R.id.pbAvatar);
 		rlAvatar = (RelativeLayout) findViewById(R.id.rlAvatar);
 		
 		DisplayMetrics dm = getResources().getDisplayMetrics();
@@ -104,6 +107,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		if (ret && loaded == null) {
 			Bitmap avatar = getConnectionBinder().getAvatarImage();
 			if (avatar == null) {
+				pbAvatar.setVisibility(View.VISIBLE);
 				getModel().getAvatarImage(new ModelActionListener<InputStream>() {
 					
 					@Override
@@ -112,29 +116,8 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 							
 							@Override
 							public void onEvent(InputStream s) {
-								Bitmap avatar = createBitmap(s);
-//								if (avatar.getWidth() == 1 && avatar.getHeight() == 1) {
-//									getModel().createAvatarImage(size, new ModelActionListener<InputStream>() {
-//										
-//										@Override
-//										public void modelActionPerformed(ModelActionEvent<InputStream> e) {
-//											new MillModelActivityAdapter<InputStream>(PlayerAvatarActivity.this, e) {
-//												
-//												@Override
-//												public void onEvent(InputStream s) {
-//													Bitmap avatar = createBitmap(s);
-//													getConnectionBinder().setAvatarImage(avatar);
-//													onImageLoad(avatar, false);
-//												}
-//												
-//											};
-//										}
-//									});
-//								}
-//								else {
-//									getConnectionBinder().setAvatarImage(avatar);
-									onImageLoad(avatar, false);
-//								}
+								pbAvatar.setVisibility(View.GONE);
+								onImageLoad(createBitmap(s), false);
 							}
 							
 						};
@@ -223,12 +206,10 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 	}
 	
 	private Bitmap decodeUri(Uri selectedImage) throws FileNotFoundException {
-        // Decode image size
         BitmapFactory.Options o = new BitmapFactory.Options();
         o.inJustDecodeBounds = true;
         BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o);
 
-        // Find the correct scale value. It should be the power of 2.
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
 
         int decodeScale = 1;
@@ -242,7 +223,6 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
             decodeScale *= 2;
         }
 
-        // Decode with inSampleSize
         BitmapFactory.Options o2 = new BitmapFactory.Options();
         o2.inSampleSize = decodeScale;
         return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
@@ -260,12 +240,9 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 	}
 	
 	private Bitmap createResizedBitmap(Bitmap bitmap, boolean local) {
-		
         float scaleMax = createScale(bitmap, local);
         
-        // create matrix for the manipulation
         Matrix matrix = new Matrix();
-        // resize the bit map
         matrix.postScale(scaleMax, scaleMax);
         
         return Bitmap.createBitmap(bitmap, 0, 0, 
