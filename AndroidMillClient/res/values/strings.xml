@@ -97,4 +97,5 @@
     <string name="not_usable">You can not use this option.</string>
     <string name="avatar">Avatar</string>
     <string name="replace">Replace</string>
+    <string name="no_avatar">NO AVATAR</string>
 </resources>

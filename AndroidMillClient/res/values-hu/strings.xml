@@ -97,4 +97,5 @@
     <string name="not_usable">Ezt az opciót nem használhatja.</string>
     <string name="avatar">Avatar</string>
     <string name="replace">Lecserél</string>
+    <string name="no_avatar">NINCS AVATAR</string>
 </resources>

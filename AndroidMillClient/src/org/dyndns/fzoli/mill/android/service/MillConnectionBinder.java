@@ -7,6 +7,8 @@ import org.dyndns.fzoli.mill.android.MillConnectionService;
 import org.dyndns.fzoli.mill.android.entity.UserInfo;
 import org.dyndns.fzoli.mvc.client.android.service.ConnectionBinder;
 
+import android.graphics.Bitmap;
+
 public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 
 	public enum LoginMode {
@@ -17,6 +19,8 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 	private UserInfo userInfo = new UserInfo();
 	
 	private final Map<String, String> VARS = new HashMap<String, String>();
+	
+	private Bitmap avatarImage;
 	
 	public MillConnectionBinder(MillConnectionService service) {
 		super(service);
@@ -29,6 +33,14 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 	
 	public Map<String, String> getVars() {
 		return VARS;
+	}
+	
+	public Bitmap getAvatarImage() {
+		return avatarImage;
+	}
+	
+	public void setAvatarImage(Bitmap avatarImage) {
+		this.avatarImage = avatarImage;
 	}
 	
 	public MillDatabaseHelper getDatabaseHelper() {
