@@ -204,6 +204,17 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 					case UNSUSPEND:
 						initAdapter();
 						break;
+					case AVATAR_ENABLE:
+						pa.setAvatarEnabled(true);
+						adapter.setAvatarEnabled(true);
+						break;
+					case AVATAR_DISABLE:
+						pa.setAvatarEnabled(false);
+						adapter.setAvatarEnabled(false);
+						break;
+					case AVATAR_CHANGE:
+						//TODO
+						break;
 				}
 			}
 		}
@@ -216,6 +227,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			//bejelentkezett felhasználó inicializálása
 			ListView lvPlayer = (ListView) findViewById(R.id.lvPlayer);
 			pa = new PlayerAdapter(this);
+			pa.setAvatarEnabled(e.getPlayer().isAvatarEnabled());
 			pa.getPlayerList().add(new PlayerInfo(e.getPlayer().isOnline() ? Status.ONLINE : Status.INVISIBLE, e.getPlayer().getPlayerName(), e.getPlayer().getName(), "", null));
 			lvPlayer.setAdapter(pa);
 			final AlertDialog stateSelectDialog = new AlertDialog.Builder(this)
@@ -261,6 +273,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		adapter = new PlayerGroupAdapter(this, getExpandableListView());
 		if (index != null) adapter.setLastExpandedGroupPosition(index);
 		Player p = getModel().getCache().getPlayer();
+		adapter.setAvatarEnabled(p.isAvatarEnabled());
 		for (BasePlayer bp : p.getFriendList()) {
 			addPlayer(bp, bp.isOnline() ? Status.ONLINE : Status.OFFLINE, R.string.friends, false);
 		}

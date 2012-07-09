@@ -14,8 +14,15 @@ public class PlayerAdapter extends BaseAdapter {
 	private final Context CONTEXT;
 	private final List<PlayerInfo> PLAYERS = new ArrayList<PlayerInfo>();
 	
+	private boolean avatarEnabled;
+	
 	public PlayerAdapter(Context context) {
 		this.CONTEXT = context;
+	}
+	
+	public void setAvatarEnabled(boolean avatarEnabled) {
+		this.avatarEnabled = avatarEnabled;
+		notifyDataSetChanged();
 	}
 	
 	public List<PlayerInfo> getPlayerList() {
@@ -40,7 +47,7 @@ public class PlayerAdapter extends BaseAdapter {
 	@Override
 	public View getView(int index, View convertView, ViewGroup vg) {
 		PlayerInfo p = PLAYERS.get(index);
-		return PlayerGroupAdapter.getPlayerView(CONTEXT, p, convertView);
+		return PlayerGroupAdapter.getPlayerView(CONTEXT, p, convertView, avatarEnabled);
 	}
 	
 	public void setStatus(int id, PlayerInfo.Status status) {

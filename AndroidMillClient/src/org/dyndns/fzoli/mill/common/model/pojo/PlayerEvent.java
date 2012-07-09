@@ -16,7 +16,9 @@ public class PlayerEvent extends BaseOnlinePojo {
         INVALIDATE,
         SUSPEND,
         UNSUSPEND,
-        AVATAR_CHANGE
+        AVATAR_CHANGE,
+        AVATAR_ENABLE,
+        AVATAR_DISABLE
     }
     
     private PlayerEventType type;

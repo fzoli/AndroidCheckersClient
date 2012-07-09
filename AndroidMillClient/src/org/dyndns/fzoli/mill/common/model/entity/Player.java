@@ -11,16 +11,16 @@ import java.util.List;
 public class Player extends BasePlayer {
     
     private String email;
-    private boolean validated, captchaEnabled;
+    private boolean validated, avatarEnabled;
     private int permission, activePermission;
     private List<BasePlayer> friendList, friendWishList, blockedUserList, possibleFriends;
 
-    public Player(String playerName, String email, boolean validated, boolean captchaEnabled, int permission, int activePermission, Date signUpDate, Date signInDate, PersonalData personalData, PlayerStatus playerStatus, List<BasePlayer> friendList, List<BasePlayer> friendWishList, List<BasePlayer> blockedUserList, List<BasePlayer> possibleFriends, boolean online) {
+    public Player(String playerName, String email, boolean validated, boolean avatarEnabled, int permission, int activePermission, Date signUpDate, Date signInDate, PersonalData personalData, PlayerStatus playerStatus, List<BasePlayer> friendList, List<BasePlayer> friendWishList, List<BasePlayer> blockedUserList, List<BasePlayer> possibleFriends, boolean online) {
         super(playerName, signUpDate, signInDate, personalData, playerStatus, online);
         this.email = email;
         this.validated = validated;
         this.permission = permission;
-        this.captchaEnabled = captchaEnabled;
+        this.avatarEnabled = avatarEnabled;
         this.activePermission = activePermission;
         this.friendList = friendList;
         this.friendWishList = friendWishList;
@@ -32,8 +32,8 @@ public class Player extends BasePlayer {
         return validated;
     }
 
-    public boolean isCaptchaEnabled() {
-        return captchaEnabled;
+    public boolean isAvatarEnabled() {
+        return avatarEnabled;
     }
 
     public int getPermissionMask(boolean active) {
@@ -79,6 +79,10 @@ public class Player extends BasePlayer {
     
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setAvatarEnabled(boolean avatarEnabled) {
+        this.avatarEnabled = avatarEnabled;
     }
 
     public void setValidated(boolean validated) {

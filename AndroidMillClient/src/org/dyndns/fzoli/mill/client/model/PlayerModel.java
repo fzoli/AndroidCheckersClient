@@ -134,6 +134,12 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                                 po.getPlayer().getPossibleFriends().remove(p);
                             }
                             break;
+                        case AVATAR_ENABLE:
+                            po.getPlayer().setAvatarEnabled(true);
+                            break;
+                        case AVATAR_DISABLE:
+                            po.getPlayer().setAvatarEnabled(false);
+                            break;
                     }
                 }
             }

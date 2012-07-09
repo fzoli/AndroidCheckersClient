@@ -22,10 +22,16 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 	private final List<List<PlayerInfo>> CHILDRENS = new ArrayList<List<PlayerInfo>>();
 	
 	private Integer lastExpandedGroupPosition;
+	private boolean avatarEnabled;
 	
 	public PlayerGroupAdapter(Context context, ExpandableListView view) {
 		this.CONTEXT = context;
 		this.VIEW = view;
+	}
+	
+	public void setAvatarEnabled(boolean avatarEnabled) {
+		this.avatarEnabled = avatarEnabled;
+		notifyDataSetChanged();
 	}
 	
 	public Integer getLastExpandedGroupPosition() {
@@ -139,7 +145,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
         return childPosition;
     }
     
-    public static View getPlayerView(Context context, PlayerInfo p, View convertView) {
+    public static View getPlayerView(Context context, PlayerInfo p, View convertView, boolean avatarEnabled) {
     	if (convertView == null) convertView = createView(context, R.layout.player_view);
         ImageView ivStatus = (ImageView) convertView.findViewById(R.id.ivStatus);
         int res;
@@ -159,17 +165,16 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
         ivStatus.setImageResource(res);
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         tvName.setText(p.getName());
-        if (p.getAvatar() != null) {
-        	ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.ivAvatar);
-        	ivAvatar.setImageBitmap(p.getAvatar());
-        }
+        ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.ivAvatar);
+        ivAvatar.setVisibility(avatarEnabled ? View.VISIBLE : View.GONE);
+        if (p.getAvatar() != null) ivAvatar.setImageBitmap(p.getAvatar());
 		return convertView;
     }
     
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		PlayerInfo p = (PlayerInfo) getChild(groupPosition, childPosition);
-		return getPlayerView(CONTEXT, p, convertView);
+		return getPlayerView(CONTEXT, p, convertView, avatarEnabled && getGroup(groupPosition).equals(CONTEXT.getString(R.string.friends)));
 	}
 
 	@Override
@@ -178,7 +183,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public Object getGroup(int groupPosition) {
+    public String getGroup(int groupPosition) {
         return GROUPS.get(groupPosition);
     }
 
