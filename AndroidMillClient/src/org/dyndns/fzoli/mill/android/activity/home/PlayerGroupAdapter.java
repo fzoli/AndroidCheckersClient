@@ -22,11 +22,15 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 	private final List<List<PlayerInfo>> CHILDRENS = new ArrayList<List<PlayerInfo>>();
 	
 	private Integer lastExpandedGroupPosition;
-	private boolean avatarEnabled;
+	private boolean avatarEnabled, showAllAvatar;
 	
 	public PlayerGroupAdapter(Context context, ExpandableListView view) {
 		this.CONTEXT = context;
 		this.VIEW = view;
+	}
+	
+	public void setShowAllAvatar(boolean showAllAvatar) {
+		this.showAllAvatar = showAllAvatar;
 	}
 	
 	public void setAvatarEnabled(boolean avatarEnabled) {
@@ -174,7 +178,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 	@Override
 	public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
 		PlayerInfo p = (PlayerInfo) getChild(groupPosition, childPosition);
-		return getPlayerView(CONTEXT, p, convertView, avatarEnabled && getGroup(groupPosition).equals(CONTEXT.getString(R.string.friends)));
+		return getPlayerView(CONTEXT, p, convertView, avatarEnabled && (getGroup(groupPosition).equals(CONTEXT.getString(R.string.friends)) || showAllAvatar));
 	}
 
 	@Override
