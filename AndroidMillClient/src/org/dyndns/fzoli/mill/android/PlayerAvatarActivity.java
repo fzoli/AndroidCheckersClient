@@ -154,7 +154,8 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		}
 	}
 	
-	private void onUpload() {
+	private void onUpload() { //TODO
+		if (isImageEmpty(bmAvatar)) return;
 		final int scale = loaded == null ? getModel().getCache().getScale() : size;
 		getModel().setAvatarAttrs((int)mX, (int)mY, scale, new ModelActionListener<Integer>() {
 			
@@ -236,8 +237,12 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		}
 	}
 	
+	private boolean isImageEmpty(Bitmap selectedImage) {
+		return selectedImage == null || (selectedImage.getWidth() == 1 && selectedImage.getHeight() == 1);
+	}
+	
 	private void onImageLoad(Bitmap selectedImage, boolean local) {
-		if (selectedImage == null || (selectedImage.getWidth() == 1 && selectedImage.getHeight() == 1)) {
+		if (isImageEmpty(selectedImage)) {
 			tvAvatar.setVisibility(View.VISIBLE);
 		}
 		else {
