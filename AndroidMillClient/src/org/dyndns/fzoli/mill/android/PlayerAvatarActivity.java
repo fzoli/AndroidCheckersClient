@@ -1,11 +1,15 @@
 package org.dyndns.fzoli.mill.android;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import org.dyndns.fzoli.http.CountingListener;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineActivity;
+import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
 import org.dyndns.fzoli.mill.client.model.PlayerAvatarModel;
+import org.dyndns.fzoli.mill.common.key.PlayerAvatarReturn;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerAvatarData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerAvatarEvent;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
@@ -17,6 +21,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -71,15 +76,6 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 	        
 	    });
 		
-		((Button)findViewById(R.id.btCancel)).setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View paramView) {
-				finish();
-			}
-			
-		});
-		
 		btGallery.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -89,6 +85,24 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 			
 		});
 		
+		((Button)findViewById(R.id.btCancel)).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View paramView) {
+				finish();
+			}
+			
+		});
+
+		((Button)findViewById(R.id.btOk)).setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View paramView) {
+				onUpload();
+			}
+			
+		});
+
 	}
 	
 	@Override
@@ -138,6 +152,45 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 				if (data != null) onImageLoad(data.getData());
 				break;
 		}
+	}
+	
+	private void onUpload() {
+		final int scale = loaded == null ? getModel().getCache().getScale() : size;
+		getModel().setAvatarAttrs((int)mX, (int)mY, scale, new ModelActionListener<Integer>() {
+			
+			@Override
+			public void modelActionPerformed(ModelActionEvent<Integer> e) {
+				new IntegerMillModelActivityAdapter(PlayerAvatarActivity.this, e) {
+					
+					@Override
+					public void onEvent(int e) {
+						switch (getReturn(e)) {
+							case OK:
+								if (loaded != null) {
+									getModel().setAvatar(createStream(loaded), new ModelActionListener<Integer>() {
+										
+										@Override
+										public void modelActionPerformed(ModelActionEvent<Integer> e) {
+											
+										}
+										
+									}, new CountingListener() {
+										
+										@Override
+										public void onWrite(long length, long completted) {
+											
+										}
+										
+									});
+								}
+								break;
+						}
+					}
+					
+				};
+			}
+		});
+		finish();
 	}
 	
 	private void onImageTouch(MotionEvent event) {
@@ -227,7 +280,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
         o2.inSampleSize = decodeScale;
         return BitmapFactory.decodeStream(getContentResolver().openInputStream(selectedImage), null, o2);
     }
-
+	
 	private float createScale(Bitmap bitmap, boolean local) {
 		if (!local && getModel().getCache().getScale() != null) {
 			return size / getModel().getCache().getScale();
@@ -253,6 +306,16 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         i.putExtra("crop", false);
         startActivityForResult(i, REQ_PICK);
+	}
+	
+	private PlayerAvatarReturn getReturn(int i) {
+		return getEnumValue(PlayerAvatarReturn.class, i);
+	}
+	
+	public static ByteArrayOutputStream createStream(Bitmap bitmap) {
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		bitmap.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+		return bos;
 	}
 	
 	public static Bitmap createBitmap(InputStream s) {
