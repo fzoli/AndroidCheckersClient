@@ -22,9 +22,8 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
     }
 
     public PlayerData loadPlayer(String playerName) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_USER, playerName);
-        return getProperties(m);
+        return getProperties(new RequestMap()
+            .setFirst(KEY_USER, playerName));
     }
     
     public int signIn(String user, String password, boolean hash) {
@@ -44,47 +43,41 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
     }
     
     public boolean isEmailFree(String email) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, REQ_IS_EMAIL_FREE);
-        m.setFirst(KEY_VALUE, email);
-        return askModel(m) == 1 ? true : false;
+        return askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_IS_EMAIL_FREE)
+            .setFirst(KEY_VALUE, email)) == 1 ? true : false;
     }
     
     public void revalidateEmail(String password, boolean safe, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, safe ? REQ_SAFE_REVALIDATE_EMAIL : REQ_REVALIDATE_EMAIL);
-        m.setFirst(KEY_PASSWORD, password);
-        askModel(m, callback);
+        askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, safe ? REQ_SAFE_REVALIDATE_EMAIL : REQ_REVALIDATE_EMAIL)
+            .setFirst(KEY_PASSWORD, password), callback);
     }
     
     public void suspendAccount(String password, boolean safe, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, safe ? REQ_SAFE_SUSPEND_ACCOUNT : REQ_SUSPEND_ACCOUNT);
-        m.setFirst(KEY_PASSWORD, password);
-        askModel(m, callback);
+        askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, safe ? REQ_SAFE_SUSPEND_ACCOUNT : REQ_SUSPEND_ACCOUNT)
+            .setFirst(KEY_PASSWORD, password), callback);
     }
     
     public void setEmail(String password, String email, boolean safe, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, safe ? REQ_SAFE_SET_EMAIL : REQ_SET_EMAIL);
-        m.setFirst(KEY_PASSWORD, password);
-        m.setFirst(KEY_VALUE, email);
-        setProperty(m, callback);
+        setProperty(new RequestMap()
+            .setFirst(KEY_REQUEST, safe ? REQ_SAFE_SET_EMAIL : REQ_SET_EMAIL)
+            .setFirst(KEY_PASSWORD, password)
+            .setFirst(KEY_VALUE, email), callback);
     }
     
     public void setPassword(String oldPassword, String newPassword, boolean safe, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, safe ? REQ_SET_SAFE_PASSWORD : REQ_SET_PASSWORD);
-        m.setFirst(KEY_PASSWORD, oldPassword);
-        m.setFirst(KEY_VALUE, newPassword);
-        setProperty(m, callback);
+        setProperty(new RequestMap()
+            .setFirst(KEY_REQUEST, safe ? REQ_SET_SAFE_PASSWORD : REQ_SET_PASSWORD)
+            .setFirst(KEY_PASSWORD, oldPassword)
+            .setFirst(KEY_VALUE, newPassword), callback);
     }
     
     public void setOnlineStatus(OnlineStatus state, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, REQ_SET_ONLINE_STATUS);
-        m.setFirst(KEY_VALUE, state.name());
-        setProperty(m, callback);
+        setProperty(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_SET_ONLINE_STATUS)
+            .setFirst(KEY_VALUE, state.name()), callback);
     }
     
     private List<BasePlayer> findPlayerList(PlayerData.PlayerList type) {
@@ -158,17 +151,15 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
     }
     
     private RequestMap createSignInRequest(String user, String password, boolean hash) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, hash ? REQ_SAFE_SIGN_IN : REQ_SIGN_IN);
-        m.setFirst(KEY_USER, user);
-        m.setFirst(KEY_PASSWORD, password);
-        return m;
+        return new RequestMap()
+        .setFirst(KEY_REQUEST, hash ? REQ_SAFE_SIGN_IN : REQ_SIGN_IN)
+        .setFirst(KEY_USER, user)
+        .setFirst(KEY_PASSWORD, password);
     }
 
     private RequestMap createSignOutRequest() {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, REQ_SIGN_OUT);
-        return m;
+        return new RequestMap()
+        .setFirst(KEY_REQUEST, REQ_SIGN_OUT);
     }
     
 }

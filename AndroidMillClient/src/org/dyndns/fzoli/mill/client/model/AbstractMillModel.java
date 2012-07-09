@@ -52,32 +52,28 @@ public abstract class AbstractMillModel<EventObj, PropsObj> extends CachedJSONMo
     }
     
     public void validateCaptcha(String answer, ModelActionListener<Integer> callback) {
-        RequestMap map = new RequestMap();
-        map.setFirst(KEY_REQUEST, REQ_VALIDATE_CAPTCHA);
-        map.setFirst(KEY_VALUE, answer);
-        askModel(map, callback);
+        askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_VALIDATE_CAPTCHA)
+            .setFirst(KEY_VALUE, answer), callback);
     }
     
     public int setCaptchaSize(int w) {
         if (w < 200) w = 200;
         if (w > 1000) w = 1000;
-        RequestMap map = new RequestMap();
-        map.setFirst(KEY_REQUEST, REQ_SET_CAPTCHA_SIZE);
-        map.setFirst(KEY_VALUE, String.valueOf(w));
-        return askModel(map);
+        return askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_SET_CAPTCHA_SIZE)
+            .setFirst(KEY_VALUE, String.valueOf(w)));
     }
     
     public int setCaptchaBgColor(boolean white) {
-        RequestMap map = new RequestMap();
-        map.setFirst(KEY_REQUEST, REQ_SET_CAPTCHA_COLOR);
-        map.setFirst(KEY_VALUE, Boolean.toString(white));
-        return askModel(map);
+        return askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_SET_CAPTCHA_COLOR)
+            .setFirst(KEY_VALUE, Boolean.toString(white)));
     }
     
     private RequestMap createCaptchaMap(boolean reinit) {
-        RequestMap map = new RequestMap();
-        map.setFirst(KEY_REQUEST, reinit ? REQ_CREATE_CAPTCHA : REQ_GET_CAPTCHA);
-        return map;
+        return new RequestMap()
+        .setFirst(KEY_REQUEST, reinit ? REQ_CREATE_CAPTCHA : REQ_GET_CAPTCHA);
     }
     
     public static <T> T getEnumValue(Class<T> clazz, ModelActionEvent<Integer> mae) {

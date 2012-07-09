@@ -20,24 +20,21 @@ public class PlayerBuilderModel extends AbstractMillModel<PlayerBuilderEvent, Pl
     }
     
     public void setUser(String user, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, REQ_SET_USER);
-        m.setFirst(KEY_VALUE, user);
-        setProperty(m, callback);
+        setProperty(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_SET_USER)
+            .setFirst(KEY_VALUE, user), callback);
     }
     
     public void setEmail(String email, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, REQ_SET_EMAIL);
-        m.setFirst(KEY_VALUE, email);
-        setProperty(m, callback);
+        setProperty(new RequestMap()
+            .setFirst(KEY_REQUEST, REQ_SET_EMAIL)
+            .setFirst(KEY_VALUE, email), callback);
     }
     
     public void createUser(String password, boolean hash, ModelActionListener<Integer> callback) {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, hash ? REQ_SAFE_CREATE : REQ_CREATE);
-        m.setFirst(KEY_VALUE, password);
-        askModel(m, callback);
+        askModel(new RequestMap()
+            .setFirst(KEY_REQUEST, hash ? REQ_SAFE_CREATE : REQ_CREATE)
+            .setFirst(KEY_VALUE, password), callback);
     }
     
     public void validate() {
@@ -62,9 +59,8 @@ public class PlayerBuilderModel extends AbstractMillModel<PlayerBuilderEvent, Pl
     }
     
     private RequestMap createValidateMap() {
-        RequestMap m = new RequestMap();
-        m.setFirst(KEY_REQUEST, REQ_VALIDATE);
-        return m;
+        return new RequestMap()
+        .setFirst(KEY_REQUEST, REQ_VALIDATE);
     }
     
 }
