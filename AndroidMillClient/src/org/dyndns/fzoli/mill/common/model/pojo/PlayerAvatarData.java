@@ -6,17 +6,24 @@ package org.dyndns.fzoli.mill.common.model.pojo;
  */
 public class PlayerAvatarData extends BaseOnlinePojo {
 
+    private boolean avatarEnabled;
     private Integer x, y, scale;
 
-    public PlayerAvatarData(String playerName) {
+    public PlayerAvatarData(String playerName, boolean avatarEnabled) {
         super(playerName);
+        this.avatarEnabled = avatarEnabled;
     }
     
-    public PlayerAvatarData(String playerName, Integer x, Integer y, Integer scale) {
+    public PlayerAvatarData(String playerName, Integer x, Integer y, Integer scale, boolean avatarEnabled) {
         super(playerName);
         this.x = x;
         this.y = y;
         this.scale = scale;
+        this.avatarEnabled = avatarEnabled;
+    }
+
+    public boolean isAvatarEnabled() {
+        return avatarEnabled;
     }
 
     public Integer getX() {

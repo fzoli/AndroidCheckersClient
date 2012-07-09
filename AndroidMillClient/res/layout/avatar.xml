@@ -12,8 +12,7 @@
 			android:layout_centerVertical="true"
 			android:layout_centerHorizontal="true"
 			android:layout_height="fill_parent"
-			android:layout_width="fill_parent"
-			android:src="@drawable/icon" />
+			android:layout_width="fill_parent" />
 		<Button android:id="@+id/btGallery"
 			android:text="@string/replace"
 			android:layout_marginRight="3dp"

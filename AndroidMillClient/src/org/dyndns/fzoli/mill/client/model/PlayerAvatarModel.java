@@ -53,6 +53,14 @@ public class PlayerAvatarModel extends AbstractOnlineModel<PlayerAvatarEvent, Pl
         setImage(stream, createSetAvatarRequest(), callback, l);
     }
     
+    public int setAvatarEnabled(boolean enable) {
+        return setProperty(createSetAvatarEnableRequest(enable));
+    }
+    
+    public void setAvatarEnabled(boolean enable, ModelActionListener<Integer> callback) {
+        setProperty(createSetAvatarEnableRequest(enable), callback);
+    }
+    
     public int setAvatarAttrs(int x, int y, int scale) {
         return setProperty(createSetAvatarAttrsRequest(x, y, scale));
     }
@@ -90,6 +98,12 @@ public class PlayerAvatarModel extends AbstractOnlineModel<PlayerAvatarEvent, Pl
         .setFirst(KEY_X, Integer.toString(x))
         .setFirst(KEY_Y, Integer.toString(y))
         .setFirst(KEY_SCALE, Integer.toString(scale));
+    }
+    
+    private RequestMap createSetAvatarEnableRequest(boolean enabled) {
+        return new RequestMap()
+        .setFirst(KEY_REQUEST, REQ_SET_AVATAR)
+        .setFirst(KEY_ENABLE, Boolean.toString(enabled));
     }
     
     private RequestMap createRemoveAvatarRequest() {

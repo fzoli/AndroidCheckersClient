@@ -10,6 +10,7 @@ public interface PlayerAvatarKeys {
     String KEY_Y = "y";
     String KEY_SCALE = "scale";
     String KEY_USER = "user";
+    String KEY_ENABLE = "enable";
     
     String REQ_SET_AVATAR_ATTRS = "set_avatar_attrs";
     String REQ_GET_AVATAR = "get_avatar";
