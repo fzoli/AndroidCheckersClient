@@ -183,6 +183,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 										
 									});
 								}
+								finish();
 								break;
 						}
 					}
@@ -190,7 +191,6 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 				};
 			}
 		});
-		finish();
 	}
 	
 	private void onImageTouch(MotionEvent event) {
