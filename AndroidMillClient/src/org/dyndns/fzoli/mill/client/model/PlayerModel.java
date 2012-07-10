@@ -2,6 +2,7 @@ package org.dyndns.fzoli.mill.client.model;
 
 import java.util.List;
 import org.dyndns.fzoli.mill.common.key.ModelKeys;
+import org.dyndns.fzoli.mill.common.key.PersonalDataType;
 import org.dyndns.fzoli.mill.common.key.PlayerKeys;
 import org.dyndns.fzoli.mill.common.model.entity.BasePlayer;
 import org.dyndns.fzoli.mill.common.model.entity.OnlineStatus;
@@ -80,6 +81,14 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
             .setFirst(KEY_VALUE, state.name()), callback);
     }
     
+    public int setPersonalData(PersonalDataType request, String value) {
+        return setProperty(createPersonalDataRequest(request, value));
+    }
+    
+    public void setPersonalData(PersonalDataType request, String value, ModelActionListener<Integer> callback) {
+        setProperty(createPersonalDataRequest(request, value), callback);
+    }
+    
     private List<BasePlayer> findPlayerList(PlayerData.PlayerList type) {
         switch (type) {
             case BLOCKED_PLAYERS:
@@ -154,6 +163,12 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
             if (p.getPlayerName().equals(name)) return p;
         }
         return null;
+    }
+    
+    private RequestMap createPersonalDataRequest(PersonalDataType request, String value) {
+        return new RequestMap()
+            .setFirst(KEY_REQUEST, request.name())
+            .setFirst(KEY_VALUE, value);
     }
     
     private RequestMap createSignInRequest(String user, String password, boolean hash) {

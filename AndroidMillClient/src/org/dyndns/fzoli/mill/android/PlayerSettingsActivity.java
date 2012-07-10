@@ -6,14 +6,19 @@ import java.util.Locale;
 
 import org.dyndns.fzoli.android.widget.AutoCompletePreference;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
+import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
+import org.dyndns.fzoli.mill.common.InputValidator;
+import org.dyndns.fzoli.mill.common.key.PersonalDataType;
+import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.PersonalData;
 import org.dyndns.fzoli.mill.common.model.entity.Sex;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
-import org.dyndns.fzoli.mvc.client.model.CachedModel;
+import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
+import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +27,8 @@ import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
+import android.preference.Preference.OnPreferenceChangeListener;
+import android.widget.Toast;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
@@ -32,7 +39,12 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	}
 	
 	@Override
-	public CachedModel<Object, Object, PlayerEvent, PlayerData> createModel(Connection<Object, Object> connection) {
+	public PlayerModel getModel() {
+		return (PlayerModel) super.getModel();
+	}
+	
+	@Override
+	public PlayerModel createModel(Connection<Object, Object> connection) {
 		return new PlayerModel(connection);
 	}
 	
@@ -53,6 +65,10 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			return true;
 		}
 		return false;
+	}
+	
+	private void showToast(int r) {
+		Toast.makeText(this, r, Toast.LENGTH_LONG).show();
 	}
 	
 	private void initScreen() { //TODO
@@ -98,23 +114,43 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		personalPref.addPreference(nameCat);
 		
 		final EditTextPreference firstNamePref = new EditTextPreference(this);
-		firstNamePref.setTitle(R.string.first_name);
-		firstNamePref.setText(personalData.getFirstName());
-		firstNamePref.setSummary(personalData.getFirstName());
-		firstNamePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+		final EditTextPreference lastNamePref = new EditTextPreference(this);
+		
+		final OnPreferenceChangeListener onNameChange = new Preference.OnPreferenceChangeListener() {
 			
 			@Override
 			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				return true;
+				boolean ret = InputValidator.isNameValid(newValue.toString());
+				if (ret) {
+					preference.setSummary(newValue.toString());
+					getModel().setPersonalData(preference == firstNamePref ? PersonalDataType.FIRST_NAME : PersonalDataType.LAST_NAME, newValue.toString(), new ModelActionListener<Integer>() {
+						
+						@Override
+						public void modelActionPerformed(ModelActionEvent<Integer> e) {
+							new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e);
+						}
+						
+					});
+				}
+				else {
+					showToast(R.string.wrong_value);
+				}
+				return ret;
 			}
 			
-		});
+		};
+		
+		firstNamePref.setTitle(R.string.first_name);
+		firstNamePref.setText(personalData.getFirstName());
+		firstNamePref.setSummary(personalData.getFirstName());
+		firstNamePref.setOnPreferenceChangeListener(onNameChange);
+		
 		nameCat.addPreference(firstNamePref);
 		
-		final EditTextPreference lastNamePref = new EditTextPreference(this);
 		lastNamePref.setTitle(R.string.last_name);
 		lastNamePref.setText(personalData.getLastName());
 		lastNamePref.setSummary(personalData.getLastName());
+		lastNamePref.setOnPreferenceChangeListener(onNameChange);
 		nameCat.addPreference(lastNamePref);
 		
 		final CheckBoxPreference inverseNamePref = new CheckBoxPreference(this);
@@ -157,6 +193,10 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		sexPref.setTitle(R.string.sex);
 		sexPref.setSummary(getSex(this, personalData.getSex()));
 		othersCat.addPreference(sexPref);
+	}
+	
+	private PlayerReturn getReturn(int i) {
+		return getEnumValue(PlayerReturn.class, i);
 	}
 	
 	public static String getDate(Date date) {

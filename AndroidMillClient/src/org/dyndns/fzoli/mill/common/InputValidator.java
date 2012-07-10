@@ -16,7 +16,7 @@ public class InputValidator {
     public final static int MAX_PASSWORD_LENGTH = 15;
     public final static int MD5_LENGTH = 32;
     
-    private final static Pattern PATTERN_NAME = Pattern.compile("^[A-Za-z]{1,}[A-Za-z-]{2,19}$", Pattern.UNICODE_CASE);
+    private final static Pattern PATTERN_NAME = Pattern.compile("^[\\p{L}]{1,}[.]{0,1}[ ]{0,1}[\\p{L}-]{1,18}[\\p{L}]{1,1}$");
     private final static Pattern PATTERN_EMAIL = Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", Pattern.CASE_INSENSITIVE);
     private final static Pattern PATTERN_CAPTCHA = Pattern.compile("^[qwertzuopasdfghjkyxcvbnm]{6,6}$", Pattern.CASE_INSENSITIVE);
     
