@@ -25,6 +25,7 @@ import android.graphics.Bitmap.CompressFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -37,7 +38,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 	
 	private static final int REQ_PICK = 1;
 	
-	private Button btGallery;
+	private Button btGallery, btOk;
 	private TextView tvAvatar;
 	private ImageView ivAvatar;
 	private ProgressBar pbAvatar;
@@ -54,6 +55,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		setContentView(R.layout.avatar);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 		
+		btOk = (Button)findViewById(R.id.btOk);
 		btGallery = (Button) findViewById(R.id.btGallery);
 		tvAvatar = (TextView) findViewById(R.id.tvAvatar);
 		ivAvatar = (ImageView) findViewById(R.id.ivAvatar);
@@ -85,20 +87,20 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 			
 		});
 		
+		btOk.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View paramView) {
+				onUpload();
+			}
+			
+		});
+		
 		((Button)findViewById(R.id.btCancel)).setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View paramView) {
 				finish();
-			}
-			
-		});
-
-		((Button)findViewById(R.id.btOk)).setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View paramView) {
-				onUpload();
 			}
 			
 		});
@@ -156,8 +158,14 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 	
 	private void onUpload() { //TODO
 		if (isImageEmpty(bmAvatar)) return;
-		final int scale = loaded == null ? getModel().getCache().getScale() : size;
-		getModel().setAvatarAttrs((int)mX, (int)mY, scale, new ModelActionListener<Integer>() {
+//		btOk.setEnabled(false);
+		Bitmap img = getConnectionBinder().getAvatarImage();
+		final float zoom = loaded == null ? createScale(img == null ? bmAvatar : img, false) : createScale(loaded, true);
+		final int x = (int)(ivAvatar.getScrollX() / zoom);
+		final int y = (int)(ivAvatar.getScrollY() / zoom);
+		final int scale = loaded == null ? getModel().getCache().getScale() : (int)(size * zoom);
+		Log.i("test", "image upload. x: "+x+";y: "+y+";scale: "+scale+";zoom: "+zoom);
+		getModel().setAvatarAttrs(x, y, scale, new ModelActionListener<Integer>() {
 			
 			@Override
 			public void modelActionPerformed(ModelActionEvent<Integer> e) {
@@ -165,6 +173,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 					
 					@Override
 					public void onEvent(int e) {
+//						btOk.setEnabled(true);
 						switch (getReturn(e)) {
 							case OK:
 								if (loaded != null) {
@@ -172,18 +181,19 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 										
 										@Override
 										public void modelActionPerformed(ModelActionEvent<Integer> e) {
-											
+											Log.i("test","uploaded");
 										}
 										
 									}, new CountingListener() {
 										
 										@Override
 										public void onWrite(long length, long completted) {
-											
+											Log.i("test","onWrite: "+length + " ; "+completted);
 										}
 										
 									});
 								}
+								getConnectionBinder().setAvatarImage(null);
 								finish();
 								break;
 						}
@@ -216,6 +226,7 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
                 limitScroll();
                 break;
         }
+        Log.i("test", "image event. mx: "+mX+";my: "+mY);
 	}
 	
 	private void limitScroll() {
@@ -253,12 +264,15 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
 		bmAvatar = createResizedBitmap(selectedImage, local);
 		ivAvatar.setImageBitmap(bmAvatar);
 		if (!local && getModel().getCache().getX() != null && getModel().getCache().getY() != null) {
-			mX = getModel().getCache().getX();
-			mY = getModel().getCache().getY();
+			float scale = createScale(selectedImage, local);	
+			mX = getModel().getCache().getX() * scale;
+			mY = getModel().getCache().getY() * scale;
+			Log.i("test", "image loaded. mx: "+mX+";my: "+mY+";scale: "+scale);
 		}
 		else {
 			mX = (bmAvatar.getWidth() - size) / 2;
 			mY = (bmAvatar.getHeight() - size) / 2;
+			Log.i("test", "image loaded. mx: "+mX+";my: "+mY);
 		}
 		ivAvatar.scrollTo((int)mX, (int)mY);
 	}
@@ -287,14 +301,17 @@ public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvata
     }
 	
 	private float createScale(Bitmap bitmap, boolean local) {
+		float ret;
 		if (!local && getModel().getCache().getScale() != null) {
-			return size / getModel().getCache().getScale();
+			ret = size / getModel().getCache().getScale();
 		}
 		else {
 			float scaleWidth = ((float) size) / bitmap.getWidth();
         	float scaleHeight = ((float) size) / bitmap.getHeight();
-        	return Math.max(scaleWidth, scaleHeight);
+        	ret = Math.max(scaleWidth, scaleHeight);
 		}
+		Log.i("test", "created scale: " + ret + " ("+bitmap+";"+local+")");
+		return ret;
 	}
 	
 	private Bitmap createResizedBitmap(Bitmap bitmap, boolean local) {

@@ -7,5 +7,9 @@
 	<classpathentry kind="lib" path="/home/zoli/NetBeansProjects/mvc-lib/fzoli-lib/fzoli-mvc-all.jar"/>
 	<classpathentry kind="lib" path="/home/zoli/Letöltések/db4o-8.0/lib/db4o-8.0.236.16058-core-java5.jar"/>
 	<classpathentry kind="lib" path="/home/zoli/NetBeansProjects/mvc-lib/common/commons-codec-1.5.jar"/>
+	<classpathentry kind="lib" path="/home/zoli/NetBeansProjects/mvc-lib/client/httpclient-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/home/zoli/NetBeansProjects/mvc-lib/client/httpclient-cache-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/home/zoli/NetBeansProjects/mvc-lib/client/httpcore-4.1.2.jar"/>
+	<classpathentry kind="lib" path="/home/zoli/NetBeansProjects/mvc-lib/client/httpmime-4.1.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
