@@ -36,6 +36,9 @@ import android.widget.TextView;
 
 public class PlayerAvatarActivity extends AbstractMillOnlineActivity<PlayerAvatarEvent, PlayerAvatarData> {
 	
+	//TODO: szerver oldalon a képfeltöltés mégse zárolja a munkamenetet, hogy működjön a kijelentkezés és bejelentkezés közben
+	// majd befejezni ezt a szerencsétlen kódot ha nem lesz 40 fok és fogni fog az agyam a metekhoz!!!
+	
 	private static final int REQ_PICK = 1;
 	
 	private Button btGallery, btOk;
