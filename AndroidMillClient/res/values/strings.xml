@@ -96,6 +96,23 @@
     <string name="wrong_password">Wrong password, try again!</string>
     <string name="not_usable">You can not use this option.</string>
     <string name="avatar">Avatar</string>
+    <string name="avatar_enabled">Avatar enabled</string>
+    <string name="avatar_remove">Remove avatar</string>
     <string name="replace">Replace</string>
     <string name="no_avatar">NO AVATAR</string>
+    <string name="personal_datas">Personal datas</string>
+    <string name="name">Name</string>
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="inverse_name">Inverse name</string>
+    <string name="birthday">Birthday</string>
+    <string name="sex">Sex</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="location">Location</string>
+    <string name="country">Country</string>
+    <string name="region">Region</string>
+    <string name="city">City</string>
+    <string name="other">Other</string>
+    <string name="others">Others</string>
 </resources>

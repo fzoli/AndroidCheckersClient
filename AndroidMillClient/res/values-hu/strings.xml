@@ -95,7 +95,24 @@
     <string name="password_not_changed">Jelszava nem változott.</string>
     <string name="wrong_password">Hibás jelszó, próbálja újra!</string>
     <string name="not_usable">Ezt az opciót nem használhatja.</string>
-    <string name="avatar">Avatar</string>
+    <string name="avatar">Avatár</string>
+    <string name="avatar_enabled">Avatárok megjelenítése</string>
+    <string name="avatar_remove">Avatár törlése</string>
     <string name="replace">Lecserél</string>
     <string name="no_avatar">NINCS AVATAR</string>
+    <string name="personal_datas">Személyes adatok</string>
+    <string name="name">Név</string>
+    <string name="first_name">Keresztnév</string>
+    <string name="last_name">Vezetéknév</string>
+    <string name="inverse_name">Név fordítva</string>
+    <string name="birthday">Születésnap</string>
+    <string name="sex">Nem</string>
+    <string name="male">Férfi</string>
+    <string name="female">Nő</string>
+    <string name="location">Lakhely</string>
+    <string name="country">Ország</string>
+    <string name="region">Megye</string>
+    <string name="city">Város</string>
+    <string name="other">Egyéb</string>
+    <string name="others">Egyéb</string>
 </resources>

@@ -13,6 +13,7 @@ public class BasePlayer {
     
     private boolean online;
     private String playerName;
+    protected Long signUp, signIn;
     private Date signUpDate, signInDate;
     private PersonalData personalData;
     private PlayerStatus playerStatus;
@@ -24,6 +25,8 @@ public class BasePlayer {
         this.signInDate = signInDate;
         this.personalData = personalData;
         this.playerStatus = playerStatus;
+        if (signUpDate != null) signUp = signUpDate.getTime();
+        if (signInDate != null) signIn = signInDate.getTime();
     }
 
     public String getName() {

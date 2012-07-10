@@ -19,6 +19,7 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 	private UserInfo userInfo = new UserInfo();
 	
 	private final Map<String, String> VARS = new HashMap<String, String>();
+	public final Map<String, Bitmap> BITMAPS = new HashMap<String, Bitmap>();
 	
 	private Bitmap avatarImage;
 	
