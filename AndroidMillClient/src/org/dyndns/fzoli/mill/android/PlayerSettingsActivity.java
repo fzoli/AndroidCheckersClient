@@ -22,15 +22,24 @@ import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.view.Window;
 import android.widget.Toast;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		super.onCreate(savedInstanceState);
+		setProgressBarIndeterminateVisibility(false);
+	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -119,15 +128,30 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		final OnPreferenceChangeListener onNameChange = new Preference.OnPreferenceChangeListener() {
 			
 			@Override
-			public boolean onPreferenceChange(Preference preference, Object newValue) {
-				boolean ret = InputValidator.isNameValid(newValue.toString());
+			public boolean onPreferenceChange(final Preference preference, Object newValue) {
+				final String value = newValue.toString();
+				boolean ret = InputValidator.isNameValid(value);
 				if (ret) {
-					preference.setSummary(newValue.toString());
-					getModel().setPersonalData(preference == firstNamePref ? PersonalDataType.FIRST_NAME : PersonalDataType.LAST_NAME, newValue.toString(), new ModelActionListener<Integer>() {
+					preference.setSummary(value);
+					setProgressBarIndeterminateVisibility(true);
+					getModel().setPersonalData(preference == firstNamePref ? PersonalDataType.FIRST_NAME : PersonalDataType.LAST_NAME, value, new ModelActionListener<Integer>() {
 						
 						@Override
 						public void modelActionPerformed(ModelActionEvent<Integer> e) {
-							new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e);
+							new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e) {
+								
+								@Override
+								public void onEvent(int e) {
+									setProgressBarIndeterminateVisibility(false);
+									switch (getReturn(e)) {
+										case OK:
+											if (preference == firstNamePref) personalData.setFirstName(value);
+											else personalData.setLastName(value);
+											break;
+									}
+								}
+								
+							};
 						}
 						
 					});
