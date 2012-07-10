@@ -112,7 +112,6 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			
 		});
 		optionsPref.addPreference(avatarPref);
-		
 		final PersonalData personalData = getModel().getCache().getPlayer().getPersonalData();
 		final PreferenceScreen personalPref = getPreferenceManager().createPreferenceScreen(this);
 		personalPref.setTitle(R.string.personal_datas);
