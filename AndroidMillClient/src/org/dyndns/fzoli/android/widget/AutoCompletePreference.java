@@ -20,6 +20,7 @@ public class AutoCompletePreference extends EditTextPreference {
 	
 	public AutoCompletePreference(Context context) {
 		this(context, null);
+		EDIT_TEXT.setSingleLine();
 	}
 	
 	public AutoCompletePreference(Context context, AttributeSet attrs) {
