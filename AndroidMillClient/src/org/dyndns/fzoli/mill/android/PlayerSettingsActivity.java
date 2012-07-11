@@ -39,6 +39,8 @@ import android.widget.Toast;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
+	private AutoCompletePreference regionPref, cityPref;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -213,7 +215,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		});
 		locationCat.addPreference(countryPref);
 		
-		final AutoCompletePreference regionPref = new AutoCompletePreference(this);
+		regionPref = new AutoCompletePreference(this);
 		regionPref.setTitle(R.string.region);
 		regionPref.setText(personalData.getRegion());
 		regionPref.setSummary(personalData.getRegion());
@@ -234,7 +236,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		});
 		locationCat.addPreference(regionPref);
 		
-		final AutoCompletePreference cityPref = new AutoCompletePreference(this);
+		cityPref = new AutoCompletePreference(this);
 		cityPref.setTitle(R.string.city);
 		cityPref.setText(personalData.getCity());
 		cityPref.setSummary(personalData.getCity());
@@ -255,6 +257,8 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		});
 		locationCat.addPreference(cityPref);
 		
+		setLocationsEnabled();
+		
 		final PreferenceCategory othersCat = new PreferenceCategory(this);
 		othersCat.setTitle(R.string.others);
 		personalPref.addPreference(othersCat);
@@ -268,6 +272,12 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		sexPref.setTitle(R.string.sex);
 		sexPref.setSummary(getSex(this, personalData.getSex()));
 		othersCat.addPreference(sexPref);
+	}
+	
+	private void setLocationsEnabled() {
+		PersonalData data = getModel().getCache().getPlayer().getPersonalData();
+		regionPref.setEnabled(data.getRegion() != null);
+		cityPref.setEnabled(data.getCity() != null);
 	}
 	
 	private void initAutoComplette(final AutoCompletePreference pref, final Runnable method) {
