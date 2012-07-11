@@ -217,6 +217,9 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 					case AVATAR_CHANGE:
 						//TODO
 						break;
+					case PERSONAL_DATA_CHANGE:
+						//TODO
+						break;
 				}
 			}
 		}

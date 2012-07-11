@@ -8,7 +8,7 @@ public interface PlayerKeys {
     
     String KEY_USER = "user";
     String KEY_PASSWORD = "password";
-    
+
     String REQ_IS_EMAIL_FREE = "is_email_free";
     String REQ_SAFE_SUSPEND_ACCOUNT = "safe_suspend_account";
     String REQ_SUSPEND_ACCOUNT = "suspend_account";
@@ -22,13 +22,8 @@ public interface PlayerKeys {
     String REQ_SIGN_IN = "sign_in";
     String REQ_SAFE_SIGN_IN = "safe_sign_in";
     String REQ_SET_ONLINE_STATUS = "set_online_status";
-//    String REQ_SET_FIRST_NAME = "set_first_name";
-//    String REQ_SET_LAST_NAME = "set_last_name";
-//    String REQ_SET_INVERSE_NAME = "set_inverse_name";
-//    String REQ_SET_BIRTH_DATE = "set_birth_date";
-//    String REQ_SET_SEX = "set_sex";
-//    String REQ_SET_COUNTRY = "set_country";
-//    String REQ_SET_REGION = "set_region";
-//    String REQ_SET_CITY = "set_city";
+    String REQ_GET_COUNTRIES = "get_countries";
+    String REQ_GET_REGIONS = "get_regions";
+    String REQ_GET_CITIES = "get_cities";
     
 }

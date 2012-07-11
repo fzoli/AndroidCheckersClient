@@ -43,6 +43,11 @@ public class AutoCompletePreference extends EditTextPreference {
 	}
 	
 	@Override
+	public AutoCompleteTextView getEditText() {
+		return EDIT_TEXT;
+	}
+	
+	@Override
 	protected void onBindDialogView(View view) {
 	    AutoCompleteTextView editText = EDIT_TEXT;
 	    editText.setText(getText());

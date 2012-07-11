@@ -3,10 +3,14 @@ package org.dyndns.fzoli.mill.android;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.dyndns.fzoli.android.widget.AutoCompletePreference;
+import org.dyndns.fzoli.android.widget.TextWatcherAdapter;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
+import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
 import org.dyndns.fzoli.mill.common.key.PersonalDataType;
@@ -29,6 +33,7 @@ import android.preference.Preference;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.text.Editable;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -79,6 +84,8 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	private void showToast(int r) {
 		Toast.makeText(this, r, Toast.LENGTH_LONG).show();
 	}
+	
+	private Timer timer;
 	
 	private void initScreen() { //TODO
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
@@ -189,6 +196,46 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		countryPref.setTitle(R.string.country);
 		countryPref.setText(personalData.getCountry());
 		countryPref.setSummary(personalData.getCountry());
+		countryPref.getEditText().addTextChangedListener(new TextWatcherAdapter() {
+			
+			@Override
+			public void afterTextChanged(Editable paramEditable) {
+				if (timer != null) timer.cancel();
+				timer = new Timer();
+				timer.schedule(new TimerTask() {
+					
+					@Override
+					public void run() {
+						runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								setProgressBarIndeterminateVisibility(true);
+								getModel().loadCountries(countryPref.getEditText().getText().toString(), new ModelActionListener<PlayerData>() {
+									
+									@Override
+									public void modelActionPerformed(ModelActionEvent<PlayerData> e) {
+										new MillModelActivityAdapter<PlayerData>(PlayerSettingsActivity.this, e) {
+											
+											@Override
+											public void onEvent(PlayerData e) {
+												setProgressBarIndeterminateVisibility(false);
+												countryPref.setItems(e.getPlaces());
+											}
+											
+										};
+									}
+									
+								});
+							}
+							
+						});
+					}
+					
+				}, 500);
+			}
+			
+		});
 		locationCat.addPreference(countryPref);
 		
 		final AutoCompletePreference regionPref = new AutoCompletePreference(this);

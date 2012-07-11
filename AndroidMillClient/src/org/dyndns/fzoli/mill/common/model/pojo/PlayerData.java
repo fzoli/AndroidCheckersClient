@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.mill.common.model.pojo;
 
+import java.util.List;
 import org.dyndns.fzoli.mill.common.model.entity.BasePlayer;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 
@@ -9,12 +10,16 @@ import org.dyndns.fzoli.mill.common.model.entity.Player;
  */
 public class PlayerData extends BaseOnlinePojo implements BaseCaptchaPojo {
 
+    private static String NULL_STRING = null;
+    
     private Player player;
-    private int captchaWidth;
-    private boolean captchaValidated;
+    private Integer captchaWidth;
+    private Boolean captchaValidated;
     
     private BasePlayer askedPlayer;
     private PlayerList askedPlayerList;
+    
+    private List<String> places;
     
     public static enum PlayerList {
         FRIENDS,
@@ -24,9 +29,14 @@ public class PlayerData extends BaseOnlinePojo implements BaseCaptchaPojo {
     }
     
     public PlayerData(BasePlayer askedPlayer, PlayerList askedPlayerList) {
-        super("");
+        super(NULL_STRING);
         this.askedPlayer = askedPlayer;
         this.askedPlayerList = askedPlayerList;
+    }
+    
+    public PlayerData(List<String> places) {
+        super(NULL_STRING);
+        this.places = places;
     }
     
     public PlayerData(Player player, boolean captchaValidated, int captchaWidth) {
@@ -42,6 +52,10 @@ public class PlayerData extends BaseOnlinePojo implements BaseCaptchaPojo {
 
     public PlayerList getAskedPlayerList() {
         return askedPlayerList;
+    }
+    
+    public List<String> getPlaces() {
+        return places;
     }
     
     public Player getPlayer() {

@@ -22,6 +22,18 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
         super(connection, ModelKeys.PLAYER, PlayerEvent.class, PlayerData.class);
     }
 
+    public void loadCountries(String value, ModelActionListener<PlayerData> callback) {
+        getProperties(new RequestMap().setFirst(KEY_REQUEST, REQ_GET_COUNTRIES).setFirst(KEY_VALUE, value), callback);
+    }
+    
+    public void loadRegions(String value, ModelActionListener<PlayerData> callback) {
+        getProperties(new RequestMap().setFirst(KEY_REQUEST, REQ_GET_REGIONS).setFirst(KEY_VALUE, value), callback);
+    }
+    
+    public void loadCities(String value, ModelActionListener<PlayerData> callback) {
+        getProperties(new RequestMap().setFirst(KEY_REQUEST, REQ_GET_CITIES).setFirst(KEY_VALUE, value), callback);
+    }
+    
     public PlayerData loadPlayer(String playerName) {
         return getProperties(new RequestMap()
             .setFirst(KEY_USER, playerName));
