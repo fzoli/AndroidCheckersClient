@@ -32,6 +32,16 @@ public class AutoCompletePreference extends EditTextPreference {
 		return items;
 	}
 	
+	public String getText() {
+		return EDIT_TEXT.getText().toString();
+	}
+	
+	@Override
+	public void setText(String text) {
+		super.setText(text);
+		EDIT_TEXT.setText(text);
+	}
+	
 	public void setItems(String[] items) {
 		setItems(Arrays.asList(items));
 	}

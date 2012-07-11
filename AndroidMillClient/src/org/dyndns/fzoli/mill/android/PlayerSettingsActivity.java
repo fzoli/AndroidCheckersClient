@@ -200,39 +200,14 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			
 			@Override
 			public void afterTextChanged(Editable paramEditable) {
-				if (timer != null) timer.cancel();
-				timer = new Timer();
-				timer.schedule(new TimerTask() {
+				initAutoComplette(countryPref, new Runnable() {
 					
 					@Override
 					public void run() {
-						runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								setProgressBarIndeterminateVisibility(true);
-								getModel().loadCountries(countryPref.getEditText().getText().toString(), new ModelActionListener<PlayerData>() {
-									
-									@Override
-									public void modelActionPerformed(ModelActionEvent<PlayerData> e) {
-										new MillModelActivityAdapter<PlayerData>(PlayerSettingsActivity.this, e) {
-											
-											@Override
-											public void onEvent(PlayerData e) {
-												setProgressBarIndeterminateVisibility(false);
-												countryPref.setItems(e.getPlaces());
-											}
-											
-										};
-									}
-									
-								});
-							}
-							
-						});
+						getModel().loadCountries(countryPref.getText(), createAutoCompletteHandler(countryPref));
 					}
 					
-				}, 500);
+				});
 			}
 			
 		});
@@ -242,12 +217,42 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		regionPref.setTitle(R.string.region);
 		regionPref.setText(personalData.getRegion());
 		regionPref.setSummary(personalData.getRegion());
+		regionPref.getEditText().addTextChangedListener(new TextWatcherAdapter() {
+			
+			@Override
+			public void afterTextChanged(Editable paramEditable) {
+				initAutoComplette(regionPref, new Runnable() {
+					
+					@Override
+					public void run() {
+						getModel().loadRegions(regionPref.getText(), createAutoCompletteHandler(regionPref));
+					}
+					
+				});
+			}
+			
+		});
 		locationCat.addPreference(regionPref);
 		
 		final AutoCompletePreference cityPref = new AutoCompletePreference(this);
 		cityPref.setTitle(R.string.city);
 		cityPref.setText(personalData.getCity());
 		cityPref.setSummary(personalData.getCity());
+		cityPref.getEditText().addTextChangedListener(new TextWatcherAdapter() {
+			
+			@Override
+			public void afterTextChanged(Editable paramEditable) {
+				initAutoComplette(cityPref, new Runnable() {
+					
+					@Override
+					public void run() {
+						getModel().loadCities(cityPref.getText(), createAutoCompletteHandler(cityPref));
+					}
+					
+				});
+			}
+			
+		});
 		locationCat.addPreference(cityPref);
 		
 		final PreferenceCategory othersCat = new PreferenceCategory(this);
@@ -263,6 +268,46 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		sexPref.setTitle(R.string.sex);
 		sexPref.setSummary(getSex(this, personalData.getSex()));
 		othersCat.addPreference(sexPref);
+	}
+	
+	private void initAutoComplette(final AutoCompletePreference pref, final Runnable method) {
+		if (timer != null) timer.cancel();
+		timer = new Timer();
+		timer.schedule(new TimerTask() {
+			
+			@Override
+			public void run() {
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						setProgressBarIndeterminateVisibility(true);
+						method.run();
+					}
+					
+				});
+			}
+			
+		}, 500);
+	}
+	
+	private ModelActionListener<PlayerData> createAutoCompletteHandler(final AutoCompletePreference pref) {
+		return new ModelActionListener<PlayerData>() {
+			
+			@Override
+			public void modelActionPerformed(ModelActionEvent<PlayerData> e) {
+				new MillModelActivityAdapter<PlayerData>(PlayerSettingsActivity.this, e) {
+					
+					@Override
+					public void onEvent(PlayerData e) {
+						setProgressBarIndeterminateVisibility(false);
+						pref.setItems(e.getPlaces());
+					}
+					
+				};
+			}
+			
+		};
 	}
 	
 	private PlayerReturn getReturn(int i) {
