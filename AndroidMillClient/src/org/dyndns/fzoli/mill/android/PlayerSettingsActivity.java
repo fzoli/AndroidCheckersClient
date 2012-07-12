@@ -335,7 +335,23 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 					public void onDateSet(DatePicker picker, int year, int month, int day) {
 						final Calendar c = Calendar.getInstance();
 						c.set(year, month, day);
-						setBirthDate(c.getTime());
+						final Date d = c.getTime();
+						if (InputValidator.isBirthDateValid(d)) {
+							if (!d.equals(getModel().getCache().getPlayer().getPersonalData().getBirthDate())) {
+								getModel().setPersonalData(PersonalDataType.BIRTH_DATE, Long.toString(d.getTime()), new ModelActionListener<Integer>() {
+									
+									@Override
+									public void modelActionPerformed(ModelActionEvent<Integer> e) {
+										new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e);
+									}
+									
+								});
+								setBirthDate(d);
+							}
+						}
+						else {
+							showToast(R.string.wrong_value);
+						}
 					}
 					
 				}, args.getInt(KEY_YEAR), args.getInt(KEY_MONTH), args.getInt(KEY_DAY));
@@ -395,6 +411,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 									default:
 										ok = false;
 										val = oldVal;
+										showToast(R.string.wrong_value);
 								}
 								switch (type) {
 									case COUNTRY:

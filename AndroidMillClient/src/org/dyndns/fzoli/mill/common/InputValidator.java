@@ -1,5 +1,6 @@
 package org.dyndns.fzoli.mill.common;
 
+import java.util.Date;
 import java.util.regex.Pattern;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -51,6 +52,12 @@ public class InputValidator {
     
     public static boolean isNameValid(String value) {
         return isValid(PATTERN_NAME, value);
+    }
+    
+    public static boolean isBirthDateValid(Date date) {
+        if (date == null) return false;
+        Date now = new Date();
+        return !(date.after(now) || Math.abs(date.getTime() - now.getTime()) > 150 * 365.24 * 24 * 60 * 60 * 1000);
     }
     
     public static String md5Hex(String s) {
