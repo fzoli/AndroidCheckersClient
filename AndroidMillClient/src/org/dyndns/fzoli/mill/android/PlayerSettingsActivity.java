@@ -133,6 +133,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		
 		final EditTextPreference firstNamePref = new EditTextPreference(this);
 		final EditTextPreference lastNamePref = new EditTextPreference(this);
+		final CheckBoxPreference inverseNamePref = new CheckBoxPreference(this);
 		
 		final OnPreferenceChangeListener onNameChange = new Preference.OnPreferenceChangeListener() {
 			
@@ -156,6 +157,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 										case OK:
 											if (preference == firstNamePref) personalData.setFirstName(value);
 											else personalData.setLastName(value);
+											setInverseNameEnabled(inverseNamePref, personalData);
 											break;
 									}
 								}
@@ -186,9 +188,8 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		lastNamePref.setOnPreferenceChangeListener(onNameChange);
 		nameCat.addPreference(lastNamePref);
 		
-		final CheckBoxPreference inverseNamePref = new CheckBoxPreference(this);
 		inverseNamePref.setTitle(R.string.inverse_name);
-		inverseNamePref.setChecked(personalData.isInverseName());
+		setInverseNameEnabled(inverseNamePref, personalData);
 		inverseNamePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 			
 			@Override
@@ -337,17 +338,24 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 						c.set(year, month, day);
 						final Date d = c.getTime();
 						if (InputValidator.isBirthDateValid(d)) {
-							if (!d.equals(getModel().getCache().getPlayer().getPersonalData().getBirthDate())) {
-								getModel().setPersonalData(PersonalDataType.BIRTH_DATE, Long.toString(d.getTime()), new ModelActionListener<Integer>() {
-									
-									@Override
-									public void modelActionPerformed(ModelActionEvent<Integer> e) {
-										new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e);
-									}
-									
-								});
-								setBirthDate(d);
-							}
+							birthdayPref.setEnabled(false);
+							getModel().setPersonalData(PersonalDataType.BIRTH_DATE, Long.toString(d.getTime()), new ModelActionListener<Integer>() {
+								
+								@Override
+								public void modelActionPerformed(ModelActionEvent<Integer> e) {
+									new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e) {
+										
+										@Override
+										public void onEvent(int e) {
+											birthdayPref.setEnabled(true);
+											getModel().getCache().getPlayer().getPersonalData().setBirthDate(d);
+										};
+											
+									};
+								}
+								
+							});
+							setBirthDate(d);
 						}
 						else {
 							showToast(R.string.wrong_value);
@@ -357,6 +365,17 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 				}, args.getInt(KEY_YEAR), args.getInt(KEY_MONTH), args.getInt(KEY_DAY));
 		}
 		return super.onCreateDialog(id, args);
+	}
+	
+	private void setInverseNameEnabled(CheckBoxPreference pref, PersonalData personalData) {
+		if (InputValidator.isNameValid(personalData.getFirstName()) && InputValidator.isNameValid(personalData.getLastName())) {
+			pref.setChecked(personalData.isInverseName());
+			pref.setEnabled(true);
+		}
+		else {
+			pref.setChecked(false);
+			pref.setEnabled(false);
+		}
 	}
 	
 	private void setLocationsEnabled() {
