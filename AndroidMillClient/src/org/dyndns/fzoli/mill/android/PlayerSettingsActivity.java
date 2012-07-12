@@ -213,6 +213,42 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			}
 			
 		});
+		countryPref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference paramPreference, Object paramObject) {
+				setProgressBarIndeterminateVisibility(true);
+				getModel().setPersonalData(PersonalDataType.COUNTRY, countryPref.getText(), new ModelActionListener<Integer>() {
+					
+					@Override
+					public void modelActionPerformed(ModelActionEvent<Integer> e) {
+						new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e) {
+							
+							@Override
+							public void onEvent(int e) {
+								setProgressBarIndeterminateVisibility(false);
+								String val;
+								switch (getReturn(e)) {
+									case OK:
+										val = countryPref.getText();
+										break;
+									default:
+										val = personalData.getCountry();
+								}
+								personalData.setCountry(val);
+								countryPref.setText(val);
+								countryPref.setSummary(val);
+								setLocationsEnabled();
+							}
+							
+						};
+					}
+					
+				});
+				return true;
+			}
+			
+		});
 		locationCat.addPreference(countryPref);
 		
 		regionPref = new AutoCompletePreference(this);
@@ -276,8 +312,8 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	
 	private void setLocationsEnabled() {
 		PersonalData data = getModel().getCache().getPlayer().getPersonalData();
-		regionPref.setEnabled(data.getRegion() != null);
-		cityPref.setEnabled(data.getCity() != null);
+		regionPref.setEnabled(data.getCountry() != null);
+		cityPref.setEnabled(data.getRegion() != null);
 	}
 	
 	private void initAutoComplette(final AutoCompletePreference pref, final Runnable method) {
