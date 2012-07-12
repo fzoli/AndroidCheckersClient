@@ -26,7 +26,6 @@ import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -34,19 +33,11 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.Editable;
-import android.view.Window;
 import android.widget.Toast;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
 	private AutoCompletePreference regionPref, cityPref;
-	
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		super.onCreate(savedInstanceState);
-		setProgressBarIndeterminateVisibility(false);
-	}
 	
 	@Override
 	@SuppressWarnings("unchecked")
@@ -142,7 +133,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 				boolean ret = InputValidator.isNameValid(value);
 				if (ret) {
 					preference.setSummary(value);
-					setProgressBarIndeterminateVisibility(true);
+					preference.setEnabled(false);
 					getModel().setPersonalData(preference == firstNamePref ? PersonalDataType.FIRST_NAME : PersonalDataType.LAST_NAME, value, new ModelActionListener<Integer>() {
 						
 						@Override
@@ -151,7 +142,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 								
 								@Override
 								public void onEvent(int e) {
-									setProgressBarIndeterminateVisibility(false);
+									preference.setEnabled(true);
 									switch (getReturn(e)) {
 										case OK:
 											if (preference == firstNamePref) personalData.setFirstName(value);
@@ -189,6 +180,38 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		final CheckBoxPreference inverseNamePref = new CheckBoxPreference(this);
 		inverseNamePref.setTitle(R.string.inverse_name);
 		inverseNamePref.setChecked(personalData.isInverseName());
+		inverseNamePref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+			
+			@Override
+			public boolean onPreferenceChange(Preference paramPreference, Object paramObject) {
+				inverseNamePref.setEnabled(false);
+				final boolean val = !inverseNamePref.isChecked();
+				getModel().setPersonalData(PersonalDataType.INVERSE_NAME, Boolean.toString(val), new ModelActionListener<Integer>() {
+					
+					@Override
+					public void modelActionPerformed(ModelActionEvent<Integer> e) {
+						new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e) {
+							
+							@Override
+							public void onEvent(int e) {
+								inverseNamePref.setEnabled(true);
+								switch (getReturn(e)) {
+									case OK:
+										personalData.setInverseName(val);
+										break;
+									default:
+										inverseNamePref.setChecked(!val);
+								}
+							}
+							
+						};
+					}
+					
+				});
+				return true;
+			}
+			
+		});
 		nameCat.addPreference(inverseNamePref);
 		
 		final PreferenceCategory locationCat = new PreferenceCategory(this);
@@ -295,7 +318,6 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 					
 					@Override
 					public void run() {
-						setProgressBarIndeterminateVisibility(true);
 						method.run();
 					}
 					
@@ -311,7 +333,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			@Override
 			public boolean onPreferenceChange(Preference paramPreference, Object paramObject) {
 				if (pref.getText().equals(oldVal)) return true;
-				setProgressBarIndeterminateVisibility(true);
+				pref.setEnabled(false);
 				getModel().setPersonalData(type, pref.getText(), new ModelActionListener<Integer>() {
 					
 					@Override
@@ -320,7 +342,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 							
 							@Override
 							public void onEvent(int e) {
-								setProgressBarIndeterminateVisibility(false);
+								pref.setEnabled(true);
 								String val;
 								boolean ok;
 								switch (getReturn(e)) {
@@ -379,7 +401,6 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 					
 					@Override
 					public void onEvent(PlayerData e) {
-						setProgressBarIndeterminateVisibility(false);
 						pref.setItems(e.getPlaces());
 					}
 					
