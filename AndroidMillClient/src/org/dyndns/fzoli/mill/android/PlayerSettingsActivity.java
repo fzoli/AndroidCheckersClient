@@ -25,9 +25,11 @@ import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -323,6 +325,54 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		final Preference sexPref = new Preference(this);
 		sexPref.setTitle(R.string.sex);
 		sexPref.setSummary(getSex(this, personalData.getSex()));
+		sexPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference paramPreference) {
+				final PlayerSettingsActivity c = PlayerSettingsActivity.this;
+				new AlertDialog.Builder(c)
+				.setTitle(R.string.sex)
+				.setItems(new String[]{getSex(c, Sex.MALE), getSex(c, Sex.FEMALE), getSex(c, Sex.OTHER)}, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						final Sex sex;
+						switch (which) {
+							case 0:
+								sex = Sex.MALE;
+								break;
+							case 1:
+								sex = Sex.FEMALE;
+								break;
+							default:
+								sex = Sex.OTHER;
+						}
+						if (sex.equals(personalData.getSex())) return;
+						sexPref.setEnabled(false);
+						getModel().setPersonalData(PersonalDataType.SEX, sex.name(), new ModelActionListener<Integer>() {
+							
+							@Override
+							public void modelActionPerformed(ModelActionEvent<Integer> e) {
+								new IntegerMillModelActivityAdapter(c, e) {
+									
+									@Override
+									public void onEvent(int e) {
+										sexPref.setEnabled(true);
+										personalData.setSex(sex);
+									}
+									
+								};
+							}
+							
+						});
+					}
+					
+				})
+				.create().show();
+				return true;
+			}
+			
+		});
 		othersCat.addPreference(sexPref);
 	}
 	
