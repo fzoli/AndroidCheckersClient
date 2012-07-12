@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.mill.android;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
@@ -24,8 +25,11 @@ import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
@@ -33,10 +37,15 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.Editable;
+import android.widget.DatePicker;
 import android.widget.Toast;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
+	private static final int ID_DATE_DIALOG = 0;
+	private static final String KEY_YEAR = "1", KEY_MONTH = "2", KEY_DAY = "3";
+	
+	private Preference birthdayPref;
 	private AutoCompletePreference regionPref, cityPref;
 	
 	@Override
@@ -290,15 +299,48 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		othersCat.setTitle(R.string.others);
 		personalPref.addPreference(othersCat);
 		
-		final Preference birthdayPref = new Preference(this);
+		birthdayPref = new Preference(this);
 		birthdayPref.setTitle(R.string.birthday);
-		birthdayPref.setSummary(getDate(personalData.getBirthDate()));
+		setBirthDate(personalData.getBirthDate());
+		birthdayPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference paramPreference) {
+				final Calendar c = Calendar.getInstance();
+				if (personalData.getBirthDate() != null) c.setTime(personalData.getBirthDate());
+			    Bundle bundle = new Bundle();
+			    bundle.putInt(KEY_YEAR, c.get(Calendar.YEAR));
+			    bundle.putInt(KEY_MONTH, c.get(Calendar.MONTH));
+			    bundle.putInt(KEY_DAY, c.get(Calendar.DAY_OF_MONTH));
+				showDialog(ID_DATE_DIALOG, bundle);
+				return true;
+			}
+			
+		});
 		othersCat.addPreference(birthdayPref);
 		
 		final Preference sexPref = new Preference(this);
 		sexPref.setTitle(R.string.sex);
 		sexPref.setSummary(getSex(this, personalData.getSex()));
 		othersCat.addPreference(sexPref);
+	}
+	
+	@Override
+	protected Dialog onCreateDialog(int id, Bundle args) {
+		switch (id) {
+			case ID_DATE_DIALOG:
+				return new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+					
+					@Override
+					public void onDateSet(DatePicker picker, int year, int month, int day) {
+						final Calendar c = Calendar.getInstance();
+						c.set(year, month, day);
+						setBirthDate(c.getTime());
+					}
+					
+				}, args.getInt(KEY_YEAR), args.getInt(KEY_MONTH), args.getInt(KEY_DAY));
+		}
+		return super.onCreateDialog(id, args);
 	}
 	
 	private void setLocationsEnabled() {
@@ -414,8 +456,9 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		return getEnumValue(PlayerReturn.class, i);
 	}
 	
-	public static String getDate(Date date) {
-		return date == null ? "" : DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(date);
+	public void setBirthDate(Date date) {
+		String val = date == null ? "" : DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(date);
+		birthdayPref.setSummary(val);
 	}
 	
 	public static String getSex(Context context, Sex sex) {
