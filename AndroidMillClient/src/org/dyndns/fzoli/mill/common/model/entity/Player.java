@@ -89,4 +89,8 @@ public class Player extends BasePlayer {
         this.validated = validated;
     }
     
+    public String getFirstName() {
+        return getPersonalData() == null ? getPlayerName() : getPersonalData().getFirstName() == null ? getName() : getPersonalData().getFirstName();
+    }
+    
 }

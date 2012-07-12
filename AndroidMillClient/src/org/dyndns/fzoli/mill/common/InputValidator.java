@@ -51,6 +51,10 @@ public class InputValidator {
     }
     
     public static boolean isNameValid(String value) {
+        if(value != null && !value.isEmpty()) {
+            if(!value.contains(".") && !Character.isUpperCase(value.charAt(0))) return false;
+            if (value.contains(".") && !value.contains(" ")) return false;
+        }
         return isValid(PATTERN_NAME, value);
     }
     
