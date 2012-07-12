@@ -310,6 +310,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			
 			@Override
 			public boolean onPreferenceChange(Preference paramPreference, Object paramObject) {
+				if (pref.getText().equals(oldVal)) return true;
 				setProgressBarIndeterminateVisibility(true);
 				getModel().setPersonalData(type, pref.getText(), new ModelActionListener<Integer>() {
 					
