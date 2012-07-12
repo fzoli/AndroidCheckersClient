@@ -464,6 +464,8 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			public boolean onPreferenceChange(Preference paramPreference, Object paramObject) {
 				if (pref.getText().equals(oldVal)) return true;
 				pref.setEnabled(false);
+				regionPref.setEnabled(false);
+				cityPref.setEnabled(false);
 				getModel().setPersonalData(type, pref.getText(), new ModelActionListener<Integer>() {
 					
 					@Override
@@ -473,6 +475,8 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 							@Override
 							public void onEvent(int e) {
 								pref.setEnabled(true);
+								regionPref.setEnabled(true);
+								cityPref.setEnabled(true);
 								String val;
 								boolean ok;
 								switch (getReturn(e)) {
