@@ -359,6 +359,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 									public void onEvent(int e) {
 										sexPref.setEnabled(true);
 										personalData.setSex(sex);
+										sexPref.setSummary(getSex(c, sex));
 									}
 									
 								};
