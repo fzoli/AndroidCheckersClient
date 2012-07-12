@@ -218,7 +218,12 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 						//TODO
 						break;
 					case PERSONAL_DATA_CHANGE:
-						//TODO
+						PlayerData data = getModel().loadPlayer(e.getChangedPlayer());
+                        BasePlayer p = getModel().findPlayer(e.getChangedPlayer());
+                        if (p != null) {
+                            p.setPersonalData(data.getAskedPlayer().getPersonalData());
+                            initAdapter();
+                        }
 						break;
 				}
 			}

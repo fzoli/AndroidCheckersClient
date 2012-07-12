@@ -161,6 +161,11 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                         case AVATAR_DISABLE:
                             po.getPlayer().setAvatarEnabled(false);
                             break;
+//                        case PERSONAL_DATA_CHANGE:
+//                            PlayerData data = loadPlayer(e.getChangedPlayer());
+//                            p = findPlayer(l, e.getChangedPlayer());
+//                            if (p != null) p.setPersonalData(data.getAskedPlayer().getPersonalData());
+//                            break;
                     }
                 }
             }
@@ -168,6 +173,10 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
         catch (Exception ex) {
             ;
         }
+    }
+    
+    public BasePlayer findPlayer(String playerName) {
+        return findPlayer(getCache().getPlayer().createMergedPlayerList(), playerName);
     }
     
     private BasePlayer findPlayer(List<BasePlayer> l, String name) {

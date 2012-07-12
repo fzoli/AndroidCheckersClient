@@ -178,6 +178,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		};
 		
 		firstNamePref.setTitle(R.string.first_name);
+		firstNamePref.getEditText().setSingleLine();
 		firstNamePref.setText(personalData.getFirstName());
 		firstNamePref.setSummary(personalData.getFirstName());
 		firstNamePref.setOnPreferenceChangeListener(onNameChange);
@@ -185,6 +186,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		nameCat.addPreference(firstNamePref);
 		
 		lastNamePref.setTitle(R.string.last_name);
+		lastNamePref.getEditText().setSingleLine();
 		lastNamePref.setText(personalData.getLastName());
 		lastNamePref.setSummary(personalData.getLastName());
 		lastNamePref.setOnPreferenceChangeListener(onNameChange);

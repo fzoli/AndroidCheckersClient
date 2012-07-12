@@ -59,6 +59,10 @@ public class BasePlayer {
         return personalData;
     }
 
+    public void setPersonalData(PersonalData personalData) {
+        this.personalData = personalData;
+    }
+
     public void setOnline(boolean online) {
         this.online = online;
     }
