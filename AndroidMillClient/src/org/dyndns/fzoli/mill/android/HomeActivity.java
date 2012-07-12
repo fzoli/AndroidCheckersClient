@@ -368,8 +368,9 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 					@Override
 					public void onEvent(int e) {
 						switch (getReturn(e)) {
-							case OK: //TODO: Status és State ugyan az...
+							case OK:
 								pa.setStatus(0, ps.equals(OnlineStatus.ONLINE) ? Status.ONLINE : Status.INVISIBLE);
+								getModel().getCache().getPlayer().setOnline(ps.equals(OnlineStatus.ONLINE));
 						}
 					}
 					
