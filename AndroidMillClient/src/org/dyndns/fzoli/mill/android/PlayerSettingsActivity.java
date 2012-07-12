@@ -330,9 +330,12 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 								switch (type) {
 									case COUNTRY:
 										personalData.setCountry(val);
+										personalData.setRegion(null);
+										personalData.setCity(null);
 										break;
 									case REGION:
 										personalData.setRegion(val);
+										personalData.setCity(null);
 										break;
 									case CITY:
 										personalData.setCity(val);
