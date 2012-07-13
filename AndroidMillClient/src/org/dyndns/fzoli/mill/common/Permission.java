@@ -82,31 +82,27 @@ public enum Permission {
     private static final int MIN = 0, MAX = (int) Math.pow(2, Permission.values().length) - 1;
     
     public int getMask() {
-        return (int) Math.pow(2, ordinal());
+        return getMask(this);
     }
     
     public boolean hasPermission(int mask) {
-        if (mask == ROOT) return true;
-        if (mask < MIN || mask > MAX) return false;
-        return (mask & getMask()) != 0;
+        return hasPermission(mask, this);
+    }
+    
+    public boolean hasAllPermission() {
+        return hasAllPermission(getMask());
     }
     
     public int incPermission(int mask) {
-        if (!hasPermission(mask)) return mask + getMask();
-        else return mask;
+        return incPermission(mask, this);
     }
     
     public int decPermission(int mask) {
-        if (hasPermission(mask)) return mask - getMask();
-        else return mask;
+        return decPermission(mask, this);
     }
     
-    public static List<Permission> getPermissions(int mask) {
-        List<Permission> ps = new ArrayList<Permission>();
-        for (Permission p : Permission.values()) {
-            if (p.hasPermission(mask)) ps.add(p);
-        }
-        return ps;
+    public static int getMask(Permission p) {
+        return (int) Math.pow(2, p.ordinal());
     }
     
     public static int getMask(List<Permission> permissions) {
@@ -118,6 +114,35 @@ public enum Permission {
             i += p.getMask();
         }
         return i;
+    }
+    
+    public static List<Permission> getPermissions(int mask) {
+        List<Permission> ps = new ArrayList<Permission>();
+        for (Permission p : Permission.values()) {
+            if (p.hasPermission(mask)) ps.add(p);
+        }
+        return ps;
+    }
+    
+    public static boolean hasPermission(int mask, Permission p) {
+        if (mask == ROOT) return true;
+        if (mask < MIN || mask > MAX) return false;
+        return (mask & getMask(p)) != 0;
+    }
+    
+    public static boolean hasAllPermission(int mask) {
+        if (mask == ROOT) return true;
+        return mask == MAX;
+    }
+    
+    public static int incPermission(int mask, Permission p) {
+        if (!hasPermission(mask, p)) return mask + getMask(p);
+        else return mask;
+    }
+    
+    public static int decPermission(int mask, Permission p) {
+        if (hasPermission(mask, p)) return mask - getMask(p);
+        else return mask;
     }
     
 }
