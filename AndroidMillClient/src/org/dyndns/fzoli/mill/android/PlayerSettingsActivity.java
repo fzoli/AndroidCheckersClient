@@ -112,7 +112,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		optionsPref.addPreference(commonPref);
 		
 		final Preference avatarPref = new Preference(this);
-		avatarPref.setEnabled(false); //TODO: bug javítása után törölni az utasítást
+		//avatarPref.setEnabled(false); //TODO: bug javítása után törölni az utasítást
 		avatarPref.setTitle(R.string.avatar);
 		avatarPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
 			
