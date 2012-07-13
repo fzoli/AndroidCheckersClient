@@ -161,11 +161,11 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                         case AVATAR_DISABLE:
                             po.getPlayer().setAvatarEnabled(false);
                             break;
-//                        case PERSONAL_DATA_CHANGE:
-//                            PlayerData data = loadPlayer(e.getChangedPlayer());
-//                            p = findPlayer(l, e.getChangedPlayer());
-//                            if (p != null) p.setPersonalData(data.getAskedPlayer().getPersonalData());
-//                            break;
+                        case PERSONAL_DATA_CHANGE:
+                            PlayerData data = loadPlayer(e.getChangedPlayer());
+                            p = findPlayer(l, e.getChangedPlayer());
+                            if (p != null) p.setPersonalData(data.getAskedPlayer().getPersonalData());
+                            break;
                     }
                 }
             }
