@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.mill.client.model;
 
 import java.util.List;
+
 import org.dyndns.fzoli.mill.common.key.ModelKeys;
 import org.dyndns.fzoli.mill.common.key.PersonalDataType;
 import org.dyndns.fzoli.mill.common.key.PlayerKeys;
@@ -161,8 +162,13 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
                         case AVATAR_DISABLE:
                             po.getPlayer().setAvatarEnabled(false);
                             break;
-                        case PERSONAL_DATA_CHANGE:
+                        case RELOAD:
                             PlayerData data = loadPlayer(e.getChangedPlayer());
+                            p = findPlayer(l, e.getChangedPlayer());
+                            if (p != null) p.reload(data.getAskedPlayer());
+                            break;
+                        case PERSONAL_DATA_CHANGE:
+                            data = loadPlayer(e.getChangedPlayer());
                             p = findPlayer(l, e.getChangedPlayer());
                             if (p != null) p.setPersonalData(data.getAskedPlayer().getPersonalData());
                             break;

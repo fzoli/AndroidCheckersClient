@@ -202,6 +202,9 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 					case SUSPEND:
 						adapter.removeItem(e.getChangedPlayer());
 						break;
+					case RELOAD:
+						initAdapter();
+						break;
 					case UNSUSPEND:
 						initAdapter();
 						break;

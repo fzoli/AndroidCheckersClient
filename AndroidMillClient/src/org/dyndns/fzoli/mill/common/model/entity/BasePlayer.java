@@ -66,6 +66,31 @@ public class BasePlayer {
     public void setOnline(boolean online) {
         this.online = online;
     }
+
+    public void setPlayerStatus(PlayerStatus playerStatus) {
+        this.playerStatus = playerStatus;
+    }
+
+    public void setSignInDate(Date signInDate) {
+        this.signInDate = signInDate;
+        if (signInDate != null) this.signIn = signInDate.getTime();
+        else signIn = null;
+    }
+
+    public void setSignUpDate(Date signUpDate) {
+        this.signUpDate = signUpDate;
+        if (signUpDate != null) this.signUp = signUpDate.getTime();
+        else signUp = null;
+    }
+    
+    public void reload(BasePlayer bp) {
+        if (bp == null) return;
+        setPersonalData(bp.getPersonalData());
+        setOnline(bp.isOnline());
+        setPlayerStatus(bp.getPlayerStatus());
+        setSignInDate(bp.getSignInDate());
+        setSignUpDate(bp.getSignUpDate());
+    }
     
     public static void orderList(List<BasePlayer> ls) {
         if (ls == null) return;
