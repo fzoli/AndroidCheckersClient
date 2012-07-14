@@ -61,7 +61,8 @@ public class InputValidator {
     public static boolean isBirthDateValid(Date date) {
         if (date == null) return false;
         Date now = new Date();
-        return !(date.after(now) || Math.abs(date.getTime() - now.getTime()) > 150 * 365.24 * 24 * 60 * 60 * 1000);
+        long l = Math.abs(date.getTime() - now.getTime());
+        return !(date.after(now) || l > 150 * 365.24 * 24 * 60 * 60 * 1000 || l < 2 * 365.24 * 24 * 60 * 60 * 1000);
     }
     
     public static String md5Hex(String s) {
