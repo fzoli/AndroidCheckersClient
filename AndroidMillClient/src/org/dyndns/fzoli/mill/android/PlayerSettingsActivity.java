@@ -23,6 +23,7 @@ import org.dyndns.fzoli.mill.common.Permission;
 import org.dyndns.fzoli.mill.common.key.PersonalDataType;
 import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.PersonalData;
+import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.entity.Sex;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
@@ -45,6 +46,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.Editable;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
@@ -410,7 +412,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			Permission.Group group = perm.getGroup();
 			List<CheckBoxIconPreference> l = permissionPrefs.get(group);
 			if (l == null) permissionPrefs.put(group, l = new ArrayList<CheckBoxIconPreference>());
-			CheckBoxIconPreference pref = new CheckBoxIconPreference(PlayerSettingsActivity.this, R.drawable.menu_info);
+			final CheckBoxIconPreference pref = new CheckBoxIconPreference(PlayerSettingsActivity.this, R.drawable.menu_info);
 			try {
 				int res = (Integer) R.string.class.getField("perm" + i).get(tmp);
 				pref.setTitle(getString(res));
@@ -418,6 +420,34 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			catch (Exception ex) {
 				pref.setTitle(perm.name());
 			}
+			try {
+				int res = (Integer) R.string.class.getField("perm" + i + "_sum").get(tmp);
+				pref.setSummary(getString(res));
+			}
+			catch (Exception ex) {
+				;
+			}
+			String tmps;
+			try {
+				int res = (Integer) R.string.class.getField("perm" + i + "_inf").get(tmp);
+				tmps = getString(res);
+			}
+			catch (Exception ex) {
+				tmps = "-";
+			}
+			final String inf = tmps;
+			pref.getIconView().setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					new AlertDialog.Builder(PlayerSettingsActivity.this).setIcon(android.R.drawable.ic_dialog_info).setMessage(inf).setTitle(pref.getTitle()).setCancelable(true).create().show();
+				}
+				
+			});
+			Player p = getModel().getCache().getPlayer();
+			if (perm.equals(Permission.SHIELD_MODE)) pref.setEnabled(false);
+			else pref.setEnabled(perm.hasPermission(p.getPermissionMask(false)));
+			pref.setChecked(perm.hasPermission(p.getPermissionMask(true)));
 			l.add(pref);
 		}
 		Permission.Group[] groups = Permission.Group.values();
