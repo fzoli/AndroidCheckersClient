@@ -1,19 +1,23 @@
 package org.dyndns.fzoli.mill.android;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.dyndns.fzoli.android.widget.AutoCompletePreference;
+import org.dyndns.fzoli.android.widget.CheckBoxIconPreference;
 import org.dyndns.fzoli.android.widget.TextWatcherAdapter;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
+import org.dyndns.fzoli.mill.common.Permission;
 import org.dyndns.fzoli.mill.common.key.PersonalDataType;
 import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.PersonalData;
@@ -39,13 +43,14 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.Editable;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
 public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceActivity<PlayerEvent, PlayerData> {
 	
 	private static final int ID_DATE_DIALOG = 0;
-	private static final String KEY_YEAR = "1", KEY_MONTH = "2", KEY_DAY = "3";
+	private static final String KEY_YEAR = "year", KEY_MONTH = "month", KEY_DAY = "day";
 	
 	private Preference birthdayPref;
 	private AutoCompletePreference regionPref, cityPref;
@@ -125,13 +130,13 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		});
 		optionsPref.addPreference(avatarPref);
 		final PersonalData personalData = getModel().getCache().getPlayer().getPersonalData();
-		final PreferenceScreen personalPref = getPreferenceManager().createPreferenceScreen(this);
-		personalPref.setTitle(R.string.personal_datas);
-		optionsPref.addPreference(personalPref);
+		final PreferenceScreen personalScreen = getPreferenceManager().createPreferenceScreen(this);
+		personalScreen.setTitle(R.string.personal_datas);
+		optionsPref.addPreference(personalScreen);
 		
 		final PreferenceCategory nameCat = new PreferenceCategory(this);
 		nameCat.setTitle(R.string.name);
-		personalPref.addPreference(nameCat);
+		personalScreen.addPreference(nameCat);
 		
 		final EditTextPreference firstNamePref = new EditTextPreference(this);
 		final EditTextPreference lastNamePref = new EditTextPreference(this);
@@ -230,7 +235,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		
 		final PreferenceCategory locationCat = new PreferenceCategory(this);
 		locationCat.setTitle(R.string.location);
-		personalPref.addPreference(locationCat);
+		personalScreen.addPreference(locationCat);
 		
 		final AutoCompletePreference countryPref = new AutoCompletePreference(this);
 		countryPref.setTitle(R.string.country);
@@ -302,7 +307,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		
 		final PreferenceCategory othersCat = new PreferenceCategory(this);
 		othersCat.setTitle(R.string.others);
-		personalPref.addPreference(othersCat);
+		personalScreen.addPreference(othersCat);
 		
 		birthdayPref = new Preference(this);
 		birthdayPref.setTitle(R.string.birthday);
@@ -377,6 +382,31 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			
 		});
 		othersCat.addPreference(sexPref);
+		
+		final List<CheckBoxPreference> permissionPrefs = new ArrayList<CheckBoxPreference>();
+		
+		for (Permission p : Permission.values()) {
+			CheckBoxPreference pref = new CheckBoxPreference(this);
+			pref.setTitle(p.name());
+			permissionPrefs.add(pref);
+		}
+		
+		final CheckBoxIconPreference testPref = new CheckBoxIconPreference(this, R.drawable.menu_info);
+		testPref.setTitle("Test");
+		
+		testPref.getIconView().setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				new AlertDialog.Builder(PlayerSettingsActivity.this).setIcon(android.R.drawable.ic_dialog_info).setMessage("Ez egy hosszú tesztüzenet sok baromsággal az első mondat után. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tempor est nibh, malesuada pulvinar augue. Etiam luctus mauris a ante aliquet iaculis. Aliquam eget volutpat nisl. Praesent ut velit at dui posuere dignissim blandit in ligula. Sed iaculis nisl ac ligula porta gravida. Suspendisse sed sapien massa, et ullamcorper enim.").setTitle("Test").setCancelable(true).create().show();
+			}
+			
+		});
+		
+		root.addPreference(testPref);
+		
+//		final PreferenceScreen permissionScreen = getPreferenceManager().createPreferenceScreen(this);
+//		permissionScreen.setTitle(R.string.permissions);
 	}
 	
 	@Override

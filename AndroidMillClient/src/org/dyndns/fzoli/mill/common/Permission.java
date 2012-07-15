@@ -65,21 +65,35 @@ import java.util.List;
  */
 public enum Permission {
     
-    STATISTICS_HIDE,
-    INVISIBLE_STATUS_DETECT,
-    SUSPENDED_PLAYER_DETECT,
-    HIDDEN_PLAYER_DETECT,
-    HIDDENABLE,
-    SEE_EVERYONES_AVATAR,
-    CHAT_EVERYONE,
-    SYSTEM_MESSAGE,
-    PLAYER_BANN,
-    PLAYER_DELETE,
-    PERMISSION_EDIT,
-    SHIELD_MODE;
+    STATISTICS_HIDE(Group.STATE_INVERSE),
+    INVISIBLE_STATUS_DETECT(Group.STATE_NORMAL),
+    SUSPENDED_PLAYER_DETECT(Group.STATE_NORMAL),
+    HIDDEN_PLAYER_DETECT(Group.STATE_NORMAL),
+    HIDDENABLE(Group.STATE_INVERSE),
+    SEE_EVERYONES_AVATAR(Group.STATE_NORMAL),
+    CHAT_EVERYONE(Group.STATE_NORMAL),
+    SYSTEM_MESSAGE(Group.SYSTEM),
+    PLAYER_BANN(Group.TARGET),
+    PLAYER_DELETE(Group.TARGET),
+    PERMISSION_EDIT(Group.TARGET),
+    SHIELD_MODE(Group.STATE_INVERSE);
     
     public static final int ROOT = -1;
     private static final int MIN = 0, MAX = (int) Math.pow(2, Permission.values().length) - 1;
+    
+    public static enum Group {
+        TARGET, STATE_NORMAL, STATE_INVERSE, SYSTEM
+    };
+    
+    private final Group GROUP;
+    
+    private Permission(Group group) {
+        GROUP = group;
+    }
+    
+    public Group getGroup() {
+        return GROUP;
+    }
     
     public int getMask() {
         return getMask(this);

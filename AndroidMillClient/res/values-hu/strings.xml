@@ -115,4 +115,21 @@
     <string name="city">Város</string>
     <string name="other">Egyéb</string>
     <string name="others">Egyéb</string>
+    <string name="permissions">Jogosultságok</string>
+    <string name="permgrp0">Gyakorolható jogosultságok</string><!-- műveletre ad engedélyt -->
+    <string name="permgrp1">Státusz jogosultságok</string><!-- (állandó érvényességű, bejelentkezett játékosra ható) -->
+    <string name="permgrp2">Státusz-mód jogosultságok</string><!-- (állandó érvényességű, más játékosokra ható) -->
+    <string name="permgrp3">Rendszerszintű jogosultságok</string><!-- (nem játékoshoz kötődő) -->
+    <string name="perm0">Statisztika elrejtése</string><!-- state_inverse -->
+    <string name="perm1">Láthatatlan státusz észlelése</string><!-- state_normal -->
+    <string name="perm2">Felfüggesztett játékosok észlelése</string><!-- state_normal -->
+    <string name="perm3">Rejtett játékosok észlelése</string><!-- state_normal -->
+    <string name="perm4">Rejtett mód aktiválása</string><!-- state_inverse -->
+    <string name="perm5">Összes avatár mutatása</string><!-- state_normal -->
+    <string name="perm6">Chat mindenkivel</string><!-- state_normal -->
+    <string name="perm7">Rendszerüzenet küldés</string><!-- system -->
+    <string name="perm8">Játékosok bannolása</string><!-- target -->
+    <string name="perm9">Játékosok felfüggesztése</string><!-- target -->
+    <string name="perm10">Jogosultságok szerkesztése</string><!-- target -->
+    <string name="perm11">Védelem mód</string><!-- state_inverse -->
 </resources>
