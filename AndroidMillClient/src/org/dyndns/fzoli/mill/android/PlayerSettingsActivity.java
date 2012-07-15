@@ -4,8 +4,10 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -43,7 +45,6 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.Editable;
-import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
 
@@ -383,30 +384,59 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		});
 		othersCat.addPreference(sexPref);
 		
-		final List<CheckBoxPreference> permissionPrefs = new ArrayList<CheckBoxPreference>();
+//		final CheckBoxIconPreference testPref = new CheckBoxIconPreference(this, R.drawable.menu_info);
+//		testPref.setTitle("Test");
+//		
+//		testPref.getIconView().setOnClickListener(new View.OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+//				new AlertDialog.Builder(PlayerSettingsActivity.this).setIcon(android.R.drawable.ic_dialog_info).setMessage("Ez egy hosszú tesztüzenet sok baromsággal az első mondat után. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tempor est nibh, malesuada pulvinar augue. Etiam luctus mauris a ante aliquet iaculis. Aliquam eget volutpat nisl. Praesent ut velit at dui posuere dignissim blandit in ligula. Sed iaculis nisl ac ligula porta gravida. Suspendisse sed sapien massa, et ullamcorper enim.").setTitle("Test").setCancelable(true).create().show();
+//			}
+//			
+//		});
+//		
+//		root.addPreference(testPref);
 		
-		for (Permission p : Permission.values()) {
-			CheckBoxPreference pref = new CheckBoxPreference(this);
-			pref.setTitle(p.name());
-			permissionPrefs.add(pref);
-		}
+		final PreferenceScreen permissionScreen = getPreferenceManager().createPreferenceScreen(this);
+		permissionScreen.setTitle(R.string.permissions);
+		root.addPreference(permissionScreen);
 		
-		final CheckBoxIconPreference testPref = new CheckBoxIconPreference(this, R.drawable.menu_info);
-		testPref.setTitle("Test");
-		
-		testPref.getIconView().setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				new AlertDialog.Builder(PlayerSettingsActivity.this).setIcon(android.R.drawable.ic_dialog_info).setMessage("Ez egy hosszú tesztüzenet sok baromsággal az első mondat után. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tempor est nibh, malesuada pulvinar augue. Etiam luctus mauris a ante aliquet iaculis. Aliquam eget volutpat nisl. Praesent ut velit at dui posuere dignissim blandit in ligula. Sed iaculis nisl ac ligula porta gravida. Suspendisse sed sapien massa, et ullamcorper enim.").setTitle("Test").setCancelable(true).create().show();
+		final R.string tmp = new R.string();
+		final Map<Permission.Group, List<CheckBoxIconPreference>> permissionPrefs = new HashMap<Permission.Group, List<CheckBoxIconPreference>>();
+		Permission[] perms = Permission.values();
+		for (int i = 0; i < perms.length; i++) {
+			Permission perm = perms[i];
+			Permission.Group group = perm.getGroup();
+			List<CheckBoxIconPreference> l = permissionPrefs.get(group);
+			if (l == null) permissionPrefs.put(group, l = new ArrayList<CheckBoxIconPreference>());
+			CheckBoxIconPreference pref = new CheckBoxIconPreference(PlayerSettingsActivity.this, R.drawable.menu_info);
+			try {
+				int res = (Integer) R.string.class.getField("perm" + i).get(tmp);
+				pref.setTitle(getString(res));
 			}
-			
-		});
-		
-		root.addPreference(testPref);
-		
-//		final PreferenceScreen permissionScreen = getPreferenceManager().createPreferenceScreen(this);
-//		permissionScreen.setTitle(R.string.permissions);
+			catch (Exception ex) {
+				pref.setTitle(perm.name());
+			}
+			l.add(pref);
+		}
+		Permission.Group[] groups = Permission.Group.values();
+		for (int i = 0; i < groups.length; i++) {
+			Permission.Group group = groups[i];
+			PreferenceCategory cat = new PreferenceCategory(PlayerSettingsActivity.this);
+			try {
+				int res = (Integer) R.string.class.getField("permgrp" + i).get(tmp);
+				cat.setTitle(getString(res));
+			}
+			catch (Exception ex) {
+				cat.setTitle(group.name());
+			}
+			permissionScreen.addPreference(cat);
+			List<CheckBoxIconPreference> prefs = permissionPrefs.get(group);
+			for (CheckBoxIconPreference pref : prefs) {
+				cat.addPreference(pref);
+			}
+		}
 	}
 	
 	@Override

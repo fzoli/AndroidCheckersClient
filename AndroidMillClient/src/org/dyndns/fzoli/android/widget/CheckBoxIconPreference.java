@@ -14,6 +14,7 @@ public class CheckBoxIconPreference extends CheckBoxPreference {
 	private final ImageView iconView;
 	private final int margin;
 	
+	private LinearLayout layout;
 	private View lastView;
 	
 	public CheckBoxIconPreference(Activity context, int resourceIcon) {
@@ -32,8 +33,6 @@ public class CheckBoxIconPreference extends CheckBoxPreference {
 	public ImageView getIconView() {
 		return iconView;
 	}
-	
-	private LinearLayout layout;
 	
 	@Override
 	public View getView(View convertView, ViewGroup parent) {
