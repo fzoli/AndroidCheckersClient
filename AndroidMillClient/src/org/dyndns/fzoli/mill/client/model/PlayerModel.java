@@ -73,6 +73,10 @@ public class PlayerModel extends AbstractOnlineModel<PlayerEvent, PlayerData> im
             .setFirst(KEY_PASSWORD, password), callback);
     }
     
+    public void setActivePermission(int mask, ModelActionListener<Integer> callback) {
+        setProperty(new RequestMap().setFirst(KEY_REQUEST, REQ_SET_ACTIVE_PERMISSION).setFirst(KEY_VALUE, Integer.toString(mask)), callback);
+    }
+    
     public void setEmail(String password, String email, boolean safe, ModelActionListener<Integer> callback) {
         setProperty(new RequestMap()
             .setFirst(KEY_REQUEST, safe ? REQ_SAFE_SET_EMAIL : REQ_SET_EMAIL)

@@ -88,6 +88,15 @@ public class Player extends BasePlayer {
     public void setValidated(boolean validated) {
         this.validated = validated;
     }
+
+    public void setPermissionMask(boolean active, int mask) {
+        if (active) {
+            activePermission = mask;
+        }
+        else {
+            permission = mask;
+        }
+    }
     
     public String getFirstName() {
         return getPersonalData() == null ? getPlayerName() : getPersonalData().getFirstName() == null ? getName() : getPersonalData().getFirstName();

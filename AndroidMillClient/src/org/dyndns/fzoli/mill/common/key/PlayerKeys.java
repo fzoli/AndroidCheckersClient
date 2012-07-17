@@ -25,5 +25,6 @@ public interface PlayerKeys {
     String REQ_GET_COUNTRIES = "get_countries";
     String REQ_GET_REGIONS = "get_regions";
     String REQ_GET_CITIES = "get_cities";
+    String REQ_SET_ACTIVE_PERMISSION = "set_active_permission";
     
 }

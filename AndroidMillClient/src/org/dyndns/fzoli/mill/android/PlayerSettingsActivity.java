@@ -1,15 +1,15 @@
 package org.dyndns.fzoli.mill.android;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Map.Entry;
 
 import org.dyndns.fzoli.android.widget.AutoCompletePreference;
 import org.dyndns.fzoli.android.widget.CheckBoxIconPreference;
@@ -20,6 +20,7 @@ import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
 import org.dyndns.fzoli.mill.common.Permission;
+import org.dyndns.fzoli.mill.common.Permission.Group;
 import org.dyndns.fzoli.mill.common.key.PersonalDataType;
 import org.dyndns.fzoli.mill.common.key.PlayerReturn;
 import org.dyndns.fzoli.mill.common.model.entity.PersonalData;
@@ -386,32 +387,18 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		});
 		othersCat.addPreference(sexPref);
 		
-//		final CheckBoxIconPreference testPref = new CheckBoxIconPreference(this, R.drawable.menu_info);
-//		testPref.setTitle("Test");
-//		
-//		testPref.getIconView().setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				new AlertDialog.Builder(PlayerSettingsActivity.this).setIcon(android.R.drawable.ic_dialog_info).setMessage("Ez egy hosszú tesztüzenet sok baromsággal az első mondat után. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tempor est nibh, malesuada pulvinar augue. Etiam luctus mauris a ante aliquet iaculis. Aliquam eget volutpat nisl. Praesent ut velit at dui posuere dignissim blandit in ligula. Sed iaculis nisl ac ligula porta gravida. Suspendisse sed sapien massa, et ullamcorper enim.").setTitle("Test").setCancelable(true).create().show();
-//			}
-//			
-//		});
-//		
-//		root.addPreference(testPref);
-		
 		final PreferenceScreen permissionScreen = getPreferenceManager().createPreferenceScreen(this);
 		permissionScreen.setTitle(R.string.permissions);
 		root.addPreference(permissionScreen);
 		
 		final R.string tmp = new R.string();
-		final Map<Permission.Group, List<CheckBoxIconPreference>> permissionPrefs = new HashMap<Permission.Group, List<CheckBoxIconPreference>>();
+		final Map<Permission.Group, Map<CheckBoxIconPreference, Permission>> permissionPrefs = new HashMap<Permission.Group, Map<CheckBoxIconPreference, Permission>>();
 		Permission[] perms = Permission.values();
 		for (int i = 0; i < perms.length; i++) {
 			Permission perm = perms[i];
 			Permission.Group group = perm.getGroup();
-			List<CheckBoxIconPreference> l = permissionPrefs.get(group);
-			if (l == null) permissionPrefs.put(group, l = new ArrayList<CheckBoxIconPreference>());
+			Map<CheckBoxIconPreference, Permission> l = permissionPrefs.get(group);
+			if (l == null) permissionPrefs.put(group, l = new HashMap<CheckBoxIconPreference, Permission>());
 			final CheckBoxIconPreference pref = new CheckBoxIconPreference(PlayerSettingsActivity.this, R.drawable.menu_info);
 			try {
 				int res = (Integer) R.string.class.getField("perm" + i).get(tmp);
@@ -444,11 +431,68 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 				}
 				
 			});
-			Player p = getModel().getCache().getPlayer();
+			final Player p = getModel().getCache().getPlayer();
 			if (perm.equals(Permission.SHIELD_MODE)) pref.setEnabled(false);
 			else pref.setEnabled(perm.hasPermission(p.getPermissionMask(false)));
 			pref.setChecked(perm.hasPermission(p.getPermissionMask(true)));
-			l.add(pref);
+			pref.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					int mask = 0;
+					Iterator<Entry<Group, Map<CheckBoxIconPreference, Permission>>> it1 = permissionPrefs.entrySet().iterator();
+					while (it1.hasNext()) {
+						Iterator<Entry<CheckBoxIconPreference, Permission>> it2 = it1.next().getValue().entrySet().iterator();
+						while (it2.hasNext()) {
+							Entry<CheckBoxIconPreference, Permission> e = it2.next();
+							e.getKey().setEnabled(false);
+							if (pref == e.getKey() && !pref.isChecked()) {
+								mask += e.getValue().getMask();
+							}
+							if (e.getKey().isChecked() && pref != e.getKey()) {
+								mask += e.getValue().getMask();
+							}
+						}
+					}
+					final int getMask = p.getPermissionMask(true);
+					final int setMask = mask;
+					getModel().setActivePermission(mask, new ModelActionListener<Integer>() {
+						
+						@Override
+						public void modelActionPerformed(ModelActionEvent<Integer> e) {
+							new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e) {
+								
+								@Override
+								public void onEvent(int e) {
+									Iterator<Entry<Group, Map<CheckBoxIconPreference, Permission>>> it1 = permissionPrefs.entrySet().iterator();
+									while (it1.hasNext()) {
+										Iterator<Entry<CheckBoxIconPreference, Permission>> it2 = it1.next().getValue().entrySet().iterator();
+										while (it2.hasNext()) {
+											Entry<CheckBoxIconPreference, Permission> entry = it2.next();
+											if (entry.getValue().equals(Permission.SHIELD_MODE)) entry.getKey().setEnabled(false);
+											else entry.getKey().setEnabled(entry.getValue().hasPermission(p.getPermissionMask(false)));
+										}
+									}
+									int mask;
+									switch (getReturn(e)) {
+										case OK:
+											mask = setMask;
+											break;
+										default:
+											mask = getMask;
+									}
+									p.setPermissionMask(true, mask);
+								}
+								
+							};
+						}
+						
+					});
+					return true;
+				}
+				
+			});
+			l.put(pref, perm);
 		}
 		Permission.Group[] groups = Permission.Group.values();
 		for (int i = 0; i < groups.length; i++) {
@@ -462,9 +506,10 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 				cat.setTitle(group.name());
 			}
 			permissionScreen.addPreference(cat);
-			List<CheckBoxIconPreference> prefs = permissionPrefs.get(group);
-			for (CheckBoxIconPreference pref : prefs) {
-				cat.addPreference(pref);
+			Map<CheckBoxIconPreference, Permission> prefs = permissionPrefs.get(group);
+			Iterator<CheckBoxIconPreference> it = prefs.keySet().iterator();
+			while (it.hasNext()) {
+				cat.addPreference(it.next());
 			}
 		}
 	}
