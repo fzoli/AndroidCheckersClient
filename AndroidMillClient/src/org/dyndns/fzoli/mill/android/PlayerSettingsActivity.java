@@ -84,9 +84,23 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		return false;
 	}
 	
+	private int startMask;
+	
+	@Override
+	public void onBackPressed() {
+		int mask = getModel().getCache().getPlayer().getPermissionMask(true);
+		if (getConnectionBinder() != null && startMask != mask) {
+			startMask = mask;
+			getConnectionBinder().getModelMap().remove(getClassKey());
+			rebindConnectionService();
+		}
+		super.onBackPressed();
+	}
+	
 	@Override
 	public boolean processModelData(PlayerData e) {
-		if(super.processModelData(e)) {
+		if (super.processModelData(e)) {
+			startMask = e.getPlayer().getPermissionMask(true);
 			if (e.isCaptchaValidated()) initScreen();
 			else startActivity(new Intent(this, PlayerSettingsCaptchaActivity.class));
 			return true;
