@@ -146,7 +146,7 @@
     <string name="perm9">Felfüggesztés</string><!-- target -->
     <string name="perm9_inf">Ha ez a jog aktív, képes a játékosokat felfüggeszteni.\n\nA felfüggesztett játékos személyes adatai és jogosultsága alapértelmezésre áll vissza, és eltűnik a többiek elől a nyílvántartásból.</string>
     <string name="perm10">Jogszerkesztés</string><!-- target -->
-    <string name="perm10_inf">Ha ez a jog aktív, képes a játékosok jogosultságát szerkeszteni.\n\nHa a játékosnak új jogot ad, azonnal aktiválódik nála, ha a jogot elveszi, azonnal inaktiválódik.</string>
+    <string name="perm10_inf">Ha ez a jog aktív, képes a játékosok jogosultságát szerkeszteni.\n\nHa a játékosnak új jogot ad, azonnal aktiválódik nála - ha nem Státusz-mód jogosultság -, ha a jogot elveszi, azonnal inaktiválódik.</string>
     <string name="perm11">Védelem mód</string><!-- state_inverse -->
     <string name="perm11_inf">Ha ez a jog aktív, egyetlen jogot sem gyakorolhatnak a játékoson (ez alól kivétel a rendszergazda).\n\nEz a jog nem aktiválható és nem inaktiválható, és csak rendszergazda adhatja ill. veheti el.</string>
 </resources>
