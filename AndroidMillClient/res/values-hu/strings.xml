@@ -148,5 +148,5 @@
     <string name="perm10">Jogszerkesztés</string><!-- target -->
     <string name="perm10_inf">Ha ez a jog aktív, képes a játékosok jogosultságát szerkeszteni.\n\nHa a játékosnak új jogot ad, azonnal aktiválódik nála - ha nem Státusz-mód jogosultság -, ha a jogot elveszi, azonnal inaktiválódik.</string>
     <string name="perm11">Védelem mód</string><!-- state_inverse -->
-    <string name="perm11_inf">Ha ez a jog aktív, egyetlen jogot sem gyakorolhatnak a játékoson (ez alól kivétel a rendszergazda).\n\nEz a jog nem aktiválható és nem inaktiválható, mert állandóan aktív, és csak rendszergazda adhatja ill. veheti el.</string>
+    <string name="perm11_inf">Ha ez a jog aktív, egyetlen jogot sem gyakorolhatnak a játékoson (ez alól kivétel a rendszergazda).\n\nEz a jog nem aktiválható és nem inaktiválható, mert - ha van jogosultság rá - állandóan aktív, és csak rendszergazda adhatja ill. veheti el.</string>
 </resources>
