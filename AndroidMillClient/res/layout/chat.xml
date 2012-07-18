@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent">
+	<LinearLayout android:id="@+id/lUser"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentTop="true">
+<!--		<TextView android:gravity="center"-->
+<!--			android:layout_margin="4dp"-->
+<!--	    	android:textAppearance="?android:attr/textAppearanceMedium"-->
+<!--	    	android:layout_height="wrap_content"-->
+<!--	    	android:layout_width="fill_parent"-->
+<!--	    	android:id="@+id/tvUser"-->
+<!--	    	android:text="User" />-->
+	</LinearLayout>
+	<ScrollView android:layout_below="@+id/lUser"
+		android:layout_above="@+id/lSender"
+		android:id="@+id/svMessages"
+		android:layout_height="fill_parent"
+		android:layout_width="fill_parent" >
+		<LinearLayout android:orientation="vertical"
+			android:id="@+id/lMessages"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<!-- ide jönnek majd az üzenetek -->
+		</LinearLayout>
+	</ScrollView>
+	<LinearLayout android:id="@+id/lSender"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true">
+		<EditText android:layout_height="fill_parent"
+			android:layout_width="fill_parent"
+			android:id="@+id/etSender">
+			<requestFocus />
+		</EditText>
+	</LinearLayout>
+</RelativeLayout>
