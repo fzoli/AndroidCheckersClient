@@ -17,6 +17,7 @@
 		<activity android:name=".SignUpCaptchaActivity" />
 		<activity android:name=".SignUpActivity" />
 		<activity android:name=".HomeActivity" />
+		<activity android:name=".ChatActivity" />
 		<activity android:name=".PlayerAvatarActivity" />
 		<activity android:name=".PlayerAccountSettingsActivity" />
 		<activity android:name=".PlayerSettingsCaptchaActivity" />

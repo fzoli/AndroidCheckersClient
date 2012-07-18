@@ -6,6 +6,8 @@ package org.dyndns.fzoli.mill.common.key;
  */
 public interface ModelKeys {
     
+    String CHAT = "chat";
+    
     String PLAYER = "player";
     
     String PLAYER_BUILDER = "player_builder";
