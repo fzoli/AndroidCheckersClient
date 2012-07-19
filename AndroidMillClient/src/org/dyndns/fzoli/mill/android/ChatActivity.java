@@ -180,8 +180,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	
 	private void initMessages(List<Message> l, boolean reset) {
 		if (reset) lMessages.removeAllViews();
+		else lMessages.removeViewAt(lMessages.getChildCount() - 1);
+		LayoutInflater infalInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		for (Message msg : l) {
-			LayoutInflater infalInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        View msgView = infalInflater.inflate(R.layout.chat_msg, null);
 	        TextView tvUser = (TextView) msgView.findViewById(R.id.tvUser);
 	        TextView tvDate = (TextView) msgView.findViewById(R.id.tvDate);
@@ -200,6 +201,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	        tvMessage.setText(getSmiledText(msg.getText()));
 	        lMessages.addView(msgView);
 		}
+		View msgView = infalInflater.inflate(R.layout.chat_msg, null);
+		msgView.setVisibility(View.INVISIBLE);
+		lMessages.addView(msgView);
 		if (!reset) {
 			svChat.fullScroll(ScrollView.FOCUS_DOWN);
 			etChat.requestFocus();

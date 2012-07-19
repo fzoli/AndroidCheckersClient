@@ -40,6 +40,8 @@
 		<EditText android:layout_height="fill_parent"
 			android:layout_width="fill_parent"
 			android:layout_marginTop="4dp"
+			android:singleLine="true"
+			android:imeActionLabel="actionSend"
 			android:id="@+id/etChat">
 			<requestFocus />
 		</EditText>
