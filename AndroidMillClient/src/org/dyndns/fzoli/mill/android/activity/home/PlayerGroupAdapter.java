@@ -140,7 +140,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 	}
 	
 	@Override
-    public Object getChild(int groupPosition, int childPosition) {
+    public PlayerInfo getChild(int groupPosition, int childPosition) {
 		return CHILDRENS.get(groupPosition).get(childPosition);
     }
 

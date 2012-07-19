@@ -32,6 +32,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -304,6 +305,20 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		if (adapter.isEmpty()) {
 			TextView tvEmpty = (TextView) findViewById(R.id.tvEmpty);
 			tvEmpty.setVisibility(View.VISIBLE);
+		}
+		else {
+			getExpandableListView().setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+				
+				@Override
+				public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+					String name = adapter.getChild(groupPosition, childPosition).getPlayerName();
+					Intent i = new Intent(HomeActivity.this, ChatActivity.class);
+					i.putExtra(ChatActivity.KEY_PLAYER, name);
+					startActivity(i);
+					return true;
+				}
+				
+			});
 		}
 	}
 	

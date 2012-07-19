@@ -19,12 +19,18 @@ public class ChatModel extends AbstractOnlineModel<ChatEvent, ChatData> implemen
         super(connection, ModelKeys.CHAT, ChatEvent.class, ChatData.class);
     }
     
+    public void loadUnreadedMessages(String playerName, ModelActionListener<ChatData> callback) {
+        loadMessages(playerName, null, callback);
+    }
+    
     public void loadMessages(String playerName, Date startDate, ModelActionListener<ChatData> callback) {
-        getProperties(new RequestMap().setFirst(KEY_REQUEST, REQ_GET_MESSAGES).setFirst(KEY_PLAYER, playerName).setFirst(KEY_DATE, Long.toString(startDate.getTime())), callback);
+        RequestMap map = new RequestMap().setFirst(KEY_REQUEST, REQ_GET_MESSAGES).setFirst(KEY_PLAYER, playerName);
+        if (startDate != null) map.setFirst(KEY_DATE, Long.toString(startDate.getTime()));
+        getProperties(map, callback);
     }
     
     public void updateReadDate(String playerName, ModelActionListener<Integer> callback) {
-        askModel(new RequestMap().setFirst(KEY_REQUEST, REQ_UPDATE_READ_DATE), callback);
+        askModel(new RequestMap().setFirst(KEY_REQUEST, REQ_UPDATE_READ_DATE).setFirst(KEY_PLAYER, playerName), callback);
     }
     
     public void sendMessage(String playerName, String text, ModelActionListener<Integer> callback) {

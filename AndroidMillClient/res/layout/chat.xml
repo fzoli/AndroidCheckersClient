@@ -27,13 +27,19 @@
 			<!-- ide jönnek majd az üzenetek -->
 		</LinearLayout>
 	</ScrollView>
+	<ProgressBar android:visibility="gone"
+		android:layout_centerInParent="true"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		style="?android:attr/progressBarStyleLarge"
+		android:id="@+id/pbChat"/>
 	<LinearLayout android:id="@+id/lSender"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:layout_alignParentBottom="true">
 		<EditText android:layout_height="fill_parent"
 			android:layout_width="fill_parent"
-			android:id="@+id/etSender">
+			android:id="@+id/etChat">
 			<requestFocus />
 		</EditText>
 	</LinearLayout>

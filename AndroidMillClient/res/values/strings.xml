@@ -132,4 +132,5 @@
     <string name="perm9">Player delete</string>
     <string name="perm10">Permission edit</string>
     <string name="perm11">Shield mode</string>
+    <string name="chat">Chat</string>
 </resources>
