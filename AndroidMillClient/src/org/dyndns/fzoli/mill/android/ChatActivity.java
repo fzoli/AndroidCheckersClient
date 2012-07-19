@@ -214,6 +214,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	public boolean processModelChange(final ChatEvent e) {
 		if (super.processModelChange(e)) {
 			if (messages != null) {
+				e.getMessage().syncSendDate(getModel().getCache().getSync());
 				addMessage(e.getMessage());
 				getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
 					
@@ -251,6 +252,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 							
 							@Override
 							public void onEvent(final ChatData d) {
+								for (Message m : d.getMessages()) {
+									m.syncSendDate(getModel().getCache().getSync());
+								}
 								getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
 									
 									@Override

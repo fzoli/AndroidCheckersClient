@@ -8,6 +8,7 @@ import java.util.Date;
  */
 public class Message {
     
+    private Boolean sync;
     private String sender, address, text;
     private Date sendDate;
     protected long sendTime;
@@ -34,6 +35,12 @@ public class Message {
 
     public Date getSendDate() {
         return sendDate;
+    }
+
+    public void syncSendDate(int diff) {
+        if (sync != null && sync) return;
+        sync = true;
+        sendDate = new Date(sendDate.getTime() + diff);
     }
     
 }

@@ -9,7 +9,7 @@ import org.dyndns.fzoli.mill.common.model.entity.Message;
  */
 public class ChatData extends BaseOnlinePojo {
 
-    private Integer unreadedCount;
+    private Integer unreadedCount, sync;
     private List<Message> messages;
 
     public ChatData(String playerName) {
@@ -24,6 +24,14 @@ public class ChatData extends BaseOnlinePojo {
     public ChatData(String playerName, List<Message> messages) {
         super(playerName);
         this.messages = messages;
+    }
+
+    public Integer getSync() {
+        return sync;
+    }
+
+    public void setSync(Integer sync) {
+        this.sync = sync;
     }
 
     public Integer getUnreadedCount() {

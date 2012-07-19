@@ -51,6 +51,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		public void fireModelChanged(ModelChangeEvent<ChatEvent> e) {
 			if (e.getType() == ModelChangeEvent.TYPE_EVENT) {
 				Message m = e.getEvent().getMessage();
+				m.syncSendDate(chatModel.getCache().getSync());
 				List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
 				if (l != null) {
 					l.add(m);

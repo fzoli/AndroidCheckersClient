@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.mill.client.model;
 
 import java.util.Date;
+import org.dyndns.fzoli.mill.common.DateUtil;
 import org.dyndns.fzoli.mill.common.key.ChatKeys;
 import org.dyndns.fzoli.mill.common.key.ModelKeys;
 import org.dyndns.fzoli.mill.common.model.pojo.ChatData;
@@ -14,9 +15,14 @@ import org.dyndns.fzoli.mvc.common.request.map.RequestMap;
  * @author zoli
  */
 public class ChatModel extends AbstractOnlineModel<ChatEvent, ChatData> implements ChatKeys {
-
+    
     public ChatModel(Connection<Object, Object> connection) {
         super(connection, ModelKeys.CHAT, ChatEvent.class, ChatData.class);
+        getCache().setSync(getSync());
+    }
+    
+    public int getSync() {
+        return askModel(new RequestMap().setFirst(KEY_REQUEST, REQ_SYNC).setFirst(KEY_DATE, Long.toString(DateUtil.getDateInTimeZone(new Date(), "GMT").getTime())));
     }
     
     public void loadUnreadedMessages(String playerName, ModelActionListener<ChatData> callback) {
