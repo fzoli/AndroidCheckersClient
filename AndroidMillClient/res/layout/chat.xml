@@ -17,7 +17,7 @@
 	</LinearLayout>
 	<ScrollView android:layout_below="@+id/lUser"
 		android:layout_above="@+id/lSender"
-		android:id="@+id/svMessages"
+		android:id="@+id/svChat"
 		android:layout_height="fill_parent"
 		android:layout_width="fill_parent" >
 		<LinearLayout android:orientation="vertical"

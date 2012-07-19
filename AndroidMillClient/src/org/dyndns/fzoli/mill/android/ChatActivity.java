@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData> {
@@ -71,6 +72,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	private List<Message> messages;
 	
 	private ViewGroup lMessages;
+	private ScrollView svChat;
 	private ProgressBar pbChat;
 	private EditText etChat;
 	
@@ -84,6 +86,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		setContentView(R.layout.chat);
 		setTitle(getString(R.string.chat) + " - " + getPlayerName());
 		lMessages = (ViewGroup) findViewById(R.id.lMessages);
+		svChat = (ScrollView) findViewById(R.id.svChat);
 		pbChat = (ProgressBar) findViewById(R.id.pbChat);
 		etChat = (EditText) findViewById(R.id.etChat);
 		
@@ -122,7 +125,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		etChat.setEnabled(!on);
 	}
 	
-	private void sendMessage(String text) {
+	private void sendMessage(final String text) {
 		setAction(true);
 		getModel().sendMessage(getPlayerName(), text, new ModelActionListener<Integer>() {
 			
@@ -134,12 +137,26 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 					public void onEvent(int e) {
 						setAction(false);
 						etChat.setText("");
+						addMessage(new Message("address", "sender", text, new Date()));
 					}
 					
 				};
 			}
 			
 		});
+	}
+	
+	private void addMessage(final Message m) {
+		initMessages(new ArrayList<Message>() {
+			
+			private static final long serialVersionUID = 1L;
+			
+			{
+				add(m);
+			}
+			
+		}, false);
+		messages.add(m);
 	}
 	
 	private void initMessages(List<Message> l, boolean reset) {
@@ -164,21 +181,17 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	        tvMessage.setText(getSmiledText(msg.getText()));
 	        lMessages.addView(msgView);
 		}
+		if (!reset) {
+			svChat.fullScroll(ScrollView.FOCUS_DOWN);
+			etChat.requestFocus();
+		}
 	}
 	
 	@Override
 	public boolean processModelChange(final ChatEvent e) {
 		if (super.processModelChange(e)) {
 			if (messages != null) {
-				initMessages(new ArrayList<Message>() {
-					
-					private static final long serialVersionUID = 1L;
-					
-					{
-						add(e.getMessage());
-					}
-					
-				}, false);
+				addMessage(e.getMessage());
 				getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
 					
 					@Override
