@@ -104,7 +104,6 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat);
-		setTitle(getString(R.string.chat) + " - " + getPlayerName());
 		lMessages = (ViewGroup) findViewById(R.id.lMessages);
 		svChat = (ScrollView) findViewById(R.id.svChat);
 		pbChat = (ProgressBar) findViewById(R.id.pbChat);
