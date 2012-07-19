@@ -2,13 +2,17 @@ package org.dyndns.fzoli.mill.android;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.dyndns.fzoli.http.android.DefaultHttpExecutor;
 import org.dyndns.fzoli.mill.android.entity.ConnectionSettings;
 import org.dyndns.fzoli.mill.android.service.MillConnectionBinder;
 import org.dyndns.fzoli.mill.android.service.MillDatabaseHelper;
+import org.dyndns.fzoli.mill.client.model.ChatModel;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.key.MillServletURL;
+import org.dyndns.fzoli.mill.common.model.entity.Message;
+import org.dyndns.fzoli.mill.common.model.pojo.ChatEvent;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.android.service.AbstractConnectionService;
@@ -31,11 +35,27 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	private boolean started = false;
 	
 	private PlayerModel playerModel;
+	private ChatModel chatModel;
 	
 	private final ModelChangeListener<PlayerEvent> playerEventHandler = new ModelChangeListener<PlayerEvent>() {
 		
 		@Override
 		public void fireModelChanged(ModelChangeEvent<PlayerEvent> e) {
+		}
+		
+	};
+	
+	private final ModelChangeListener<ChatEvent> chatEventHandler = new ModelChangeListener<ChatEvent>() {
+
+		@Override
+		public void fireModelChanged(ModelChangeEvent<ChatEvent> e) {
+			if (e.getType() == ModelChangeEvent.TYPE_EVENT) {
+				Message m = e.getEvent().getMessage();
+				List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
+				if (l != null) {
+					l.add(m);
+				}
+			}
 		}
 		
 	};
@@ -47,6 +67,11 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			if (playerModel != null) playerModel.removeListener(playerEventHandler);
 			playerModel = (PlayerModel) value;
 			playerModel.addListener(playerEventHandler);
+		}
+		if (value instanceof ChatModel) {
+			if (chatModel != null) chatModel.removeListener(chatEventHandler);
+			chatModel = (ChatModel) value;
+			chatModel.addListener(chatEventHandler);
 		}
 		return super.onModelPut(key, value);
 	}

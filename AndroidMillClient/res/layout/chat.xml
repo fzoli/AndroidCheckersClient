@@ -39,6 +39,7 @@
 		android:layout_alignParentBottom="true">
 		<EditText android:layout_height="fill_parent"
 			android:layout_width="fill_parent"
+			android:layout_marginTop="4dp"
 			android:id="@+id/etChat">
 			<requestFocus />
 		</EditText>

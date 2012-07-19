@@ -1,10 +1,12 @@
 package org.dyndns.fzoli.mill.android.service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dyndns.fzoli.mill.android.MillConnectionService;
 import org.dyndns.fzoli.mill.android.entity.UserInfo;
+import org.dyndns.fzoli.mill.common.model.entity.Message;
 import org.dyndns.fzoli.mvc.client.android.service.ConnectionBinder;
 
 import android.graphics.Bitmap;
@@ -20,6 +22,7 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 	
 	private final Map<String, String> VARS = new HashMap<String, String>();
 	public final Map<String, Bitmap> BITMAPS = new HashMap<String, Bitmap>();
+	private final HashMap<String, List<Message>> MESSAGES = new HashMap<String, List<Message>>();
 	
 	private Bitmap avatarImage;
 	
@@ -30,6 +33,10 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 	@Override
 	protected MillConnectionService getService() {
 		return (MillConnectionService) super.getService();
+	}
+	
+	public HashMap<String, List<Message>> getMessages() {
+		return MESSAGES;
 	}
 	
 	public Map<String, String> getVars() {

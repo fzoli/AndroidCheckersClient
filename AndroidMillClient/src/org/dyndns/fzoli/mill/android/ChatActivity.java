@@ -1,9 +1,12 @@
 package org.dyndns.fzoli.mill.android;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
 
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
@@ -18,6 +21,10 @@ import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +35,40 @@ import android.widget.TextView;
 public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData> {
 
 	public static final String KEY_PLAYER = "player";
+	
+	private static final HashMap<String, Integer> emoticons = new HashMap<String, Integer>() {
+		
+		private static final long serialVersionUID = 1L;
+
+		{
+			put(":)", R.drawable.emo_im_happy);
+			put(":-)", R.drawable.emo_im_happy);
+			put(":(", R.drawable.emo_im_sad);
+			put(":-(", R.drawable.emo_im_sad);
+			put(";)", R.drawable.emo_im_winking);
+			put(";-)", R.drawable.emo_im_winking);
+			put(":P", R.drawable.emo_im_tongue_sticking_out);
+			put(":-P", R.drawable.emo_im_tongue_sticking_out);
+			put("=-O", R.drawable.emo_im_surprised);
+			put(":-*", R.drawable.emo_im_kissing);
+			put(":O", R.drawable.emo_im_yelling);
+			put("B-)", R.drawable.emo_im_cool);
+			put(":-$", R.drawable.emo_im_money_mouth);
+			put(":-!", R.drawable.emo_im_foot_in_mouth);
+			put(":-[", R.drawable.emo_im_embarrassed);
+			put("O:-)", R.drawable.emo_im_angel);
+			put(":-\\", R.drawable.emo_im_undecided);
+			put(":'(", R.drawable.emo_im_crying);
+			put(":X", R.drawable.emo_im_lips_are_sealed);
+			put(":-X", R.drawable.emo_im_lips_are_sealed);
+			put(":D", R.drawable.emo_im_laughing);
+			put(":-D", R.drawable.emo_im_laughing);
+			put("o_O", R.drawable.emo_im_wtf);
+		}
+		
+	};
+	
+	private List<Message> messages;
 	
 	private ViewGroup lMessages;
 	private ProgressBar pbChat;
@@ -45,6 +86,21 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		lMessages = (ViewGroup) findViewById(R.id.lMessages);
 		pbChat = (ProgressBar) findViewById(R.id.pbChat);
 		etChat = (EditText) findViewById(R.id.etChat);
+		
+		etChat.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			
+			@Override
+			public boolean onEditorAction(TextView paramTextView, int paramInt, KeyEvent paramKeyEvent) {
+				String message = etChat.getText().toString().trim();
+				if (!message.isEmpty()) {
+					sendMessage(message);
+					return true;
+				}
+				return false;
+			}
+			
+		});
+		
 	}
 	
 	@Override
@@ -57,13 +113,37 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		return (ChatModel) super.getModel();
 	}
 	
+	private Spannable getSmiledText(String text) {
+		return getSmiledText(this, text);
+	}
+	
 	private void setAction(boolean on) {
 		pbChat.setVisibility(on ? View.VISIBLE : View.GONE);
 		etChat.setEnabled(!on);
 	}
 	
-	private void initMessages(List<Message> l) {
-		lMessages.removeAllViews();
+	private void sendMessage(String text) {
+		setAction(true);
+		getModel().sendMessage(getPlayerName(), text, new ModelActionListener<Integer>() {
+			
+			@Override
+			public void modelActionPerformed(ModelActionEvent<Integer> e) {
+				new IntegerMillModelActivityAdapter(ChatActivity.this, e) {
+					
+					@Override
+					public void onEvent(int e) {
+						setAction(false);
+						etChat.setText("");
+					}
+					
+				};
+			}
+			
+		});
+	}
+	
+	private void initMessages(List<Message> l, boolean reset) {
+		if (reset) lMessages.removeAllViews();
 		for (Message msg : l) {
 			LayoutInflater infalInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	        View msgView = infalInflater.inflate(R.layout.chat_msg, null);
@@ -81,50 +161,111 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	        }
 	        tvUser.setText(msg.getSender());
 	        tvDate.setText(dateFormat.format(date));
-	        tvMessage.setText(msg.getText());
+	        tvMessage.setText(getSmiledText(msg.getText()));
 	        lMessages.addView(msgView);
 		}
 	}
 	
 	@Override
-	public boolean processModelData(ChatData e) {
-		boolean b = super.processModelData(e);
-		if (b) {
-			setAction(true);
-			getModel().loadUnreadedMessages(getPlayerName(), new ModelActionListener<ChatData>() {
-				
-				@Override
-				public void modelActionPerformed(ModelActionEvent<ChatData> e) {
+	public boolean processModelChange(final ChatEvent e) {
+		if (super.processModelChange(e)) {
+			if (messages != null) {
+				initMessages(new ArrayList<Message>() {
 					
-					new MillModelActivityAdapter<ChatData>(ChatActivity.this, e) {
-						
-						@Override
-						public void onEvent(ChatData e) {
-							initMessages(e.getMessages());
-							getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
-								
-								@Override
-								public void modelActionPerformed(ModelActionEvent<Integer> e) {
-									new IntegerMillModelActivityAdapter(ChatActivity.this, e) {
-										
-										@Override
-										public void onEvent(int e) {
-											//TODO
-										}
-										
-									};
-								}
-								
-							});
-							setAction(false);
-						}
-						
-					};
-				}
-				
-			});
+					private static final long serialVersionUID = 1L;
+					
+					{
+						add(e.getMessage());
+					}
+					
+				}, false);
+				getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
+					
+					@Override
+					public void modelActionPerformed(ModelActionEvent<Integer> d) {
+						new IntegerMillModelActivityAdapter(ChatActivity.this, d) {
+							
+							@Override
+							public void onEvent(int i) {
+								messages.add(e.getMessage());
+							}
+							
+						};
+					}
+					
+				});
+			}
+			return true;
 		}
-		return b;
+		return false;
 	}
 	
+	@Override
+	public boolean processModelData(ChatData e) {
+		messages = getConnectionBinder().getMessages().get(getPlayerName());
+		if (super.processModelData(e)) {
+			if (messages == null) {
+				setAction(true);
+				getModel().loadUnreadedMessages(getPlayerName(), new ModelActionListener<ChatData>() {
+					
+					@Override
+					public void modelActionPerformed(ModelActionEvent<ChatData> e) {
+						
+						new MillModelActivityAdapter<ChatData>(ChatActivity.this, e) {
+							
+							@Override
+							public void onEvent(final ChatData d) {
+								getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
+									
+									@Override
+									public void modelActionPerformed(ModelActionEvent<Integer> e) {
+										new IntegerMillModelActivityAdapter(ChatActivity.this, e) {
+											
+											@Override
+											public void onEvent(int e) {
+												messages = new ArrayList<Message>();
+												getConnectionBinder().getMessages().put(getPlayerName(), messages);
+												messages.addAll(d.getMessages());
+												initMessages(d.getMessages(), true);
+												setAction(false);
+											}
+											
+										};
+									}
+									
+								});
+							}
+							
+						};
+					}
+					
+				});
+			}
+			else {
+				initMessages(messages, true);
+			}
+			return true;
+		}
+		return false;
+	}
+	
+	public static Spannable getSmiledText(Context context, String text) {
+		SpannableStringBuilder builder = new SpannableStringBuilder(text);
+		int index;
+		for (index = 0; index < builder.length(); index++) {
+		    for (Entry<String, Integer> entry : emoticons.entrySet()) {
+		        int length = entry.getKey().length();
+		        if (index + length > builder.length())
+		            continue;
+		        if (builder.subSequence(index, index + length).toString().equalsIgnoreCase(entry.getKey())) {
+		            builder.setSpan(new ImageSpan(context, entry.getValue()), index, index + length,
+		            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		            index += length - 1;
+		            break;
+		        }
+		}
+		}
+		return builder;
+	}
+
 }

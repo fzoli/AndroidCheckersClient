@@ -325,6 +325,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	private boolean signIn(ModelActionEvent<PlayerData> e) {
 		try {
 			getConnectionBinder().setAvatarImage(null);
+			getConnectionBinder().getMessages().clear();
 			getConnectionBinder().getVars().remove(HomeActivity.KEY_LAST_HOME_LIST_INDEX);
 			setProgressMessage(R.string.signing_in);
 			UserInfo ui = getConnectionBinder().getUserInfo();
