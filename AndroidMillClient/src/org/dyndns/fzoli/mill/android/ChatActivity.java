@@ -12,7 +12,10 @@ import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
 import org.dyndns.fzoli.mill.client.model.ChatModel;
+import org.dyndns.fzoli.mill.client.model.PlayerModel;
+import org.dyndns.fzoli.mill.common.model.entity.BasePlayer;
 import org.dyndns.fzoli.mill.common.model.entity.Message;
+import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.ChatData;
 import org.dyndns.fzoli.mill.common.model.pojo.ChatEvent;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
@@ -69,6 +72,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		
 	};
 	
+	private String sender, address;
 	private List<Message> messages;
 	
 	private ViewGroup lMessages;
@@ -78,6 +82,22 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	
 	public String getPlayerName() {
 		return getIntent().getStringExtra(KEY_PLAYER);
+	}
+	
+	@Override
+	public boolean onConnectionBinded() {
+		PlayerModel playerModel = (PlayerModel) getConnectionBinder().getModelMap().get(HomeActivity.class);
+		Player p = playerModel.getCache().getPlayer();
+		sender = p.getName();
+		address = getPlayerName();
+		for (BasePlayer bp : p.getFriendList()) {
+			if (bp.getPlayerName().equals(getPlayerName())) {
+				address = bp.getName();
+				setTitle(getString(R.string.chat) + " - " + address);
+				break;
+			}
+		}
+		return super.onConnectionBinded();
 	}
 	
 	@Override
@@ -137,7 +157,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 					public void onEvent(int e) {
 						setAction(false);
 						etChat.setText("");
-						addMessage(new Message("address", "sender", text, new Date()));
+						addMessage(new Message(address, sender, text, new Date()));
 					}
 					
 				};
