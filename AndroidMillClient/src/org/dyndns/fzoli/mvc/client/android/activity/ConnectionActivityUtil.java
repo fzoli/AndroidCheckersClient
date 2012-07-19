@@ -262,6 +262,15 @@ public class ConnectionActivityUtil<EventType, PropsType, EventObj, PropsObj> ex
 		getContext().onNetworkChanged(replaced);
 	}
 	
+	@Override
+	public void reinitModel() {
+    	if (getModel() != null && getConnectionBinder() != null) {
+    		getModel().removeListeners();
+    		getConnectionBinder().getModelMap().remove(getClassKey());
+    		rebindConnectionService();
+    	}
+    }
+	
 	/* Rejtett metódusok */
 	
 	protected ConnectionBinder<EventType, PropsType> getConnectionBinder() {

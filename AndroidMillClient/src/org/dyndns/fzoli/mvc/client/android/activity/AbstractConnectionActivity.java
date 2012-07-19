@@ -69,6 +69,11 @@ public abstract class AbstractConnectionActivity<EventType, PropsType, EventObj,
 		getContextUtil().recreateConnection();
 	}
 	
+	@Override
+	public void reinitModel() {
+		getContextUtil().reinitModel();
+	}
+	
 	/* Kiegészítő Activity inicializáló-metódusok */
 	
 	@Override

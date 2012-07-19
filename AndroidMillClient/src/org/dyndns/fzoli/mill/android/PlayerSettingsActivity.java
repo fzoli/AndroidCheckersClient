@@ -56,6 +56,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	private static final int ID_DATE_DIALOG = 0;
 	private static final String KEY_YEAR = "year", KEY_MONTH = "month", KEY_DAY = "day";
 	
+	private int startMask;
 	private Preference birthdayPref;
 	private AutoCompletePreference regionPref, cityPref;
 	
@@ -84,15 +85,12 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 		return false;
 	}
 	
-	private int startMask;
-	
 	@Override
 	public void onBackPressed() {
 		int mask = getModel().getCache().getPlayer().getPermissionMask(true);
-		if (getConnectionBinder() != null && startMask != mask) {
+		if (startMask != mask) {
 			startMask = mask;
-			getConnectionBinder().getModelMap().remove(getClassKey());
-			rebindConnectionService();
+			reinitModel();
 		}
 		super.onBackPressed();
 	}

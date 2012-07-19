@@ -50,6 +50,8 @@ public interface ConnectionActivity<EventType, PropsType, EventObj, PropsObj> ex
     
     void recreateConnection();
     
+    void reinitModel();
+    
     /* Kiegészítő Activity inicializáló-metódusok */
     
     CachedModel<EventType, PropsType, EventObj, PropsObj> createModel(Connection<EventType, PropsType> connection);
