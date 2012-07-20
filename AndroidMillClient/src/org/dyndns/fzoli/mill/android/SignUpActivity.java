@@ -329,8 +329,15 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 	}
 	
 	private void setUser() {
+		setUser(null, null);
+	}
+	
+	private void setUser(final Runnable onEvent, final Runnable onWrongEvent) {
 		final String user = etlUser.getEditText().getText().toString();
-		if (user.equalsIgnoreCase(prevUser) || user.equalsIgnoreCase(getModel().getCache().getUser())) return;
+		if (user.equalsIgnoreCase(prevUser) || user.equalsIgnoreCase(getModel().getCache().getUser())) {
+			if (onEvent != null) onEvent.run();
+			return;
+		}
 		prevUser = user;
 		if (!InputValidator.isUserIdValid(user)) {
 			setEtlDetails(etlUser, getText(R.string.user_format));
@@ -350,11 +357,13 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 							switch (getReturn(i)) {
 								case OK:
 									getCache().setUser(user);
+									if (onEvent != null) onEvent.run();
 									break;
 								case USER_EXISTS:
 									userNotFree = true;
 									setEtlDetails(etlUser, getText(R.string.user_not_free));
-									break;
+								default:
+									if (onWrongEvent != null) onWrongEvent.run();
 							}
 						}
 						
@@ -366,9 +375,16 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 	}
 	
 	private void setEmail() {
+		setEmail(null, null);
+	}
+	
+	private void setEmail(final Runnable onEvent, final Runnable onWrongEvent) {
 		final String email = etlEmail.getEditText().getText().toString();
 		if (email.isEmpty()) resetEtl(etlEmail);
-		if (email.equalsIgnoreCase(prevEmail) || email.equalsIgnoreCase(getModel().getCache().getEmail())) return;
+		if (email.equalsIgnoreCase(prevEmail) || email.equalsIgnoreCase(getModel().getCache().getEmail())) {
+			if (onEvent != null) onEvent.run();
+			return;
+		}
 		prevEmail = email;
 		if (!InputValidator.isEmailValid(email)) {
 			setEtlDetails(etlEmail, getText(R.string.email_format));
@@ -388,11 +404,13 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 							switch (getReturn(i)) {
 								case OK:
 									getCache().setEmail(email);
+									if (onEvent != null) onEvent.run();
 									break;
 								case EMAIL_EXISTS:
 									emailNotFree = true;
 									setEtlDetails(etlEmail, getText(R.string.email_not_free));
-									break;
+								default:
+									if (onWrongEvent != null) onWrongEvent.run();
 							}
 						}
 						
@@ -404,6 +422,8 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 	}
 	
 	private void createUser() {
+		if (userNotFree) setUser();
+		if (emailNotFree) setEmail();
 		if (userNotFree || emailNotFree) return;
 		final String user = etlUser.getEditText().getText().toString();
 		String email = etlEmail.getEditText().getText().toString();
@@ -417,53 +437,76 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 		boolean emailValid = InputValidator.isEmailValid(email);
 		if (userValid && passValid && passEqual && emailValid && !userPassEqual) {
 			setTitleProgress(true);
-			setUser();
-			setEmail();
-			final String passhash = InputValidator.md5Hex(password);
-			getModel().createUser(passhash, true, new ModelActionListener<Integer>() {
+			
+			final Runnable wrongEvent = new Runnable() {
 				
 				@Override
-				public void modelActionPerformed(ModelActionEvent<Integer> e) {
-					new IntegerMillModelActivityAdapter(SignUpActivity.this, e) {
-						
-						@Override
-						public void onEvent(int i) {
-							setTitleProgress(false);
-							switch (getReturn(i)) {
-								case OK:
-									resetGUI(true);
-									getConnectionBinder().getModelMap().free(HomeActivity.class);
-									getConnectionBinder().setLoginMode(LoginMode.SIGNED_IN);
-									UserInfoSettings s = getConnectionBinder().getDatabaseHelper().getUserInfoSettings();
-									UserInfo ui = getConnectionBinder().getUserInfo();
-									if (s.isSaveUser()) ui.setUser(user);
-									if (s.isSavePassword()) ui.setPassword(password);
-									if (s.isSaveUser()) {
-										MillDatabaseHelper db = getConnectionBinder().getDatabaseHelper();
-										UserInfo newUser = db.findUserInfo(user);
-										if (newUser == null) { // ha nincs még tárolva, létrehozás és beállítás
-											newUser = new UserInfo();
-											newUser.setUser(user);
-											newUser.setServer(getConnectionBinder().getDatabaseHelper().getConnectionSettings().getUrl());
-										}
-										if (s.isSavePassword()) { // ha a jelszót is tároljuk, jelszó beállítás
-											newUser.setPassword(password);
-										}
-										db.store(newUser);
-										getConnectionBinder().reinitDatabaseHelper();
-									}
-									getModelMap().remove(SignUpActivity.class);
-									finish();
-									break;
-								default:
-									rebindConnectionService();
-							}
-						}
-						
-					};
+				public void run() {
+					setTitleProgress(false);
 				}
 				
-			});
+			};
+			
+			setUser(new Runnable() {
+				
+				@Override
+				public void run() {
+					setEmail(new Runnable() {
+						
+						@Override
+						public void run() {
+							final String passhash = InputValidator.md5Hex(password);
+							getModel().createUser(passhash, true, new ModelActionListener<Integer>() {
+								
+								@Override
+								public void modelActionPerformed(ModelActionEvent<Integer> e) {
+									new IntegerMillModelActivityAdapter(SignUpActivity.this, e) {
+										
+										@Override
+										public void onEvent(int i) {
+											setTitleProgress(false);
+											switch (getReturn(i)) {
+												case OK:
+													resetGUI(true);
+													getConnectionBinder().getModelMap().free(HomeActivity.class);
+													getConnectionBinder().setLoginMode(LoginMode.SIGNED_IN);
+													UserInfoSettings s = getConnectionBinder().getDatabaseHelper().getUserInfoSettings();
+													UserInfo ui = getConnectionBinder().getUserInfo();
+													if (s.isSaveUser()) ui.setUser(user);
+													if (s.isSavePassword()) ui.setPassword(password);
+													if (s.isSaveUser()) {
+														MillDatabaseHelper db = getConnectionBinder().getDatabaseHelper();
+														UserInfo newUser = db.findUserInfo(user);
+														if (newUser == null) { // ha nincs még tárolva, létrehozás és beállítás
+															newUser = new UserInfo();
+															newUser.setUser(user);
+															newUser.setServer(getConnectionBinder().getDatabaseHelper().getConnectionSettings().getUrl());
+														}
+														if (s.isSavePassword()) { // ha a jelszót is tároljuk, jelszó beállítás
+															newUser.setPassword(password);
+														}
+														db.store(newUser);
+														getConnectionBinder().reinitDatabaseHelper();
+													}
+													getModelMap().remove(SignUpActivity.class);
+													finish();
+													break;
+												default:
+													rebindConnectionService();
+											}
+										}
+										
+									};
+								}
+								
+							});
+						}
+						
+					}, wrongEvent);
+				}
+				
+			}, wrongEvent);
+			
 		}
 		else {
 			if (!userValid) setEtlDetails(etlUser, getText(R.string.user_format));
