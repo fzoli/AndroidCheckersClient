@@ -2,6 +2,7 @@ package org.dyndns.fzoli.mill.android;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import org.dyndns.fzoli.http.android.DefaultHttpExecutor;
@@ -51,7 +52,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		public void fireModelChanged(ModelChangeEvent<ChatEvent> e) {
 			if (e.getType() == ModelChangeEvent.TYPE_EVENT) {
 				Message m = e.getEvent().getMessage();
-				m.syncSendDate(chatModel.getCache().getSync());
+				m.setSendDate(new Date());
 				List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
 				if (l != null) {
 					l.add(m);

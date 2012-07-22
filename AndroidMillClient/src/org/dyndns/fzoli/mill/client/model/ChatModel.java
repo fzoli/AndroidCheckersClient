@@ -22,7 +22,12 @@ public class ChatModel extends AbstractOnlineModel<ChatEvent, ChatData> implemen
     }
     
     public int getSync() {
-        return askModel(new RequestMap().setFirst(KEY_REQUEST, REQ_SYNC).setFirst(KEY_DATE, Long.toString(DateUtil.getDateInTimeZone(new Date(), "GMT").getTime())));
+        try {
+            return askModel(new RequestMap().setFirst(KEY_REQUEST, REQ_SYNC).setFirst(KEY_DATE, Long.toString(DateUtil.getDateInTimeZone(new Date(), "GMT").getTime())));
+        }
+        catch (Exception ex) {
+            return 0;
+        }
     }
     
     public void loadUnreadedMessages(String playerName, ModelActionListener<ChatData> callback) {

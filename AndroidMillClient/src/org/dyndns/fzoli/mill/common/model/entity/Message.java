@@ -37,6 +37,10 @@ public class Message {
         return sendDate;
     }
 
+    public void setSendDate(Date sendDate) {
+        this.sendDate = sendDate;
+    }
+
     public void syncSendDate(int diff) {
         if (sync != null && sync) return;
         sync = true;
