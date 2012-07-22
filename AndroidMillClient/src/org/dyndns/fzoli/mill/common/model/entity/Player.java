@@ -15,8 +15,8 @@ public class Player extends BasePlayer {
     private int permission, activePermission;
     private List<BasePlayer> friendList, friendWishList, blockedUserList, possibleFriends;
 
-    public Player(String playerName, String email, boolean validated, boolean avatarEnabled, int permission, int activePermission, Date signUpDate, Date signInDate, PersonalData personalData, PlayerStatus playerStatus, List<BasePlayer> friendList, List<BasePlayer> friendWishList, List<BasePlayer> blockedUserList, List<BasePlayer> possibleFriends, boolean online) {
-        super(playerName, signUpDate, signInDate, personalData, playerStatus, online);
+    public Player(String playerName, String email, boolean validated, boolean avatarEnabled, int permission, int activePermission, Date signUpDate, Date signInDate, PersonalData personalData, boolean suspended, List<BasePlayer> friendList, List<BasePlayer> friendWishList, List<BasePlayer> blockedUserList, List<BasePlayer> possibleFriends, boolean online) {
+        super(playerName, signUpDate, signInDate, personalData, suspended, online);
         this.email = email;
         this.validated = validated;
         this.permission = permission;

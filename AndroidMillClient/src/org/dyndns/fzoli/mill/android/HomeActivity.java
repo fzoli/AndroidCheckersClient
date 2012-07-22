@@ -18,7 +18,6 @@ import org.dyndns.fzoli.mill.common.model.entity.OnlineStatus;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerData;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
-import org.dyndns.fzoli.mill.common.Permission;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
@@ -282,7 +281,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		if (index != null) adapter.setLastExpandedGroupPosition(index);
 		Player p = getModel().getCache().getPlayer();
 		adapter.setAvatarEnabled(p.isAvatarEnabled());
-		adapter.setShowAllAvatar(Permission.SEE_EVERYONES_AVATAR.hasPermission(p.getPermissionMask(true)));
+		adapter.setShowAllAvatar(false);
 		for (BasePlayer bp : p.getFriendList()) {
 			addPlayer(bp, bp.isOnline() ? Status.ONLINE : Status.OFFLINE, R.string.friends, false);
 		}

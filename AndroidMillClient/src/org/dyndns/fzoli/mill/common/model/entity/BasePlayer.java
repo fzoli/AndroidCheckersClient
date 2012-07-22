@@ -11,20 +11,19 @@ import java.util.List;
  */
 public class BasePlayer {
     
-    private boolean online;
+    private boolean online, suspended;
     private String playerName;
     protected Long signUp, signIn;
     private Date signUpDate, signInDate;
     private PersonalData personalData;
-    private PlayerStatus playerStatus;
 
-    public BasePlayer(String playerName, Date signUpDate, Date signInDate, PersonalData personalData, PlayerStatus playerStatus, boolean online) {
+    public BasePlayer(String playerName, Date signUpDate, Date signInDate, PersonalData personalData, boolean suspended, boolean online) {
         this.online = online;
         this.playerName = playerName;
         this.signUpDate = signUpDate;
         this.signInDate = signInDate;
         this.personalData = personalData;
-        this.playerStatus = playerStatus;
+        this.suspended = suspended;
         if (signUpDate != null) signUp = signUpDate.getTime();
         if (signInDate != null) signIn = signInDate.getTime();
     }
@@ -39,8 +38,8 @@ public class BasePlayer {
         return online;
     }
 
-    public PlayerStatus getPlayerStatus() {
-        return playerStatus;
+    public boolean isSuspended() {
+        return suspended;
     }
 
     public String getPlayerName() {
@@ -67,8 +66,8 @@ public class BasePlayer {
         this.online = online;
     }
 
-    public void setPlayerStatus(PlayerStatus playerStatus) {
-        this.playerStatus = playerStatus;
+    public void setSuspended(boolean suspended) {
+        this.suspended = suspended;
     }
 
     public void setSignInDate(Date signInDate) {
@@ -87,7 +86,7 @@ public class BasePlayer {
         if (bp == null) return;
         setPersonalData(bp.getPersonalData());
         setOnline(bp.isOnline());
-        setPlayerStatus(bp.getPlayerStatus());
+        setSuspended(bp.isSuspended());
         setSignInDate(bp.getSignInDate());
         setSignUpDate(bp.getSignUpDate());
     }
