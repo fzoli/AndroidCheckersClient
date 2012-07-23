@@ -33,6 +33,8 @@ import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -171,6 +173,22 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			}
 			
 		});
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.chat, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.entryInsertSmiley:
+				showSmileyList();
+				break;
+		}
+		return super.onMenuItemSelected(featureId, item);
 	}
 	
 	@Override

@@ -8,6 +8,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:paddingRight = "10dip"
+			android:paddingLeft = "10dip"
 			android:layout_gravity = "center" />
 		<TextView android:id = "@+id/tvEmoLabel"
 			android:textSize = "22sp"
