@@ -1,6 +1,7 @@
 package org.dyndns.fzoli.mill.common.model.pojo;
 
 import java.util.List;
+import java.util.Map;
 import org.dyndns.fzoli.mill.common.model.entity.Message;
 
 /**
@@ -9,14 +10,15 @@ import org.dyndns.fzoli.mill.common.model.entity.Message;
  */
 public class ChatData extends BaseOnlinePojo {
 
-    private Integer unreadedCount, sync;
+    private Integer sync;
     private List<Message> messages;
+    private Map<String, Integer> unreadedCount;
 
     public ChatData(String playerName) {
         super(playerName);
     }
     
-    public ChatData(String playerName, int unreadedCount) {
+    public ChatData(String playerName, Map<String, Integer> unreadedCount) {
         super(playerName);
         this.unreadedCount = unreadedCount;
     }
@@ -34,7 +36,7 @@ public class ChatData extends BaseOnlinePojo {
         this.sync = sync;
     }
 
-    public Integer getUnreadedCount() {
+    public Map<String, Integer> getUnreadedCount() {
         return unreadedCount;
     }
 

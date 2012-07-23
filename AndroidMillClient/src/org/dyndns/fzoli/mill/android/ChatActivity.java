@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.dyndns.fzoli.android.widget.ConfirmDialog;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
@@ -187,6 +188,12 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			case R.id.entryInsertSmiley:
 				showSmileyList();
 				break;
+			case R.id.entryLoadMessages:
+				;
+				break;
+			case R.id.entryDeleteMessages:
+				showRemoveDialog();
+				break;
 		}
 		return super.onMenuItemSelected(featureId, item);
 	}
@@ -199,6 +206,33 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	@Override
 	public ChatModel getModel() {
 		return (ChatModel) super.getModel();
+	}
+	
+	private void showRemoveDialog() {
+		new ConfirmDialog(ChatActivity.this, android.R.drawable.ic_dialog_alert, getString(R.string.delete_messages), getString(R.string.delete_messages_confirm), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+				setAction(true);
+				getModel().deleteMessages(getPlayerName(), new ModelActionListener<Integer>() {
+					
+					@Override
+					public void modelActionPerformed(ModelActionEvent<Integer> e) {
+						new IntegerMillModelActivityAdapter(ChatActivity.this, e) {
+							
+							@Override
+							public void onEvent(int e) {
+								setAction(false);
+								lMessages.removeAllViews();
+							}
+							
+						};
+					}
+					
+				});
+			}
+			
+		}).show();
 	}
 	
 	private void showSmileyList() {
@@ -292,8 +326,13 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	}
 	
 	private void initMessages(List<Message> l, boolean reset) {
-		if (reset) lMessages.removeAllViews();
-		else lMessages.removeViewAt(lMessages.getChildCount() - 1);
+		if (reset) {
+			lMessages.removeAllViews();
+		}
+		else {
+			int index = lMessages.getChildCount() - 1;
+			if (index >= 0) lMessages.removeViewAt(index);
+		}
 		LayoutInflater infalInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		for (Message msg : l) {
 	        View msgView = infalInflater.inflate(R.layout.chat_msg, null);

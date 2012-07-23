@@ -134,6 +134,9 @@
     <string name="perm11">Shield mode</string>
     <string name="chat">Chat</string>
     <string name="insert_smiley">Insert smiley</string>
+    <string name="delete_messages">Delete messages</string>
+    <string name="delete_messages_confirm">If you choose yes, every message will be removed permanently.\n\nAre you sure?</string>
+    <string name="load_messages">Load messages</string>
     <string name="emo_im_happy">Happy</string>
     <string name="emo_im_sad">Sad</string>
     <string name="emo_im_winking">Winking</string>
