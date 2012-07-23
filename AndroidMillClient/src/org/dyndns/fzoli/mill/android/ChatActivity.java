@@ -2,6 +2,7 @@ package org.dyndns.fzoli.mill.android;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -38,11 +40,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
+
+//TODO: bugos a szerver-kliens időeltérés kompenzálás
 
 public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData> {
 
@@ -189,7 +195,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 				showSmileyList();
 				break;
 			case R.id.entryLoadMessages:
-				;
+				showLoadDialog();
 				break;
 			case R.id.entryDeleteMessages:
 				showRemoveDialog();
@@ -206,6 +212,45 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	@Override
 	public ChatModel getModel() {
 		return (ChatModel) super.getModel();
+	}
+	
+	private void showLoadDialog() {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) - 1);
+		new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+			
+			@Override
+			public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+				Calendar c = Calendar.getInstance();
+				c.set(year, month, day);
+				Date date = c.getTime();
+				if (date.after(new Date())) {
+					Toast.makeText(ChatActivity.this, R.string.wrong_value, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				setAction(true);
+				getModel().loadMessages(getPlayerName(), date, new ModelActionListener<ChatData>() {
+					
+					@Override
+					public void modelActionPerformed(ModelActionEvent<ChatData> e) {
+						new MillModelActivityAdapter<ChatData>(ChatActivity.this, e) {
+							
+							@Override
+							public void onEvent(ChatData d) {
+								for (Message m : d.getMessages()) {
+									m.syncSendDate(getModel().getCache().getSync());
+								}
+								initMessages(d.getMessages(), true);
+								setAction(false);
+							}
+							
+						};
+					}
+					
+				});
+			}
+			
+		}, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
 	}
 	
 	private void showRemoveDialog() {
