@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:stretchColumns="1">
+	<TableRow>
+		<ImageView android:id = "@+id/ivEmoIcon"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:paddingRight = "10dip"
+			android:layout_gravity = "center" />
+		<TextView android:id = "@+id/tvEmoLabel"
+			android:textSize = "22sp"
+			android:textColor="#FF000000"
+			android:layout_width= "fill_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="20dip"
+			android:paddingBottom="20dip" />
+		<TextView android:id = "@+id/tvEmoText"
+			android:textSize = "22sp"
+			android:paddingRight="10dip"
+			android:textColor="#FF000000"
+			android:layout_width= "fill_parent"
+			android:layout_height="wrap_content"
+			android:paddingTop="20dip"
+			android:paddingBottom="20dip" />    
+	</TableRow>
+</TableLayout>

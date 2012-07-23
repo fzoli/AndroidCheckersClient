@@ -149,4 +149,23 @@
     <string name="perm10_inf">Ha ez a jog aktív, képes a játékosok jogosultságát szerkeszteni.\n\nHa a játékosnak új jogot ad, azonnal aktiválódik nála - ha nem Státusz-mód jogosultság -, ha a jogot elveszi, azonnal inaktiválódik.</string>
     <string name="perm11">Védelem mód</string><!-- state_inverse -->
     <string name="perm11_inf">Ha ez a jog aktív, egyetlen jogot sem gyakorolhatnak a játékoson (ez alól kivétel a rendszergazda).\n\nEz a jog nem aktiválható és nem inaktiválható, mert - ha van jogosultság rá - állandóan aktív, és csak rendszergazda adhatja ill. veheti el.</string>
+    <string name="chat">Cset</string>
+    <string name="insert_smiley">Hangulatjel beillesztése</string>
+    <string name="emo_im_happy">Boldog</string>
+    <string name="emo_im_sad">Szomorú</string>
+    <string name="emo_im_winking">Pislogás</string>
+    <string name="emo_im_tongue_sticking_out">Kinyújtott nyelv</string>
+    <string name="emo_im_surprised">Meglepett</string>
+    <string name="emo_im_kissing">Csókolózás</string>
+    <string name="emo_im_yelling">Kiabálás</string>
+    <string name="emo_im_cool">Cool</string>
+    <string name="emo_im_money_mouth">Pénz a szájban</string>
+    <string name="emo_im_foot_in_mouth">Láb a szájban</string>
+    <string name="emo_im_embarrassed">Zavarodott</string>
+    <string name="emo_im_angel">Angyal</string>
+    <string name="emo_im_undecided">Eldöntetlen</string>
+    <string name="emo_im_crying">Sírás</string>
+    <string name="emo_im_lips_are_sealed">Zárt ajkak</string>
+    <string name="emo_im_laughing">Nevetés</string>
+    <string name="emo_im_wtf">Zavaros</string>
 </resources>

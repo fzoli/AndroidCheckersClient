@@ -133,4 +133,22 @@
     <string name="perm10">Permission edit</string>
     <string name="perm11">Shield mode</string>
     <string name="chat">Chat</string>
+    <string name="insert_smiley">Insert smiley</string>
+    <string name="emo_im_happy">Happy</string>
+    <string name="emo_im_sad">Sad</string>
+    <string name="emo_im_winking">Winking</string>
+    <string name="emo_im_tongue_sticking_out">Tongue sticking out</string>
+    <string name="emo_im_surprised">Surprised</string>
+    <string name="emo_im_kissing">Kissing</string>
+    <string name="emo_im_yelling">Yelling</string>
+    <string name="emo_im_cool">Cool</string>
+    <string name="emo_im_money_mouth">Money mouth</string>
+    <string name="emo_im_foot_in_mouth">Foot in mouth</string>
+    <string name="emo_im_embarrassed">Embarrassed</string>
+    <string name="emo_im_angel">Angel</string>
+    <string name="emo_im_undecided">Undecided</string>
+    <string name="emo_im_crying">Crying</string>
+    <string name="emo_im_lips_are_sealed">Lips are sealed</string>
+    <string name="emo_im_laughing">Laughing</string>
+    <string name="emo_im_wtf">Confused</string>
 </resources>
