@@ -61,6 +61,16 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 					break;
 				case ModelChangeEvent.TYPE_SERVER_RECONNECT:
 					setNotificationVisible(true);
+					break;
+				case ModelChangeEvent.TYPE_EVENT:
+					PlayerEvent evt = e.getEvent();
+					switch (evt.getType()) {
+						case PERSONAL_DATA_CHANGE:
+							String p = evt.getChangedPlayer();
+							if (notifies.containsKey(p)) {
+								addChatNotification(p);
+							}
+					}
 			}
 		}
 		

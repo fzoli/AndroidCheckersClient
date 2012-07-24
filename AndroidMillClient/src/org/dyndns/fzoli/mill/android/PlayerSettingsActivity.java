@@ -17,6 +17,7 @@ import org.dyndns.fzoli.android.widget.TextWatcherAdapter;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
 import org.dyndns.fzoli.mill.android.activity.MillModelActivityAdapter;
+import org.dyndns.fzoli.mill.android.service.MillConnectionBinder.LoginMode;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.InputValidator;
 import org.dyndns.fzoli.mill.common.Permission;
@@ -181,6 +182,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 											if (preference == firstNamePref) personalData.setFirstName(value);
 											else personalData.setLastName(value);
 											setInverseNameEnabled(inverseNamePref, personalData);
+											getConnectionBinder().setLoginMode(LoginMode.SIGNED_IN);
 											break;
 									}
 								}
@@ -233,6 +235,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 								switch (getReturn(e)) {
 									case OK:
 										personalData.setInverseName(val);
+										getConnectionBinder().setLoginMode(LoginMode.SIGNED_IN);
 										break;
 									default:
 										inverseNamePref.setChecked(!val);
