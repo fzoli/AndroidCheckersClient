@@ -81,13 +81,23 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		@Override
 		public void fireModelChanged(ModelChangeEvent<ChatEvent> e) {
 			if (e.getType() == ModelChangeEvent.TYPE_EVENT) {
-				Message m = e.getEvent().getMessage();
-				addChatNotification(m.getSender());
-				m.setSendDate(new Date());
-				List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
-				if (l != null) {
-					//TODO: count növelése
-					l.add(m);
+				ChatEvent evt = e.getEvent();
+				if (evt.isClear()) {
+					List<Message> ls = getConnectionBinder().getMessages().get(evt.getClearPlayer());
+					if (ls != null) {
+						//TODO: count nullázása
+						ls.clear();
+					}
+				}
+				else {
+					Message m = evt.getMessage();
+					addChatNotification(m.getSender());
+					m.setSendDate(new Date());
+					List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
+					if (l != null) {
+						//TODO: count növelése
+						l.add(m);
+					}
 				}
 			}
 		}
@@ -186,7 +196,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	// de nem a chat model létrejötte az igazi ok, fogalmam sincs, mi (még...) !!!
 	
 	public void setNotificationVisible(boolean visible) {
-		if (visible) {
+		if (visible && playerModel.getCache().getPlayer() != null) {
 			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
 			playerNotification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
 			Intent notificationIntent = new Intent(this, SignInActivity.class);

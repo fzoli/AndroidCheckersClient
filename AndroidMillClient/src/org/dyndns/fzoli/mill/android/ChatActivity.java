@@ -452,25 +452,32 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	
 	@Override
 	public boolean processModelChange(final ChatEvent e) {
-		if (super.processModelChange(e)) {new String();
+		if (super.processModelChange(e)) {
 			if (messages != null) {
-//				e.getMessage().setSendDate(new Date());
-				addMessage(e.getMessage());
-				getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
-					
-					@Override
-					public void modelActionPerformed(ModelActionEvent<Integer> d) {
-						new IntegerMillModelActivityAdapter(ChatActivity.this, d) {
-							
-							@Override
-							public void onEvent(int i) {
-								messages.add(e.getMessage());
-							}
-							
-						};
+				if (e.isClear()) {
+					if (getPlayerName().equals(e.getClearPlayer())) {
+						initMessages(new ArrayList<Message>(), true);
 					}
-					
-				});
+				}
+				else {
+//					e.getMessage().setSendDate(new Date());
+					addMessage(e.getMessage());
+					getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
+						
+						@Override
+						public void modelActionPerformed(ModelActionEvent<Integer> d) {
+							new IntegerMillModelActivityAdapter(ChatActivity.this, d) {
+								
+								@Override
+								public void onEvent(int i) {
+									messages.add(e.getMessage());
+								}
+								
+							};
+						}
+						
+					});
+				}
 			}
 			return true;
 		}
