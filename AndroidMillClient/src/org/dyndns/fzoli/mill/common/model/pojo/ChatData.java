@@ -18,7 +18,7 @@ public class ChatData extends BaseOnlinePojo {
         super(playerName);
     }
     
-    public ChatData(String playerName, Map<String, Integer> unreadedCount) {
+    public ChatData(String playerName, Map<String, Integer> unreadedCount) { //TODO: majd ha jelzi az olvasatlan üzenetek számát, a kezdőérték ennek segítségével jut el a klienshez ÉS egybe kellene tenni a két konstruktort emiatt + lassan ideje megcsinálni a service üzengetést (amikor bejelentkezik az emberke és chat üzenet jön) + előfordulhat, hogy a barátlistán kívüli ember küld üzenetet, amit jelezni kell valahogy (lehessen küldeni profiloldalról mivel elérhető a nyílvántartásból is és barátlistából is a chatküldő felületet használva)
         super(playerName);
         this.unreadedCount = unreadedCount;
     }

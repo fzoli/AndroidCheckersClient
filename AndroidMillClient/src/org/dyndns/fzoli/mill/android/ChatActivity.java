@@ -259,7 +259,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			@Override
 			public void onClick(DialogInterface paramDialogInterface, int paramInt) {
 				setAction(true);
-				getModel().deleteMessages(getPlayerName(), new ModelActionListener<Integer>() {
+				getModel().removeMessages(getPlayerName(), new ModelActionListener<Integer>() {
 					
 					@Override
 					public void modelActionPerformed(ModelActionEvent<Integer> e) {

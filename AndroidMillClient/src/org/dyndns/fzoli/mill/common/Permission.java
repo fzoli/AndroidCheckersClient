@@ -33,7 +33,7 @@ import java.util.List;
  *  
  *  - inaktív felhasználók listázása, adataiknak olvasása
  * 
- *  - chatelés barátlistán kívüliekkel illetve azokkal, akiknél tiltva van a joggal rendelkező
+ *  - chatelés barátlistán kívüliekkel illetve azokkal, akiknél tiltva van a joggal rendelkező -> olyan rendszerüzenet küldése, ami csak 1 embernél, a címzettnél jelenik meg
  * 
  *  - rendszerüzenet küldés: mindenki számára azonnal felugró üzenet küldése
  * 
@@ -65,16 +65,18 @@ import java.util.List;
  */
 public enum Permission {
     
-    STATISTICS_HIDE(Group.STATE_INVERSE),
-    INVISIBLE_STATUS_DETECT(Group.STATE_NORMAL),
-    SUSPENDED_PLAYER_DETECT(Group.STATE_NORMAL),
+    HIDDEN_STATISTICS(Group.STATE_INVERSE),
+    DETECT_INVISIBLE_STATUS(Group.STATE_NORMAL),
+    DETECT_SUSPENDED_PLAYER(Group.STATE_NORMAL),
 //    HIDDEN_PLAYER_DETECT(Group.STATE_NORMAL),
-    HIDDENABLE(Group.STATE_INVERSE),
+//    SHOW_ALL_PERSONAL_DATA(Group.STATE_NORMAL),
+    HIDDEN_MODE(Group.STATE_INVERSE),
 //    SEE_EVERYONES_AVATAR(Group.STATE_NORMAL),
-    CHAT_EVERYONE(Group.STATE_NORMAL),
-    SYSTEM_MESSAGE(Group.SYSTEM),
+//    CHAT_EVERYONE(Group.STATE_NORMAL),
+    SEND_PERSON_MESSAGE(Group.SYSTEM),
+    SEND_SYSTEM_MESSAGE(Group.SYSTEM),
     PLAYER_BANN(Group.TARGET),
-    PLAYER_DELETE(Group.TARGET),
+    PLAYER_SUSPEND(Group.TARGET),
     PERMISSION_EDIT(Group.TARGET),
     SHIELD_MODE(Group.STATE_INVERSE);
     

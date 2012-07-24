@@ -40,7 +40,7 @@ public class ChatModel extends AbstractOnlineModel<ChatEvent, ChatData> implemen
         getProperties(map, callback);
     }
     
-    public void deleteMessages(String playerName, ModelActionListener<Integer> callback) {
+    public void removeMessages(String playerName, ModelActionListener<Integer> callback) {
         askModel(new RequestMap().setFirst(KEY_REQUEST, REQ_REMOVE_MESSAGES).setFirst(KEY_PLAYER, playerName), callback);
     }
     
