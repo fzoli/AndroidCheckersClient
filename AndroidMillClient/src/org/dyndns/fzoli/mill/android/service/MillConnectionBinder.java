@@ -74,6 +74,13 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 	
 	public void setLoginMode(LoginMode loginMode) {
 		this.loginMode = loginMode;
+		switch (loginMode) {
+			case SIGNED_IN:
+				getService().setNotificationVisible(true);
+				break;
+			default:
+				getService().setNotificationVisible(false);
+		}
 	}
 	
 }

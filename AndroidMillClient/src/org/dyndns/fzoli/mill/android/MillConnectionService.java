@@ -23,6 +23,8 @@ import org.dyndns.fzoli.mvc.client.event.ModelChangeEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelChangeListener;
 import org.dyndns.fzoli.mvc.client.model.Model;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 
@@ -30,6 +32,9 @@ import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
 
 public class MillConnectionService extends AbstractConnectionService<Object, Object> {
+	
+	private Notification notification;
+	private static final int MODE_SIGNED_IN = 1;
 	
 	private EmbeddedObjectContainer db;
 	private MillDatabaseHelper helper;
@@ -141,6 +146,23 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		db.close();
 		db = null;
 		helper = null;
+	}
+	
+	public void setNotificationVisible(boolean visible) {
+		if (visible) {
+			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
+			notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
+			Intent notificationIntent = new Intent(this, HomeActivity.class);
+			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+			notification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
+			startForeground(MODE_SIGNED_IN, notification);
+		}
+		else {
+			if (notification != null) {
+				stopForeground(true);
+				notification = null;
+			}
+		}
 	}
 	
 }
