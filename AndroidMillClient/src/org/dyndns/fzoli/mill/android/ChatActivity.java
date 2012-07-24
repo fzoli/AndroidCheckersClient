@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -52,7 +53,8 @@ import android.widget.Toast;
 
 public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData> {
 
-	public static final String KEY_PLAYER = "player";
+	public static final String KEY_PLAYER = "chat_player";
+	public static final List<String> ACTIVE_PLAYERS = new ArrayList<String>(); 
 	
 	private static final Map<String, Integer> emoticons = new HashMap<String, Integer>() {
 		
@@ -134,7 +136,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	
 	@Override
 	public boolean onConnectionBinded() {
-		sender = getPlayerModel().getCache().getPlayer().getPlayerName();
+		PlayerModel m = getPlayerModel();
+		if (m == null) return false;
+		sender = m.getCache().getPlayer().getPlayerName();
 		setTitle(getString(R.string.chat) + " - " + getDisplayName(getPlayerName()));
 		return super.onConnectionBinded();
 	}
@@ -198,6 +202,18 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	}
 	
 	@Override
+	public void onResume() {
+		ACTIVE_PLAYERS.add(getPlayerName());
+		super.onResume();
+	}
+	
+	@Override
+	public void onPause() {
+		ACTIVE_PLAYERS.remove(getPlayerName());
+		super.onPause();
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.chat, menu);
 		return true;
@@ -253,7 +269,12 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 							@Override
 							public void onEvent(ChatData d) {
 								for (Message m : d.getMessages()) {
-									m.syncSendDate(getModel().getCache().getSync());
+									try {
+										m.syncSendDate(getModel().getCache().getSync());
+									}
+									catch (Exception ex) {
+										Log.i("test", "error", ex);
+									}
 								}
 								initMessages(d.getMessages(), true);
 								setAction(false);
@@ -390,28 +411,35 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			lMessages.removeAllViews();
 		}
 		else {
-			int index = lMessages.getChildCount() - 1;
-			if (index >= 0) lMessages.removeViewAt(index);
+			try {
+				int index = lMessages.getChildCount() - 1;
+				if (index >= 0) lMessages.removeViewAt(index);
+			}
+			catch (Exception ex) {
+				Log.i("test", "error", ex);
+			}
 		}
 		LayoutInflater infalInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		for (Message msg : l) {
-	        View msgView = infalInflater.inflate(R.layout.chat_msg, null);
-	        TextView tvUser = (TextView) msgView.findViewById(R.id.tvUser);
-	        TextView tvDate = (TextView) msgView.findViewById(R.id.tvDate);
-	        TextView tvMessage = (TextView) msgView.findViewById(R.id.tvMessage);
-	        Date now = new Date();
-	        Date date = msg.getSendDate();
-	        DateFormat dateFormat;
-	        if (now.getDate() == date.getDate() && now.getMonth() == date.getMonth() && now.getYear() == date.getYear()) {
-	        	dateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.getDefault());
-	        }
-	        else {
-	        	dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
-	        }
-	        tvUser.setText(getDisplayName(msg.getSender()));
-	        tvDate.setText(dateFormat.format(date));
-	        tvMessage.setText(getSmiledText(msg.getText()));
-	        lMessages.addView(msgView);
+		synchronized (l) {
+			for (Message msg : l) {
+		        View msgView = infalInflater.inflate(R.layout.chat_msg, null);
+		        TextView tvUser = (TextView) msgView.findViewById(R.id.tvUser);
+		        TextView tvDate = (TextView) msgView.findViewById(R.id.tvDate);
+		        TextView tvMessage = (TextView) msgView.findViewById(R.id.tvMessage);
+		        Date now = new Date();
+		        Date date = msg.getSendDate();
+		        DateFormat dateFormat;
+		        if (now.getDate() == date.getDate() && now.getMonth() == date.getMonth() && now.getYear() == date.getYear()) {
+		        	dateFormat = DateFormat.getTimeInstance(DateFormat.MEDIUM, Locale.getDefault());
+		        }
+		        else {
+		        	dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
+		        }
+		        tvUser.setText(getDisplayName(msg.getSender()));
+		        tvDate.setText(dateFormat.format(date));
+		        tvMessage.setText(getSmiledText(msg.getText()));
+		        lMessages.addView(msgView);
+			}
 		}
 		View msgView = infalInflater.inflate(R.layout.chat_msg, null);
 		msgView.setVisibility(View.INVISIBLE);
@@ -515,7 +543,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		            index += length - 1;
 		            break;
 		        }
-		}
+		    }
 		}
 		return builder;
 	}
