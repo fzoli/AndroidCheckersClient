@@ -36,7 +36,7 @@ public class Message {
     public Date getSendDate() {
         return sendDate;
     }
-
+    
     public void setSendDate(Date sendDate) {
         this.sendDate = sendDate;
     }

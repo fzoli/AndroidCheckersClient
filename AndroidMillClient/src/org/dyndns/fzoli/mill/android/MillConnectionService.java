@@ -3,6 +3,7 @@ package org.dyndns.fzoli.mill.android;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.dyndns.fzoli.http.android.DefaultHttpExecutor;
@@ -24,6 +25,7 @@ import org.dyndns.fzoli.mvc.client.event.ModelChangeListener;
 import org.dyndns.fzoli.mvc.client.model.Model;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -33,8 +35,12 @@ import com.db4o.EmbeddedObjectContainer;
 
 public class MillConnectionService extends AbstractConnectionService<Object, Object> {
 	
-	private Notification notification;
-	private static final int MODE_SIGNED_IN = 1;
+	private static final int MODE_SIGNED_IN = 1, MODE_CHAT_MESSAGE = 2;
+	
+	private Notification playerNotification;
+	private NotificationManager notificationManager;
+	
+	private final HashMap<String, Notification> notifies = new HashMap<String, Notification>();
 	
 	private EmbeddedObjectContainer db;
 	private MillDatabaseHelper helper;
@@ -57,6 +63,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		public void fireModelChanged(ModelChangeEvent<ChatEvent> e) {
 			if (e.getType() == ModelChangeEvent.TYPE_EVENT) {
 				Message m = e.getEvent().getMessage();
+				addChatNotification(m.getSender());
 				m.setSendDate(new Date());
 				List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
 				if (l != null) {
@@ -151,18 +158,44 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	public void setNotificationVisible(boolean visible) {
 		if (visible) {
 			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
-			notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
+			playerNotification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
 			Intent notificationIntent = new Intent(this, SignInActivity.class);
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-			notification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
-			startForeground(MODE_SIGNED_IN, notification);
+			playerNotification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
+			startForeground(MODE_SIGNED_IN, playerNotification);
 		}
 		else {
-			if (notification != null) {
+			if (playerNotification != null) {
 				stopForeground(true);
-				notification = null;
+				playerNotification = null;
 			}
 		}
+	}
+	
+	private void addChatNotification(String playerName) {
+		if (notificationManager == null) {
+			notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		}
+		int count;
+		try {
+			count = chatModel.getCache().getUnreadedCount().get(playerName);
+		}
+		catch (Exception ex) {
+			count = 0;
+		}
+		String text = getString(R.string.new_message1) + ' ' + count + ' ' + getString(count > 1 ? R.string.new_message2 : R.string.new_message3);
+		Notification notification = notifies.get(playerName);
+		if (notification != null) {
+			notificationManager.cancel(playerName, MODE_CHAT_MESSAGE);
+		}
+		notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		Intent notificationIntent = new Intent(this, ChatActivity.class);
+		notificationIntent.putExtra(ChatActivity.KEY_PLAYER, playerName);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.chat) + " - " + ChatActivity.getDisplayName(playerModel, playerName), text, contentIntent);
+		notificationManager.notify(playerName, MODE_CHAT_MESSAGE, notification);
+		notifies.put(playerName, notification);
 	}
 	
 }

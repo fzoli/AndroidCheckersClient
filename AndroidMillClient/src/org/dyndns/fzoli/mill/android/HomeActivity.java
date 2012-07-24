@@ -366,9 +366,11 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		try {
 			if (e.getEvent().getPlayerName() != null) {
 				setProgressMessage(R.string.signing_out);
-				getModel().signOut();
-				getConnectionBinder().setLoginMode(LoginMode.SIGNED_OUT);
-				getContextUtil().openSignIn();
+				switch(getReturn(getModel().signOut())) {
+					case OK:
+						getConnectionBinder().setLoginMode(LoginMode.SIGNED_OUT);
+						getContextUtil().openSignIn();
+				}
 			}
 			else {
 				getConnectionBinder().setLoginMode(LoginMode.SIGNED_OUT);

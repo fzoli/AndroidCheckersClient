@@ -134,9 +134,8 @@
     <string name="perm9">Shield mode</string>
     <string name="chat">Chat</string>
     <string name="new_message1">You have got</string>
-    <string name="new_message2">new message from player</string>
-    <string name="new_message3">new messages from player</string>
-    <string name="new_message4">.</string>
+    <string name="new_message2">new message</string>
+    <string name="new_message3">new messages</string>
     <string name="insert_smiley">Insert smiley</string>
     <string name="delete_messages">Delete messages</string>
     <string name="delete_messages_confirm">If you choose yes, every message will be removed permanently.\n\nAre you sure?</string>

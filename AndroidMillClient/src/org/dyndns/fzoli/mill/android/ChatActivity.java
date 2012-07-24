@@ -120,7 +120,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		
 	};
 
-	private String sender, address;
+	private String sender;
 	private List<Message> messages;
 	
 	private ViewGroup lMessages;
@@ -134,18 +134,33 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	
 	@Override
 	public boolean onConnectionBinded() {
-		PlayerModel playerModel = (PlayerModel) getConnectionBinder().getModelMap().get(HomeActivity.class);
-		Player p = playerModel.getCache().getPlayer();
-		sender = p.getName();
-		address = getPlayerName();
-		for (BasePlayer bp : p.getFriendList()) {
-			if (bp.getPlayerName().equals(getPlayerName())) {
-				address = bp.getName();
-				setTitle(getString(R.string.chat) + " - " + address);
-				break;
+		sender = getPlayerModel().getCache().getPlayer().getPlayerName();
+		setTitle(getString(R.string.chat) + " - " + getDisplayName(getPlayerName()));
+		return super.onConnectionBinded();
+	}
+	
+	private PlayerModel getPlayerModel() {
+		return (PlayerModel) getConnectionBinder().getModelMap().get(HomeActivity.class);
+	}
+	
+	private String getDisplayName(String playerName) {
+		return getDisplayName(getPlayerModel(), playerName);
+	}
+	
+	public static String getDisplayName(PlayerModel model, String playerName) {
+		try {
+			Player p = model.getCache().getPlayer();
+			if (p.getPlayerName().equals(playerName)) return p.getName();
+			for (BasePlayer bp : p.getFriendList()) {
+				if (bp.getPlayerName().equals(playerName)) {
+					return bp.getName();
+				}
 			}
 		}
-		return super.onConnectionBinded();
+		catch (Exception ex) {
+			;
+		}
+		return playerName;
 	}
 	
 	@Override
@@ -348,7 +363,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 					public void onEvent(int e) {
 						setAction(false);
 						etChat.setText("");
-						addMessage(new Message(address, sender, text, new Date()));
+						addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()));
 					}
 					
 				};
@@ -393,7 +408,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	        else {
 	        	dateFormat = DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM, Locale.getDefault());
 	        }
-	        tvUser.setText(msg.getSender());
+	        tvUser.setText(getDisplayName(msg.getSender()));
 	        tvDate.setText(dateFormat.format(date));
 	        tvMessage.setText(getSmiledText(msg.getText()));
 	        lMessages.addView(msgView);
