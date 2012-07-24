@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import org.dyndns.fzoli.http.android.DefaultHttpExecutor;
@@ -22,6 +23,7 @@ import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.connection.JSONConnection;
 import org.dyndns.fzoli.mvc.client.event.ModelChangeEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelChangeListener;
+import org.dyndns.fzoli.mvc.client.model.AbstractModel;
 import org.dyndns.fzoli.mvc.client.model.Model;
 
 import android.app.Notification;
@@ -88,7 +90,6 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			if (playerModel != null) playerModel.removeListener(playerEventHandler);
 			playerModel = (PlayerModel) value;
 			playerModel.addListener(playerEventHandler);
-			getConnectionBinder().getModelMap().put(ChatActivity.class, new ChatModel(getConnection()));
 		}
 		if (value instanceof ChatModel) {
 			if (chatModel != null) chatModel.removeListener(chatEventHandler);
@@ -163,6 +164,16 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		helper = null;
 	}
 	
+	@Override
+	@SuppressWarnings("unchecked")
+	public boolean onModelRemove(Class<? extends ConnectionActivity> key, Model<Object, Object, ?, ?> value) {
+		((AbstractModel) value).removeListeners();
+		return super.onModelRemove(key, value);
+	}
+	
+	//TODO: BUUUUUG!!!! amint a chat model létrejön, majd később új service születik, a bejelentkezéskor NULL a playerName, ezért azt hiszi a kliens, hogy kijelentkeztették
+	// de nem a chat model létrejötte az igazi ok, fogalmam sincs, mi (még...) !!!
+	
 	public void setNotificationVisible(boolean visible) {
 		if (visible) {
 			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
@@ -171,12 +182,18 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			playerNotification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
 			startForeground(MODE_SIGNED_IN, playerNotification);
+			getConnectionBinder().getModelMap().put(ChatActivity.class, new ChatModel(getConnection()));
 		}
 		else {
 			if (playerNotification != null) {
-				stopForeground(true);
 				playerNotification = null;
+				stopForeground(true);
+				Iterator<String> it = notifies.keySet().iterator();
+				while (it.hasNext()) {
+					removeChatNotification(it.next());
+				}
 			}
+			getConnectionBinder().getModelMap().remove(ChatActivity.class);
 		}
 	}
 	
@@ -194,13 +211,9 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		catch (Exception ex) {
 			count = 0;
 		}
+		removeChatNotification(playerName);
 		String text = getString(R.string.new_message1) + ' ' + count + ' ' + getString(count > 1 ? R.string.new_message2 : R.string.new_message3);
-		Notification notification = notifies.get(playerName);
-		if (notification != null) {
-			notifies.remove(playerName);
-			notificationManager.cancel(playerName, MODE_CHAT_MESSAGE);
-		}
-		notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
+		Notification notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		Intent notificationIntent = new Intent(this, ChatActivity.class);
 		notificationIntent.putExtra(ChatActivity.KEY_PLAYER, playerName);
@@ -208,6 +221,13 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.chat) + " - " + ChatActivity.getDisplayName(playerModel, playerName), text, contentIntent);
 		notificationManager.notify(playerName, MODE_CHAT_MESSAGE, notification);
 		notifies.put(playerName, notification);
+	}
+	
+	private void removeChatNotification(String playerName) {
+		if (notificationManager != null && notifies.containsKey(playerName)) {
+			notifies.remove(playerName);
+			notificationManager.cancel(playerName, MODE_CHAT_MESSAGE);
+		}
 	}
 	
 }
