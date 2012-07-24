@@ -346,9 +346,9 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 						getModelMap().free(SignUpActivity.class);
 					}
 					Log.i("test","sign in ok");
-					getConnectionBinder().setLoginMode(LoginMode.SIGNED_IN);
 					getModel().reinitCache();
 					rebindConnectionService();
+					getConnectionBinder().setLoginMode(LoginMode.SIGNED_IN);
 					return true;
 				default:
 					Log.i("test","sign in NOT ok");

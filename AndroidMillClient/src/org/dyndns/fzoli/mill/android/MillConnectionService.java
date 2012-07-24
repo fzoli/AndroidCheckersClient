@@ -163,20 +163,20 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 	}
 	
 	public void setNotificationVisible(boolean visible) {
-//		if (visible) {
-//			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
-//			playerNotification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
-//			Intent notificationIntent = new Intent(this, SignInActivity.class);
-//			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-//			playerNotification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
-//			startForeground(MODE_SIGNED_IN, playerNotification);
-//		}
-//		else {
-//			if (playerNotification != null) {
-//				stopForeground(true);
-//				playerNotification = null;
-//			}
-//		}
+		if (visible) {
+			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
+			playerNotification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
+			Intent notificationIntent = new Intent(this, SignInActivity.class);
+			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+			playerNotification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
+			startForeground(MODE_SIGNED_IN, playerNotification);
+		}
+		else {
+			if (playerNotification != null) {
+				stopForeground(true);
+				playerNotification = null;
+			}
+		}
 	}
 	
 	private void addChatNotification(String playerName) {
