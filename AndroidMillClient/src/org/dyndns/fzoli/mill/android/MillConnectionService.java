@@ -196,6 +196,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		String text = getString(R.string.new_message1) + ' ' + count + ' ' + getString(count > 1 ? R.string.new_message2 : R.string.new_message3);
 		Notification notification = notifies.get(playerName);
 		if (notification != null) {
+			notifies.remove(playerName);
 			notificationManager.cancel(playerName, MODE_CHAT_MESSAGE);
 		}
 		notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
