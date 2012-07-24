@@ -88,6 +88,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			if (playerModel != null) playerModel.removeListener(playerEventHandler);
 			playerModel = (PlayerModel) value;
 			playerModel.addListener(playerEventHandler);
+			getConnectionBinder().getModelMap().put(ChatActivity.class, new ChatModel(getConnection()));
 		}
 		if (value instanceof ChatModel) {
 			if (chatModel != null) chatModel.removeListener(chatEventHandler);
