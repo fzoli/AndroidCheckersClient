@@ -76,6 +76,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 				m.setSendDate(new Date());
 				List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
 				if (l != null) {
+					//TODO: count növelése
 					l.add(m);
 				}
 			}

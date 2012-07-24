@@ -508,6 +508,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 												messages.addAll(d.getMessages());
 												initMessages(d.getMessages(), true);
 												setAction(false);
+												//TODO: count nullázása
 											}
 											
 										};
