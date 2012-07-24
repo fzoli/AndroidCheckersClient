@@ -143,20 +143,27 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	}
 	
 	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.home, menu);
+		return true;
+	}
+	
+	public static String KEY_CLOSE_VIEW = "hide_login_view";
+	
+	@Override
 	public void onBackPressed() {
-		if (getConnectionBinder() != null && getConnectionBinder().getLoginMode() == LoginMode.SIGNED_IN) {
-			getConnectionBinder().setLoginMode(LoginMode.SIGNING_OUT);
-			setProgressDialog(true);
-			rebindConnectionService();
-			return;
+		if (getConnectionBinder() != null) {
+			getConnectionBinder().getVars().put(KEY_CLOSE_VIEW, Boolean.toString(true));
 		}
 		super.onBackPressed();
 	}
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.home, menu);
-		return true;
+	private void callSignOut() {
+		if (getConnectionBinder() != null && getConnectionBinder().getLoginMode() == LoginMode.SIGNED_IN) {
+			getConnectionBinder().setLoginMode(LoginMode.SIGNING_OUT);
+			setProgressDialog(true);
+			rebindConnectionService();
+		}
 	}
 	
 	@Override
@@ -164,6 +171,9 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		switch (item.getItemId()) {
 			case R.id.entryAccountSettings:
 				startActivity(new Intent(this, PlayerSettingsActivity.class));
+				break;
+			case R.id.entrySignOut:
+				callSignOut();
 				break;
 		}
 		return super.onMenuItemSelected(featureId, item);

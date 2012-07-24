@@ -152,7 +152,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		if (visible) {
 			String text = getString(R.string.signed_in) + ": " + playerModel.getCache().getPlayer().getName();
 			notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
-			Intent notificationIntent = new Intent(this, HomeActivity.class);
+			Intent notificationIntent = new Intent(this, SignInActivity.class);
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			notification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
 			startForeground(MODE_SIGNED_IN, notification);

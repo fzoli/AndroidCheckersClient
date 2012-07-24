@@ -255,7 +255,15 @@ public class SignInActivity extends AbstractNetworkInfoActivity {
 	
 	private void prepare() {
 		if (mcb != null) {
-			if (mcb.getLoginMode().equals(LoginMode.SIGNED_IN) && isNetworkAvailable()) openHome();
+			if (Boolean.parseBoolean(mcb.getVars().get(HomeActivity.KEY_CLOSE_VIEW))) {
+				mcb.getVars().put(HomeActivity.KEY_CLOSE_VIEW, Boolean.toString(false));
+				finish();
+				return;
+			}
+			if (mcb.getLoginMode().equals(LoginMode.SIGNED_IN) && isNetworkAvailable()) {
+				openHome();
+				return;
+			}
 			userInfoSettings = mcb.getDatabaseHelper().getUserInfoSettings();
 			userInfoList = mcb.getDatabaseHelper().getUserInfoList(true);
 			initEt();

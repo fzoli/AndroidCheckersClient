@@ -48,6 +48,7 @@
     <string name="email">E-mail cím</string>
     <string name="email_optional">E-mail cím (nem kötelező)</string>
     <string name="sign_in">Bejelentkezés</string>
+    <string name="sign_out">Kijelentkezés</string>
     <string name="signed_in">Bejelentkezve</string>
     <string name="have_account">Nincs még regisztrálva?</string>
     <string name="sign_up">Regisztráció</string>
