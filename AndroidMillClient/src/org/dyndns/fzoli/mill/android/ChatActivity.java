@@ -446,8 +446,8 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		View msgView = infalInflater.inflate(R.layout.chat_msg, null);
 		msgView.setVisibility(View.INVISIBLE);
 		lMessages.addView(msgView);
+		svChat.fullScroll(ScrollView.FOCUS_DOWN);
 		if (!reset) {
-			svChat.fullScroll(ScrollView.FOCUS_DOWN);
 			etChat.requestFocus();
 		}
 	}
@@ -533,6 +533,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 				});
 			}
 			else {
+				resetUnreadedCount();
 				initMessages(messages, true);
 			}
 			return true;
