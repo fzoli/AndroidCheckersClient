@@ -437,12 +437,16 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	}
 	
 	private void setProgressMessage(final int msg) {
-		if (getProgressDialog() == null) return;
 		runOnUiThread(new Runnable() {
 			
 			@Override
 			public void run() {
-				getProgressDialog().setMessage(getText(msg));
+				try {
+					getProgressDialog().setMessage(getText(msg));
+				}
+				catch (NullPointerException ex) {
+					;
+				}
 			}
 			
 		});
