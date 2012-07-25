@@ -497,7 +497,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		}
 		return false;
 	}
-	
+	//TODO: ha a partner bejelentkezik/kijelentkezik/dámára kér jelződjön a felületen hasonlóan, mint a chatüzenetek
 	@Override
 	public boolean processModelData(ChatData e) {
 		messages = getConnectionBinder().getMessages().get(getPlayerName());
