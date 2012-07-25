@@ -93,12 +93,14 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 				}
 				else {
 					Message m = evt.getMessage();
-					setUnreadedMessageCount(m.getSender(), false);
-					addChatNotification(m.getSender());
-					m.setSendDate(new Date());
-					List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
-					if (l != null) {
-						l.add(m);
+					if (m != null) {
+						setUnreadedMessageCount(m.getSender(), false);
+						addChatNotification(m.getSender());
+						m.setSendDate(new Date());
+						List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
+						if (l != null) {
+							l.add(m);
+						}
 					}
 				}
 			}
