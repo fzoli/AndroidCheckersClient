@@ -305,6 +305,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 							@Override
 							public void onEvent(int e) {
 								setAction(false);
+								messages.clear();
 								lMessages.removeAllViews();
 							}
 							
@@ -540,7 +541,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	}
 	
 	private void resetUnreadedCount() {
-		MillConnectionService.setUnreadedMessageCount(getConnectionBinder(), getPlayerName(), MillConnectionService.TYPE_ZERO);
+		MillConnectionService.setUnreadedMessageCount(getConnectionBinder(), getPlayerName(), true);
 	}
 	
 	public static Spannable getSmiledText(Context context, String text) {

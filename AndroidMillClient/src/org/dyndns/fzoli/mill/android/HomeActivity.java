@@ -10,6 +10,7 @@ import org.dyndns.fzoli.mill.android.activity.home.PlayerGroupAdapter;
 import org.dyndns.fzoli.mill.android.activity.home.PlayerInfo;
 import org.dyndns.fzoli.mill.android.activity.home.PlayerInfo.Status;
 import org.dyndns.fzoli.mill.android.entity.UserInfo;
+import org.dyndns.fzoli.mill.android.service.MillConnectionBinder;
 import org.dyndns.fzoli.mill.android.service.MillConnectionBinder.LoginMode;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.key.PlayerReturn;
@@ -140,6 +141,27 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 		getExpandableListView().setGroupIndicator(null);
+		MillConnectionBinder.setCountListener(new MillConnectionBinder.CountListener() {
+			
+			@Override
+			public void fire(final String playerName, final int count) {
+				runOnUiThread(new Runnable() {
+					
+					@Override
+					public void run() {
+						if (adapter != null) {
+							PlayerInfo info = adapter.findPlayerInfo(playerName);
+							if (info != null) {
+								info.setCount(count);
+								adapter.notifyDataSetChanged();
+							}
+						}
+					}
+					
+				});
+			}
+			
+		});
 	}
 	
 	@Override

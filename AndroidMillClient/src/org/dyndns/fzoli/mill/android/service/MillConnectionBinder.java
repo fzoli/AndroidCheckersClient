@@ -17,6 +17,12 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 		SIGNED_OUT, SIGN_IN_FAILED, SIGNED_IN, SIGNING_IN, SIGNING_OUT, ERROR, KICKED, INVISIBLE_ERROR
 	}
 	
+	public interface CountListener {
+		void fire(String playerName, int count);
+	}
+	
+	private static CountListener countListener;
+	
 	private LoginMode loginMode = LoginMode.SIGNED_OUT;
 	private UserInfo userInfo = new UserInfo();
 	
@@ -85,6 +91,14 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 			default:
 				getService().setNotificationVisible(false);
 		}
+	}
+	
+	public static CountListener getCountListener() {
+		return countListener;
+	}
+	
+	public static void setCountListener(CountListener countListener) {
+		MillConnectionBinder.countListener = countListener;
 	}
 	
 }

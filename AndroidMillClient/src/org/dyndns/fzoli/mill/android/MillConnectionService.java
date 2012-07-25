@@ -31,14 +31,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
 
 public class MillConnectionService extends AbstractConnectionService<Object, Object> {
 	
-	public static final int TYPE_INCREMENT = 0, TYPE_DECREMENT = 1, TYPE_ZERO = 2;
 	private static final int MODE_SIGNED_IN = 1, MODE_CHAT_MESSAGE = 2;
 	
 	private Notification playerNotification;
@@ -85,19 +83,20 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			if (e.getType() == ModelChangeEvent.TYPE_EVENT) {
 				ChatEvent evt = e.getEvent();
 				if (evt.isClear()) {
+					removeChatNotification(evt.getClearPlayer());
+					setUnreadedMessageCount(evt.getClearPlayer(), true);
 					List<Message> ls = getConnectionBinder().getMessages().get(evt.getClearPlayer());
 					if (ls != null) {
-						setUnreadedMessageCount(evt.getClearPlayer(), TYPE_ZERO);
 						ls.clear();
 					}
 				}
 				else {
 					Message m = evt.getMessage();
+					setUnreadedMessageCount(m.getSender(), false);
 					addChatNotification(m.getSender());
 					m.setSendDate(new Date());
 					List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
 					if (l != null) {
-						setUnreadedMessageCount(evt.getClearPlayer(), TYPE_INCREMENT);
 						l.add(m);
 					}
 				}
@@ -260,8 +259,8 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		return getUnreadedMessageCount(getConnectionBinder(), playerName);
 	}
 	
-	private void setUnreadedMessageCount(String playerName, int type) {
-		setUnreadedMessageCount(getConnectionBinder(), playerName, type);
+	private void setUnreadedMessageCount(String playerName, boolean zero) {
+		setUnreadedMessageCount(getConnectionBinder(), playerName, zero);
 	}
 	
 	public static void setChatModel(MillConnectionBinder cb, boolean add) {
@@ -275,8 +274,6 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		}
 	}
 	
-	//TODO: BUG! ha a service hívja meg a settert, nem módosul a count DE lehet, hogy a getternél jelentkezik a probléma
-	
 	public static int getUnreadedMessageCount(MillConnectionBinder cb, String playerName) {
 		try {
 			setChatModel(cb, true);
@@ -284,26 +281,22 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			return model.getCache().getUnreadedCount().get(playerName);
 		}
 		catch (Exception ex) {
-			Log.i("test", "error", ex);
+			;
 		}
-		return -1;
+		return 0;
 	}
 	
-	public static void setUnreadedMessageCount(MillConnectionBinder cb, String playerName, int type) {
+	public static void setUnreadedMessageCount(MillConnectionBinder cb, String playerName, boolean zero) {
 		int count = getUnreadedMessageCount(cb, playerName);
-		Log.i("test", "count " + count);
-		if (count != -1) {
-			switch (type) {
-				case TYPE_INCREMENT:
-					count++;
-				case TYPE_DECREMENT:
-					count--;
-				case TYPE_ZERO:
-					count = 0;
-			}
+		if (zero) count = 0;
+		else count++;
+		try {
 			ChatModel model = (ChatModel) cb.getModelMap().get(ChatActivity.class);
 			model.getCache().getUnreadedCount().put(playerName, count);
-			//TODO: kellene callback a HomeActivityhez, hogy ha az activity előtérben van, akkor is frissüljön a count
+			if (MillConnectionBinder.getCountListener() != null) MillConnectionBinder.getCountListener().fire(playerName, count);
+		}
+		catch (Exception ex) {
+			;
 		}
 	}
 	
