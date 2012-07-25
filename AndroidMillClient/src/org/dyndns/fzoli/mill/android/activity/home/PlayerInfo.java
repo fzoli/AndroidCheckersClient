@@ -1,22 +1,20 @@
 package org.dyndns.fzoli.mill.android.activity.home;
 
-import android.graphics.Bitmap;
-
 public class PlayerInfo {
 	
 	public enum Status {
 		ONLINE, OFFLINE, BLOCKED, INVISIBLE
 	}
 	
-	private String playerName, name, group;
-	private Bitmap avatar;
+	private int count;
 	private Status status;
+	private String playerName, name, group;
 	
-	public PlayerInfo(Status status, String playerName, String name, String group, Bitmap avatar) {
+	public PlayerInfo(Status status, String playerName, String name, String group, int count) {
 		this.playerName = playerName;
 		this.name = name;
 		this.group = group;
-		this.avatar = avatar;
+		this.count = count;
 		this.status = status;
 	}
 	
@@ -36,16 +34,16 @@ public class PlayerInfo {
 		return status;
 	}
 	
-	public Bitmap getAvatar() {
-		return avatar;
+	public int getCount() {
+		return count;
 	}
 	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
-	public void setAvatar(Bitmap avatar) {
-		this.avatar = avatar;
+	public void setCount(int count) {
+		this.count = count;
 	}
 	
 	public void setGroup(String group) {

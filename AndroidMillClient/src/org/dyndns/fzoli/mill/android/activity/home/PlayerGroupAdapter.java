@@ -82,7 +82,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 		else {
 			chkGroup(pi.getGroup());
 			i.setName(pi.getName());
-			i.setAvatar(pi.getAvatar());
+			i.setCount(pi.getCount());
 			i.setGroup(pi.getGroup());
 			i.setStatus(pi.getStatus());
 		}
@@ -169,9 +169,9 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
         ivStatus.setImageResource(res);
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         tvName.setText(p.getName());
-        ImageView ivAvatar = (ImageView) convertView.findViewById(R.id.ivAvatar);
-        ivAvatar.setVisibility(avatarEnabled ? View.VISIBLE : View.GONE);
-        if (p.getAvatar() != null) ivAvatar.setImageBitmap(p.getAvatar());
+        TextView ivCount = (TextView) convertView.findViewById(R.id.tvCount);
+        ivCount.setText(Integer.toString(p.getCount()));
+        ivCount.setVisibility(p.getCount() > 0 ? View.VISIBLE : View.GONE);
 		return convertView;
     }
     

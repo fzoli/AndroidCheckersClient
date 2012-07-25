@@ -190,11 +190,21 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	}
 	
 	private void addPlayer(BasePlayer p, PlayerInfo.Status status, int group, boolean update) {
+		PlayerInfo info = new PlayerInfo(status, p.getPlayerName(), p.getName(), getString(group), getChatCount(p.getPlayerName()));
 		if (update) {
-			adapter.setItem(new PlayerInfo(status, p.getPlayerName(), p.getName(), getString(group), null));
+			adapter.setItem(info);
 		}
 		else {
-			adapter.addItem(new PlayerInfo(status, p.getPlayerName(), p.getName(), getString(group), null));
+			adapter.addItem(info);
+		}
+	}
+	
+	private int getChatCount(String playerName) {
+		try {
+			return MillConnectionService.getUnreadedMessageCount(getConnectionBinder(), playerName);
+		}
+		catch (Exception ex) {
+			return -1;
 		}
 	}
 	
@@ -245,7 +255,7 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 			ListView lvPlayer = (ListView) findViewById(R.id.lvPlayer);
 			pa = new PlayerAdapter(this);
 			pa.setAvatarEnabled(e.getPlayer().isAvatarEnabled());
-			pa.getPlayerList().add(new PlayerInfo(e.getPlayer().isOnline() ? Status.ONLINE : Status.INVISIBLE, e.getPlayer().getPlayerName(), e.getPlayer().getName(), "", null));
+			pa.getPlayerList().add(new PlayerInfo(e.getPlayer().isOnline() ? Status.ONLINE : Status.INVISIBLE, e.getPlayer().getPlayerName(), e.getPlayer().getName(), "", 0));
 			lvPlayer.setAdapter(pa);
 			final AlertDialog stateSelectDialog = new AlertDialog.Builder(this)
 			.setTitle(R.string.state_change)

@@ -31,12 +31,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.db4o.Db4oEmbedded;
 import com.db4o.EmbeddedObjectContainer;
 
 public class MillConnectionService extends AbstractConnectionService<Object, Object> {
 	
+	public static final int TYPE_INCREMENT = 0, TYPE_DECREMENT = 1, TYPE_ZERO = 2;
 	private static final int MODE_SIGNED_IN = 1, MODE_CHAT_MESSAGE = 2;
 	
 	private Notification playerNotification;
@@ -85,7 +87,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 				if (evt.isClear()) {
 					List<Message> ls = getConnectionBinder().getMessages().get(evt.getClearPlayer());
 					if (ls != null) {
-						//TODO: count nullázása
+						setUnreadedMessageCount(evt.getClearPlayer(), TYPE_ZERO);
 						ls.clear();
 					}
 				}
@@ -95,7 +97,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 					m.setSendDate(new Date());
 					List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
 					if (l != null) {
-						//TODO: count növelése
+						setUnreadedMessageCount(evt.getClearPlayer(), TYPE_INCREMENT);
 						l.add(m);
 					}
 				}
@@ -116,9 +118,12 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			if (chatModel != null) chatModel.removeListener(chatEventHandler);
 			chatModel = (ChatModel) value;
 			chatModel.addListener(chatEventHandler);
+			
 		}
 		return super.onModelPut(key, value);
 	}
+	
+	
 	
 	@Override
 	public MillConnectionBinder createConnectionBinder() {
@@ -203,7 +208,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 			playerNotification.setLatestEventInfo(this, getString(R.string.app_name), text, pendingIntent);
 			startForeground(MODE_SIGNED_IN, playerNotification);
-			getConnectionBinder().getModelMap().put(ChatActivity.class, new ChatModel(getConnection()));
+			setChatModel(true);
 		}
 		else {
 			if (playerNotification != null) {
@@ -214,7 +219,14 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 					removeChatNotification(it.next());
 				}
 			}
-			getConnectionBinder().getModelMap().remove(ChatActivity.class);
+			setChatModel(false);
+		}
+	}
+	
+	public void removeChatNotification(String playerName) {
+		if (notificationManager != null && notifies.containsKey(playerName)) {
+			notifies.remove(playerName);
+			notificationManager.cancel(playerName, MODE_CHAT_MESSAGE);
 		}
 	}
 	
@@ -225,29 +237,73 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		if (ChatActivity.ACTIVE_PLAYERS.contains(playerName)) {
 			return;
 		}
-		int count;
-		try {
-			count = chatModel.getCache().getUnreadedCount().get(playerName);
+		int count = getUnreadedMessageCount(playerName);
+		if (count >= 1) {
+			removeChatNotification(playerName);
+			String text = getString(R.string.new_message1) + ' ' + count + ' ' + getString(count > 1 ? R.string.new_message2 : R.string.new_message3);
+			Notification notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
+			notification.flags |= Notification.FLAG_AUTO_CANCEL;
+			Intent notificationIntent = new Intent(this, ChatActivity.class);
+			notificationIntent.putExtra(ChatActivity.KEY_PLAYER, playerName);
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
+			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.chat) + " - " + ChatActivity.getDisplayName(playerModel, playerName), text, contentIntent);
+			notificationManager.notify(playerName, MODE_CHAT_MESSAGE, notification);
+			notifies.put(playerName, notification);
 		}
-		catch (Exception ex) {
-			count = 0;
-		}
-		removeChatNotification(playerName);
-		String text = getString(R.string.new_message1) + ' ' + count + ' ' + getString(count > 1 ? R.string.new_message2 : R.string.new_message3);
-		Notification notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
-		notification.flags |= Notification.FLAG_AUTO_CANCEL;
-		Intent notificationIntent = new Intent(this, ChatActivity.class);
-		notificationIntent.putExtra(ChatActivity.KEY_PLAYER, playerName);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
-		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.chat) + " - " + ChatActivity.getDisplayName(playerModel, playerName), text, contentIntent);
-		notificationManager.notify(playerName, MODE_CHAT_MESSAGE, notification);
-		notifies.put(playerName, notification);
 	}
 	
-	private void removeChatNotification(String playerName) {
-		if (notificationManager != null && notifies.containsKey(playerName)) {
-			notifies.remove(playerName);
-			notificationManager.cancel(playerName, MODE_CHAT_MESSAGE);
+	private void setChatModel(boolean add) {
+		setChatModel(getConnectionBinder(), add);
+	}
+	
+	private int getUnreadedMessageCount(String playerName) {
+		return getUnreadedMessageCount(getConnectionBinder(), playerName);
+	}
+	
+	private void setUnreadedMessageCount(String playerName, int type) {
+		setUnreadedMessageCount(getConnectionBinder(), playerName, type);
+	}
+	
+	public static void setChatModel(MillConnectionBinder cb, boolean add) {
+		if (add) {
+			ChatModel model = (ChatModel) cb.getModelMap().get(ChatActivity.class);
+			if (model == null) model = new ChatModel(cb.getConnection());
+			cb.getModelMap().put(ChatActivity.class, model);
+		}
+		else {
+			cb.getModelMap().remove(ChatActivity.class);
+		}
+	}
+	
+	//TODO: BUG! ha a service hívja meg a settert, nem módosul a count DE lehet, hogy a getternél jelentkezik a probléma
+	
+	public static int getUnreadedMessageCount(MillConnectionBinder cb, String playerName) {
+		try {
+			setChatModel(cb, true);
+			ChatModel model = (ChatModel) cb.getModelMap().get(ChatActivity.class);
+			return model.getCache().getUnreadedCount().get(playerName);
+		}
+		catch (Exception ex) {
+			Log.i("test", "error", ex);
+		}
+		return -1;
+	}
+	
+	public static void setUnreadedMessageCount(MillConnectionBinder cb, String playerName, int type) {
+		int count = getUnreadedMessageCount(cb, playerName);
+		Log.i("test", "count " + count);
+		if (count != -1) {
+			switch (type) {
+				case TYPE_INCREMENT:
+					count++;
+				case TYPE_DECREMENT:
+					count--;
+				case TYPE_ZERO:
+					count = 0;
+			}
+			ChatModel model = (ChatModel) cb.getModelMap().get(ChatActivity.class);
+			model.getCache().getUnreadedCount().put(playerName, count);
+			//TODO: kellene callback a HomeActivityhez, hogy ha az activity előtérben van, akkor is frissüljön a count
 		}
 	}
 	

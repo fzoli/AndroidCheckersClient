@@ -72,6 +72,10 @@ public class MillConnectionBinder extends ConnectionBinder<Object, Object> {
 		return loginMode;
 	}
 	
+	public void removeChatNotification(String playerName) {
+		getService().removeChatNotification(playerName);
+	}
+	
 	public void setLoginMode(LoginMode loginMode) {
 		this.loginMode = loginMode;
 		switch (loginMode) {

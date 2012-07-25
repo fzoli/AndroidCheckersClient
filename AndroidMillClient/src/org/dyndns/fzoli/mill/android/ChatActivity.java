@@ -140,6 +140,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		if (m == null) return false;
 		sender = m.getCache().getPlayer().getPlayerName();
 		setTitle(getString(R.string.chat) + " - " + getDisplayName(getPlayerName()));
+		getConnectionBinder().removeChatNotification(getPlayerName());
 		return super.onConnectionBinded();
 	}
 	
@@ -471,6 +472,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 								@Override
 								public void onEvent(int i) {
 									messages.add(e.getMessage());
+									resetUnreadedCount();
 								}
 								
 							};
@@ -515,7 +517,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 												messages.addAll(d.getMessages());
 												initMessages(d.getMessages(), true);
 												setAction(false);
-												//TODO: count nullázása
+												resetUnreadedCount();
 											}
 											
 										};
@@ -535,6 +537,10 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			return true;
 		}
 		return false;
+	}
+	
+	private void resetUnreadedCount() {
+		MillConnectionService.setUnreadedMessageCount(getConnectionBinder(), getPlayerName(), MillConnectionService.TYPE_ZERO);
 	}
 	
 	public static Spannable getSmiledText(Context context, String text) {
