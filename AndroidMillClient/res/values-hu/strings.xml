@@ -147,9 +147,8 @@
     <string name="perm9">Védelem mód</string><!-- state_inverse -->
     <string name="perm9_inf">Ha ez a jog aktív, egyetlen jogot sem gyakorolhatnak a játékoson (ez alól kivétel a rendszergazda).\n\nEz a jog nem aktiválható és nem inaktiválható, mert - ha van jogosultság rá - állandóan aktív, és csak rendszergazda adhatja ill. veheti el.</string>
     <string name="chat">Cset</string>
-    <string name="new_message1">Önnek</string>
-    <string name="new_message2">új üzenete érkezett</string>
-    <string name="new_message3">új üzenete érkezett</string>
+    <string name="new_message1">új üzenet</string>
+    <string name="new_message2">új üzenet</string>
     <string name="insert_smiley">Hangulatjel beillesztése</string>
     <string name="delete_messages">Üzenetek törlése</string>
     <string name="delete_messages_confirm">Ha az igent választja, véglegesen törlődik az összes üzenet, amit a játékosnak küldött és tőle kapott.\n\nBiztos benne?</string>

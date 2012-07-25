@@ -239,13 +239,13 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		int count = getUnreadedMessageCount(playerName);
 		if (count >= 1) {
 			removeChatNotification(playerName);
-			String text = getString(R.string.new_message1) + ' ' + count + ' ' + getString(count > 1 ? R.string.new_message2 : R.string.new_message3);
+			String text = ChatActivity.getDisplayName(playerModel, playerName) + " - " + count + ' ' + getString(count > 1 ? R.string.new_message1 : R.string.new_message2);
 			Notification notification = new Notification(R.drawable.ic_stat_notify, text, System.currentTimeMillis());
 			notification.flags |= Notification.FLAG_AUTO_CANCEL;
 			Intent notificationIntent = new Intent(this, ChatActivity.class);
 			notificationIntent.putExtra(ChatActivity.KEY_PLAYER, playerName);
 			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
-			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.chat) + " - " + ChatActivity.getDisplayName(playerModel, playerName), text, contentIntent);
+			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name) + " - " + getString(R.string.chat), text, contentIntent);
 			notificationManager.notify(playerName, MODE_CHAT_MESSAGE, notification);
 			notifies.put(playerName, notification);
 		}

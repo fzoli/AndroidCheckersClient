@@ -133,9 +133,8 @@
     <string name="perm8">Permission edit</string>
     <string name="perm9">Shield mode</string>
     <string name="chat">Chat</string>
-    <string name="new_message1">You have got</string>
-    <string name="new_message2">new message</string>
-    <string name="new_message3">new messages</string>
+    <string name="new_message1">new message</string>
+    <string name="new_message2">new messages</string>
     <string name="insert_smiley">Insert smiley</string>
     <string name="delete_messages">Delete messages</string>
     <string name="delete_messages_confirm">If you choose yes, every message will be removed permanently.\n\nAre you sure?</string>
