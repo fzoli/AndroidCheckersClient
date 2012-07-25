@@ -64,6 +64,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 					break;
 				case ModelChangeEvent.TYPE_EVENT:
 					PlayerEvent evt = e.getEvent();
+					if (evt.getType() != null)
 					switch (evt.getType()) {
 						case PERSONAL_DATA_CHANGE:
 							String p = evt.getChangedPlayer();
@@ -245,7 +246,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			Intent notificationIntent = new Intent(this, ChatActivity.class);
 			notificationIntent.putExtra(ChatActivity.KEY_PLAYER, playerName);
 			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_ONE_SHOT);
-			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name) + " - " + getString(R.string.chat), text, contentIntent);
+			notification.setLatestEventInfo(getApplicationContext(), getString(R.string.app_name), text, contentIntent);
 			notificationManager.notify(playerName, MODE_CHAT_MESSAGE, notification);
 			notifies.put(playerName, notification);
 		}
