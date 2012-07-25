@@ -156,7 +156,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		try {
 			Player p = model.getCache().getPlayer();
 			if (p.getPlayerName().equals(playerName)) return p.getName();
-			for (BasePlayer bp : p.getFriendList()) {
+			for (BasePlayer bp : p.createMergedPlayerList()) {
 				if (bp.getPlayerName().equals(playerName)) {
 					return bp.getName();
 				}
@@ -388,9 +388,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 					
 					@Override
 					public void onEvent(int e) {
+						setAction(false);
+						etChat.setText("");
 						if (e == 1) {
-							setAction(false);
-							etChat.setText("");
 							addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()));
 						}
 					}
