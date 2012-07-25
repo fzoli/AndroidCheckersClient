@@ -462,6 +462,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 					}
 				}
 				else {
+					if (e.getMessage() == null) return false;
 //					e.getMessage().setSendDate(new Date());
 					addMessage(e.getMessage());
 					getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
