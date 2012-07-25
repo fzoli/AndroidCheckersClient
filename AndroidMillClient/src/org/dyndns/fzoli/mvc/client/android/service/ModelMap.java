@@ -60,12 +60,12 @@ public class ModelMap<EventType, PropsType> extends CommonMap<Class<? extends Co
 	}
 	
 	public void free() {
-			Iterator<Class<? extends ConnectionActivity>> it = keySet().iterator();
-			while (it.hasNext()) {
-				free(it.next());
-				free();
-				break;
-			}
+		Iterator<Class<? extends ConnectionActivity>> it = keySet().iterator();
+		while (it.hasNext()) {
+			free(it.next());
+			free();
+			break;
+		}
 	}
 	
 }

@@ -86,9 +86,9 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 				if (evt.isClear()) {
 					removeChatNotification(evt.getClearPlayer());
 					setUnreadedMessageCount(evt.getClearPlayer(), true);
-					List<Message> ls = getConnectionBinder().getMessages().get(evt.getClearPlayer());
-					if (ls != null) {
-						ls.clear();
+					List<Message> l = getConnectionBinder().getMessages().get(evt.getClearPlayer());
+					if (l != null) synchronized (l) {
+						l.clear();
 					}
 				}
 				else {
@@ -98,7 +98,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 						addChatNotification(m.getSender());
 						m.setSendDate(new Date());
 						List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
-						if (l != null) {
+						if (l != null) synchronized (l) {
 							l.add(m);
 						}
 					}
