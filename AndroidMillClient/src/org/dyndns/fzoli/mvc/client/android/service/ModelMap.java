@@ -59,17 +59,13 @@ public class ModelMap<EventType, PropsType> extends CommonMap<Class<? extends Co
 		}
 	}
 	
-	public void free() { //TODO: néha kivételt dob, de nem megoldás nem tudomást venni róla
-//		try {
+	public void free() {
 			Iterator<Class<? extends ConnectionActivity>> it = keySet().iterator();
 			while (it.hasNext()) {
-				Class<? extends ConnectionActivity> key = it.next();
-				free(key);
+				free(it.next());
+				free();
+				break;
 			}
-//		}
-//		catch (ConcurrentModificationException ex) {
-//			;
-//		}
 	}
 	
 }
