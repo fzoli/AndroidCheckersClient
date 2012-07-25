@@ -305,7 +305,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 							@Override
 							public void onEvent(int e) {
 								setAction(false);
-								messages.clear();
+								synchronized (messages) {
+									messages.clear();
+								}
 								lMessages.removeAllViews();
 							}
 							
@@ -405,7 +407,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			}
 			
 		}, false);
-		messages.add(m);
+		synchronized (messages) {
+			messages.add(m);
+		}
 	}
 	
 	private void initMessages(List<Message> l, boolean reset) {
@@ -473,7 +477,9 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 								
 								@Override
 								public void onEvent(int i) {
-									messages.add(e.getMessage());
+									synchronized (messages) {
+										messages.add(e.getMessage());
+									}
 									resetUnreadedCount();
 								}
 								
