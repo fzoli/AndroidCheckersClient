@@ -304,11 +304,13 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 							
 							@Override
 							public void onEvent(int e) {
-								setAction(false);
-								synchronized (messages) {
-									messages.clear();
+								if (e == 1) {
+									setAction(false);
+									synchronized (messages) {
+										messages.clear();
+									}
+									lMessages.removeAllViews();
 								}
-								lMessages.removeAllViews();
 							}
 							
 						};
@@ -386,9 +388,11 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 					
 					@Override
 					public void onEvent(int e) {
-						setAction(false);
-						etChat.setText("");
-						addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()));
+						if (e == 1) {
+							setAction(false);
+							etChat.setText("");
+							addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()));
+						}
 					}
 					
 				};
