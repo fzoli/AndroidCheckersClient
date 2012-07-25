@@ -1,6 +1,5 @@
 package org.dyndns.fzoli.mvc.client.android.service;
 
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
@@ -61,16 +60,16 @@ public class ModelMap<EventType, PropsType> extends CommonMap<Class<? extends Co
 	}
 	
 	public void free() { //TODO: néha kivételt dob, de nem megoldás nem tudomást venni róla
-		try {
+//		try {
 			Iterator<Class<? extends ConnectionActivity>> it = keySet().iterator();
 			while (it.hasNext()) {
 				Class<? extends ConnectionActivity> key = it.next();
 				free(key);
 			}
-		}
-		catch (ConcurrentModificationException ex) {
-			;
-		}
+//		}
+//		catch (ConcurrentModificationException ex) {
+//			;
+//		}
 	}
 	
 }
