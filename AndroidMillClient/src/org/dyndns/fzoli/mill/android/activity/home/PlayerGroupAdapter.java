@@ -3,6 +3,7 @@ package org.dyndns.fzoli.mill.android.activity.home;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dyndns.fzoli.mill.android.HomeActivity;
 import org.dyndns.fzoli.mill.android.R;
 
 import android.content.Context;
@@ -149,7 +150,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
         return childPosition;
     }
     
-    public static View getPlayerView(Context context, PlayerInfo p, View convertView, boolean avatarEnabled) {
+    public static View getPlayerView(final Context context, final PlayerInfo p, View convertView, boolean avatarEnabled) {
     	if (convertView == null) convertView = createView(context, R.layout.player_view);
         ImageView ivStatus = (ImageView) convertView.findViewById(R.id.ivStatus);
         int res;
@@ -172,6 +173,15 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
         TextView ivCount = (TextView) convertView.findViewById(R.id.tvCount);
         ivCount.setText(Integer.toString(p.getCount()));
         ivCount.setVisibility(p.getCount() > 0 ? View.VISIBLE : View.GONE);
+        ivCount.setEnabled(p.getCount() > 0);
+        ivCount.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				HomeActivity.showChatActivity(context, p);
+			}
+			
+		});
 		return convertView;
     }
     

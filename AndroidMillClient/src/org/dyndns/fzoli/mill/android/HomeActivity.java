@@ -24,6 +24,7 @@ import org.dyndns.fzoli.mvc.client.event.ModelActionEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelActionListener;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -314,10 +315,13 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	private void initAdapter() {
 		Integer index = null;
 		if (adapter != null) index = adapter.getLastExpandedGroupPosition();
-		if (index == null) {
+		if (index == null) try {
 			Map<String, String> vars = getConnectionBinder().getVars();
 			String indexString = vars.get(KEY_LAST_HOME_LIST_INDEX);
 			index = (indexString != null) ? Integer.parseInt(indexString) : null;
+		}
+		catch (NullPointerException ex) {
+			index = 0;
 		}
 		adapter = new PlayerGroupAdapter(this, getExpandableListView());
 		if (index != null) adapter.setLastExpandedGroupPosition(index);
@@ -352,15 +356,19 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 				
 				@Override
 				public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-					String name = adapter.getChild(groupPosition, childPosition).getPlayerName();
-					Intent i = new Intent(HomeActivity.this, ChatActivity.class);
-					i.putExtra(ChatActivity.KEY_PLAYER, name);
-					startActivity(i);
+					PlayerInfo pi = adapter.getChild(groupPosition, childPosition);
+					showChatActivity(HomeActivity.this, pi);
 					return true;
 				}
 				
 			});
 		}
+	}
+	
+	public static void showChatActivity(Context context, PlayerInfo pi) {
+		Intent i = new Intent(context, ChatActivity.class);
+		i.putExtra(ChatActivity.KEY_PLAYER, pi.getPlayerName());
+		context.startActivity(i);
 	}
 	
 	private boolean signIn(ModelActionEvent<PlayerData> e) {
