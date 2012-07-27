@@ -49,6 +49,7 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.Toast;
@@ -89,10 +90,15 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	
 	@Override
 	public void onBackPressed() {
-		int mask = getModel().getCache().getPlayer().getPermissionMask(true);
-		if (startMask != mask) {
-			startMask = mask;
-			reinitModel();
+		try {
+			int mask = getModel().getCache().getPlayer().getPermissionMask(true);
+			if (startMask != mask) {
+				startMask = mask;
+				reinitModel();
+			}
+		}
+		catch (Exception ex) { //TODO
+			Log.i("test", "error", ex);
 		}
 		super.onBackPressed();
 	}
@@ -114,7 +120,7 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 	
 	private Timer timer;
 	
-	private void initScreen() { //TODO
+	private void initScreen() {
 		final PreferenceScreen root = getPreferenceManager().createPreferenceScreen(this);
 		setPreferenceScreen(root);
 		final PreferenceCategory optionsPref = new PreferenceCategory(this);

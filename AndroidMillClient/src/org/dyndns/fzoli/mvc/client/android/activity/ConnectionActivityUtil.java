@@ -265,8 +265,9 @@ public class ConnectionActivityUtil<EventType, PropsType, EventObj, PropsObj> ex
 	@Override
 	public void reinitModel() {
     	if (getModel() != null && getConnectionBinder() != null) {
-    		getModel().removeListeners();
-    		getConnectionBinder().getModelMap().remove(getClassKey());
+    		getConnectionBinder().getModelMap().free(getClassKey());
+//    		getModel().removeListeners();
+//    		getConnectionBinder().getModelMap().remove(getClassKey());
     		rebindConnectionService();
     	}
     }

@@ -51,11 +51,13 @@ public class ModelMap<EventType, PropsType> extends CommonMap<Class<? extends Co
 	}
 	
 	public void free(Class<? extends ConnectionActivity> key) {
-		CachedModel<EventType, PropsType, ?, ?> m = get(key);
-		if (m != null) {
-			m.removeListeners();
-			m.getConnection().removeListener(m); //CachedModel nem teszi meg, de a többi model esetén ezt a metódust nem kell meghívni
-			remove(key);
+		synchronized (this) {
+			CachedModel<EventType, PropsType, ?, ?> m = get(key);
+			if (m != null) {
+				m.removeListeners();
+				m.getConnection().removeListener(m); //CachedModel nem teszi meg, de a többi model esetén ezt a metódust nem kell meghívni
+				remove(key);
+			}
 		}
 	}
 	
