@@ -9,16 +9,22 @@ import java.util.Date;
 public class Message {
     
     private Boolean sync;
+    private MessageType type;
     private String sender, address, text;
     private Date sendDate;
     protected long sendTime;
 
-    public Message(String address, String sender, String text, Date sendDate) {
+    public Message(String address, String sender, String text, Date sendDate, MessageType type) {
+        this.type = type;
         this.address = address;
         this.sender = sender;
         this.text = text;
         this.sendDate = sendDate;
         if (sendDate != null) this.sendTime = sendDate.getTime();
+    }
+
+    public MessageType getType() {
+        return type;
     }
 
     public String getText() {
