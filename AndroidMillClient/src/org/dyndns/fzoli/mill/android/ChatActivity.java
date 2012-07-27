@@ -402,6 +402,10 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 	}
 	
 	private void addMessage(final Message m, boolean add) {
+		m.setSendDate(new Date());
+		if (add) synchronized (messages) {
+			messages.add(m);
+		}
 		initMessages(new ArrayList<Message>() {
 			
 			private static final long serialVersionUID = 1L;
@@ -411,9 +415,6 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			}
 			
 		}, false);
-		if (add) synchronized (messages) {
-			messages.add(m);
-		}
 	}
 	
 	private void initMessages(List<Message> l, boolean reset) {
