@@ -7,5 +7,12 @@ package org.dyndns.fzoli.mill.common.model.entity;
 public enum MessageType {
     CHAT,
     SYSTEM,
-    SUPPORT
+    SUPPORT;
+    
+    public enum SystemMessage {
+        SIGN_IN,
+        SIGN_OUT,
+        PLAY_REQUEST
+    }
+    
 }

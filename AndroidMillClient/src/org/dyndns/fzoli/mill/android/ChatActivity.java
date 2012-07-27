@@ -19,7 +19,6 @@ import org.dyndns.fzoli.mill.client.model.ChatModel;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.model.entity.BasePlayer;
 import org.dyndns.fzoli.mill.common.model.entity.Message;
-import org.dyndns.fzoli.mill.common.model.entity.MessageType;
 import org.dyndns.fzoli.mill.common.model.entity.Player;
 import org.dyndns.fzoli.mill.common.model.pojo.ChatData;
 import org.dyndns.fzoli.mill.common.model.pojo.ChatEvent;
@@ -392,7 +391,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 						setAction(false);
 						etChat.setText("");
 						if (e == 1) {
-							addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date(), MessageType.CHAT));
+							addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()));
 						}
 					}
 					
