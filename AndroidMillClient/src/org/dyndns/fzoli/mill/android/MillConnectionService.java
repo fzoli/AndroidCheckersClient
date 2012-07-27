@@ -23,7 +23,6 @@ import org.dyndns.fzoli.mvc.client.connection.Connection;
 import org.dyndns.fzoli.mvc.client.connection.JSONConnection;
 import org.dyndns.fzoli.mvc.client.event.ModelChangeEvent;
 import org.dyndns.fzoli.mvc.client.event.ModelChangeListener;
-import org.dyndns.fzoli.mvc.client.model.AbstractModel;
 import org.dyndns.fzoli.mvc.client.model.Model;
 
 import android.app.Notification;
@@ -192,13 +191,6 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 		helper = null;
 	}
 	
-	@Override
-	@SuppressWarnings("unchecked")
-	public boolean onModelRemove(Class<? extends ConnectionActivity> key, Model<Object, Object, ?, ?> value) {
-		((AbstractModel) value).removeListeners();
-		return super.onModelRemove(key, value);
-	}
-	
 	//TODO: BUUUUUG!!!! amint a chat model létrejön, majd később új service születik, a bejelentkezéskor NULL a playerName, ezért azt hiszi a kliens, hogy kijelentkeztették
 	// de nem a chat model létrejötte az igazi ok, fogalmam sincs, mi (még...) !!!
 	
@@ -273,7 +265,7 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 			cb.getModelMap().put(ChatActivity.class, model);
 		}
 		else {
-			cb.getModelMap().remove(ChatActivity.class);
+			cb.getModelMap().free(ChatActivity.class);
 		}
 	}
 	

@@ -96,4 +96,15 @@ public class PersonalData {
         this.sex = sex;
     }
     
+    public void clear() {
+        setFirstName(null);
+        setLastName(null);
+        setInverseName(false);
+        setSex(null);
+        setBirthDate(null);
+        setCity(null);
+	setRegion(null);
+        setCountry(null);
+    }
+    
 }

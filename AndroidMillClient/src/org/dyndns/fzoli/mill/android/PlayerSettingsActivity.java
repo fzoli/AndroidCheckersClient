@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 
 import org.dyndns.fzoli.android.widget.AutoCompletePreference;
 import org.dyndns.fzoli.android.widget.CheckBoxIconPreference;
+import org.dyndns.fzoli.android.widget.ConfirmDialog;
 import org.dyndns.fzoli.android.widget.TextWatcherAdapter;
 import org.dyndns.fzoli.mill.android.activity.AbstractMillOnlineBundlePreferenceActivity;
 import org.dyndns.fzoli.mill.android.activity.IntegerMillModelActivityAdapter;
@@ -401,6 +402,51 @@ public class PlayerSettingsActivity extends AbstractMillOnlineBundlePreferenceAc
 			
 		});
 		othersCat.addPreference(sexPref);
+		
+		final PreferenceCategory personalActionsCat = new PreferenceCategory(this);
+		personalActionsCat.setTitle(R.string.user_actions);
+		personalScreen.addPreference(personalActionsCat);
+		
+		final Preference personalResetPref = new Preference(this);
+		personalResetPref.setTitle(R.string.personal_data_clear);
+		personalResetPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+			
+			@Override
+			public boolean onPreferenceClick(Preference preference) {
+				new ConfirmDialog(PlayerSettingsActivity.this, android.R.drawable.ic_dialog_alert, getString(R.string.personal_data_clear), getString(R.string.personal_data_clear_warning), getString(R.string.yes), getString(R.string.no), new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						personalResetPref.setEnabled(false);
+						getModel().setPersonalData(PersonalDataType.CLEAR, null, new ModelActionListener<Integer>() {
+							
+							@Override
+							public void modelActionPerformed(ModelActionEvent<Integer> e) {
+								new IntegerMillModelActivityAdapter(PlayerSettingsActivity.this, e) {
+									
+									@Override
+									public void onEvent(int e) {
+										personalResetPref.setEnabled(true);
+										switch (getReturn(e)) {
+											case OK:
+												personalData.clear();
+												finish();
+												break;
+										}
+									}
+									
+								};
+							}
+							
+						});
+					}
+					
+				}).show();
+				return true;
+			}
+			
+		});
+		personalActionsCat.addPreference(personalResetPref);
 		
 		final PreferenceScreen permissionScreen = getPreferenceManager().createPreferenceScreen(this);
 		permissionScreen.setTitle(R.string.permissions);

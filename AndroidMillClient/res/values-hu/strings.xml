@@ -103,6 +103,8 @@
     <string name="replace">Lecserél</string>
     <string name="no_avatar">NINCS AVATAR</string>
     <string name="personal_datas">Személyes adatok</string>
+    <string name="personal_data_clear">Személyes adatok törlése</string>
+    <string name="personal_data_clear_warning">Biztos benne, hogy törölni akarja személyes adatait?</string>
     <string name="name">Név</string>
     <string name="first_name">Keresztnév</string>
     <string name="last_name">Vezetéknév</string>

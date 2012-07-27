@@ -103,6 +103,8 @@
     <string name="replace">Replace</string>
     <string name="no_avatar">NO AVATAR</string>
     <string name="personal_datas">Personal datas</string>
+    <string name="personal_data_clear">Clear personal datas</string>
+    <string name="personal_data_clear_warning">Are you sure that you want to clear your personal datas?</string>
     <string name="name">Name</string>
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>

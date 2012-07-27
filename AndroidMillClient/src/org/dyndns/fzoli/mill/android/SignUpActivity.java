@@ -488,7 +488,7 @@ public class SignUpActivity extends AbstractMillModelActivity<PlayerBuilderEvent
 														db.store(newUser);
 														getConnectionBinder().reinitDatabaseHelper();
 													}
-													getModelMap().remove(SignUpActivity.class);
+													getModelMap().free(SignUpActivity.class);
 													finish();
 													break;
 												default:

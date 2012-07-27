@@ -12,5 +12,6 @@ public enum PersonalDataType {
     SEX,
     COUNTRY,
     REGION,
-    CITY
+    CITY,
+    CLEAR
 }

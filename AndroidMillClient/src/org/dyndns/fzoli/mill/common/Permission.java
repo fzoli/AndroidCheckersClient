@@ -64,7 +64,7 @@ import java.util.List;
  * @author zoli
  */
 public enum Permission {
-    
+    //TODO: ötlet - a 'send person message' jog legyen 'state_inverse' és legyen külön kategória a barátlistánál, ahova az ebben a módban lévő online felhasználók megjelennek ÉS bármelyiküknek lehessen üzenetet küldeni ha nincs a jogot birtokló tiltólistáján
     HIDDEN_STATISTICS(Group.STATE_INVERSE),
     DETECT_INVISIBLE_STATUS(Group.STATE_NORMAL),
     DETECT_SUSPENDED_PLAYER(Group.STATE_NORMAL),
