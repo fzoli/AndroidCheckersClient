@@ -17,7 +17,11 @@ public class Message {
     protected long sendTime;
 
     public Message(String address, String sender, String text, Date sendDate) {
-        this(address, sender, text, sendDate, null, null);
+        this(address, sender, text, sendDate, MessageType.CHAT);
+    }
+    
+    public Message(String address, String sender, String text, Date sendDate, MessageType type) {
+        this(address, sender, text, sendDate, type, null);
     }
     
     public Message(String address, String sender, String text, Date sendDate, MessageType type, SystemMessage msg) {

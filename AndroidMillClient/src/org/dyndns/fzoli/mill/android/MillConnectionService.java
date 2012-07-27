@@ -15,6 +15,7 @@ import org.dyndns.fzoli.mill.client.model.ChatModel;
 import org.dyndns.fzoli.mill.client.model.PlayerModel;
 import org.dyndns.fzoli.mill.common.key.MillServletURL;
 import org.dyndns.fzoli.mill.common.model.entity.Message;
+import org.dyndns.fzoli.mill.common.model.entity.MessageType;
 import org.dyndns.fzoli.mill.common.model.pojo.ChatEvent;
 import org.dyndns.fzoli.mill.common.model.pojo.PlayerEvent;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
@@ -93,12 +94,14 @@ public class MillConnectionService extends AbstractConnectionService<Object, Obj
 				else {
 					Message m = evt.getMessage();
 					if (m != null) {
-						setUnreadedMessageCount(m.getSender(), false);
-						addChatNotification(m.getSender());
 						m.setSendDate(new Date());
-						List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
-						if (l != null) synchronized (l) {
-							l.add(m);
+						if (!m.getType().equals(MessageType.SYSTEM)) {
+							setUnreadedMessageCount(m.getSender(), false);
+							addChatNotification(m.getSender());
+							List<Message> l = getConnectionBinder().getMessages().get(m.getSender());
+							if (l != null) synchronized (l) {
+								l.add(m);
+							}
 						}
 					}
 				}

@@ -391,7 +391,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 						setAction(false);
 						etChat.setText("");
 						if (e == 1) {
-							addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()));
+							addMessage(new Message(getDisplayName(getPlayerName()), getDisplayName(sender), text, new Date()), true);
 						}
 					}
 					
@@ -401,7 +401,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		});
 	}
 	
-	private void addMessage(final Message m) {
+	private void addMessage(final Message m, boolean add) {
 		initMessages(new ArrayList<Message>() {
 			
 			private static final long serialVersionUID = 1L;
@@ -411,7 +411,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 			}
 			
 		}, false);
-		synchronized (messages) {
+		if (add) synchronized (messages) {
 			messages.add(m);
 		}
 	}
@@ -433,6 +433,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		synchronized (l) {
 			for (Message msg : l) {
 		        View msgView = infalInflater.inflate(R.layout.chat_msg, null);
+		        View lRoot = msgView.findViewById(R.id.lRoot);
 		        TextView tvUser = (TextView) msgView.findViewById(R.id.tvUser);
 		        TextView tvDate = (TextView) msgView.findViewById(R.id.tvDate);
 		        TextView tvMessage = (TextView) msgView.findViewById(R.id.tvMessage);
@@ -447,7 +448,25 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		        }
 		        tvUser.setText(getDisplayName(msg.getSender()));
 		        tvDate.setText(dateFormat.format(date));
-		        tvMessage.setText(getSmiledText(msg.getText()));
+		        CharSequence messageText;
+		        switch (msg.getType()) {
+			        case SYSTEM:
+			        	lRoot.setBackgroundDrawable(null);
+			        	switch (msg.getSystemMessage()) {
+				        	case SIGN_IN:
+				        		messageText = "sign_in";
+				        		break;
+				        	case SIGN_OUT:
+				        		messageText = "sign_out";
+				        		break;
+				        	default:
+				        		messageText = "play";
+			        	}
+			        	break;
+			        default:
+			        	messageText = getSmiledText(msg.getText());
+		        }
+		        tvMessage.setText(messageText);
 		        lMessages.addView(msgView);
 			}
 		}
@@ -472,7 +491,7 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 				else {
 					if (e.getMessage() == null) return false;
 //					e.getMessage().setSendDate(new Date());
-					addMessage(e.getMessage());
+					addMessage(e.getMessage(), false);
 					getModel().updateReadDate(getPlayerName(), new ModelActionListener<Integer>() {
 						
 						@Override
@@ -481,9 +500,6 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 								
 								@Override
 								public void onEvent(int i) {
-									synchronized (messages) {
-										messages.add(e.getMessage());
-									}
 									resetUnreadedCount();
 								}
 								
