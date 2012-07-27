@@ -50,6 +50,9 @@
     <string name="sign_in">Bejelentkezés</string>
     <string name="sign_out">Kijelentkezés</string>
     <string name="signed_in">Bejelentkezve</string>
+    <string name="signed_in_yet">bejelentkezett.</string>
+    <string name="signed_out_yet">kijelentkezett.</string>
+    <string name="request_play">játékfelkérést küldött.</string>
     <string name="have_account">Nincs még regisztrálva?</string>
     <string name="sign_up">Regisztráció</string>
     <string name="sign_in_error">Bejelentkezési hiba</string>

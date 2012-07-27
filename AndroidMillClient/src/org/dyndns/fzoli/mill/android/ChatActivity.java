@@ -448,25 +448,27 @@ public class ChatActivity extends AbstractMillOnlineActivity<ChatEvent, ChatData
 		        }
 		        tvUser.setText(getDisplayName(msg.getSender()));
 		        tvDate.setText(dateFormat.format(date));
-		        CharSequence messageText;
 		        switch (msg.getType()) {
 			        case SYSTEM:
 			        	lRoot.setBackgroundDrawable(null);
+			        	tvMessage.setVisibility(View.GONE);
+			        	int textRes;
 			        	switch (msg.getSystemMessage()) {
 				        	case SIGN_IN:
-				        		messageText = "sign_in";
+				        		textRes = R.string.signed_in_yet;
 				        		break;
 				        	case SIGN_OUT:
-				        		messageText = "sign_out";
+				        		textRes = R.string.signed_out_yet;
 				        		break;
 				        	default:
-				        		messageText = "play";
+				        		textRes = R.string.request_play;
 			        	}
+			        	tvUser.setText(tvUser.getText() + " " + getString(textRes));
 			        	break;
 			        default:
-			        	messageText = getSmiledText(msg.getText());
+			        	tvMessage.setText(getSmiledText(msg.getText()));
 		        }
-		        tvMessage.setText(messageText);
+		        
 		        lMessages.addView(msgView);
 			}
 		}

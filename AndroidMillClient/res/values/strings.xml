@@ -50,6 +50,9 @@
     <string name="sign_in">Sign In</string>
     <string name="sign_out">Sign out</string>
     <string name="signed_in">Signed in</string>
+    <string name="signed_in_yet">signed in.</string>
+    <string name="signed_out_yet">signed out.</string>
+    <string name="request_play">would like to play.</string>
     <string name="signing_in">Signing in...</string>
     <string name="signing_out">Signing out...</string>
     <string name="loading">Loading...</string>
