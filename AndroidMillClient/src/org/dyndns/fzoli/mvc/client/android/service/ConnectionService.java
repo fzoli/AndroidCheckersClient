@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.mvc.client.android.service;
 
+import java.util.List;
+
 import org.dyndns.fzoli.android.context.NetworkInfoContext;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
@@ -19,6 +21,9 @@ public interface ConnectionService<EventType, PropsType> extends NetworkInfoCont
 	Connection<EventType, PropsType> getConnection();
 	
 	ModelMap<EventType, PropsType> getModelMap();
+	
+	@SuppressWarnings("unchecked")
+	List<ConnectionActivity> getActivityList();
 	
 	ModelStateListener getModelStateListener();
 	

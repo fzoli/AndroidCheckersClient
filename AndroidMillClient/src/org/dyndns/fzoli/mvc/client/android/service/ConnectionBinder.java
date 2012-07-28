@@ -1,18 +1,15 @@
 package org.dyndns.fzoli.mvc.client.android.service;
 
 import java.util.List;
-import java.util.ArrayList;
 
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
+
 import android.os.Binder;
 
 public class ConnectionBinder<EventType, PropsType> extends Binder {
 	
 	private final ConnectionService<EventType, PropsType> SERVICE;
-	
-	@SuppressWarnings("unchecked")
-	private final List<ConnectionActivity> ACTIVITIES = new ArrayList<ConnectionActivity>();
 	
 	public ConnectionBinder(ConnectionService<EventType, PropsType> service) {
 		SERVICE = service;
@@ -32,7 +29,7 @@ public class ConnectionBinder<EventType, PropsType> extends Binder {
 	
 	@SuppressWarnings("unchecked")
 	public List<ConnectionActivity> getActivityList() {
-		return ACTIVITIES;
+		return getService().getActivityList();
 	}
 	
 	protected ConnectionService<EventType, PropsType> getService() {

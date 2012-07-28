@@ -1,5 +1,7 @@
 package org.dyndns.fzoli.mvc.client.android.service;
 
+import java.util.List;
+
 import org.dyndns.fzoli.android.context.service.AbstractNetworkInfoService;
 import org.dyndns.fzoli.mvc.client.android.activity.ConnectionActivity;
 import org.dyndns.fzoli.mvc.client.connection.Connection;
@@ -42,6 +44,12 @@ public abstract class AbstractConnectionService<EventType, PropsType> extends Ab
 	@Override
 	public ModelMap<EventType, PropsType> getModelMap() {
 		return getServiceUtil().getModelMap();
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<ConnectionActivity> getActivityList() {
+		return getServiceUtil().getActivityList();
 	}
 	
 	@Override

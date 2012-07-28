@@ -64,7 +64,6 @@ public class HomeActivity extends AbstractMillOnlineExpandableListActivity<Playe
 	public boolean onConnectionBinded() {
 		// ha egy előző ablakban már megjelent a kapcsolódás hiba ablak és kilépésre mentek,
 		// bejelentkező ablak megnyitása, és továbblépés megállítása
-		Log.i("test","onBind");
 		switch (getConnectionBinder().getLoginMode()) {
 			case INVISIBLE_ERROR:
 				getContextUtil().openSignIn();

@@ -20,6 +20,9 @@ public class ConnectionServiceUtil<EventType, PropsType> extends NetworkInfoCont
 	private final ConnectionBinder<EventType, PropsType> BINDER = createConnectionBinder();
 	private final ModelMap<EventType, PropsType> MODELS = new ModelMap<EventType, PropsType>(this);
 	
+	@SuppressWarnings("unchecked")
+	private final List<ConnectionActivity> ACTIVITIES = new ArrayList<ConnectionActivity>();
+	
 	private final ModelStateListener STATE_LISTENER = new ModelStateListener() {
 
 		@Override
@@ -48,7 +51,7 @@ public class ConnectionServiceUtil<EventType, PropsType> extends NetworkInfoCont
 		getModelMap().clear();
 		rebindActivities();
 	}
-	
+
 	@Override
 	public Connection<EventType, PropsType> getConnection() {
 		return connection;
@@ -57,6 +60,12 @@ public class ConnectionServiceUtil<EventType, PropsType> extends NetworkInfoCont
 	@Override
 	public ModelMap<EventType, PropsType> getModelMap() {
 		return MODELS;
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<ConnectionActivity> getActivityList() {
+		return ACTIVITIES;
 	}
 
 	@Override
@@ -112,11 +121,6 @@ public class ConnectionServiceUtil<EventType, PropsType> extends NetworkInfoCont
 	}
 	
 	/* Rejtett metódusok */
-	
-	@SuppressWarnings("unchecked")
-	protected List<ConnectionActivity> getActivityList() {
-		return BINDER.getActivityList();
-	}
 	
 	@SuppressWarnings("unchecked")
 	protected void rebindActivities() {
