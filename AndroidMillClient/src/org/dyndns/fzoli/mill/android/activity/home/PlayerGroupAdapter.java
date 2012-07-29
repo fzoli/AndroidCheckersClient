@@ -82,10 +82,7 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
 		}
 		else {
 			chkGroup(pi.getGroup());
-			i.setName(pi.getName());
-			i.setCount(pi.getCount());
-			i.setGroup(pi.getGroup());
-			i.setStatus(pi.getStatus());
+			i.set(pi);
 		}
 		notifyDataSetChanged();
 	}
@@ -151,7 +148,14 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
     }
     
     public static View getPlayerView(final Context context, final PlayerInfo p, View convertView, boolean avatarEnabled) {
-    	if (convertView == null) convertView = createView(context, R.layout.player_view);
+    	if (convertView == null) {
+    		if (p instanceof PlayerExtraInfo) {
+    			convertView = createView(context, R.layout.player_view_extra);
+    		}
+    		else {
+    			convertView = createView(context, R.layout.player_view);
+    		}
+    	}
         ImageView ivStatus = (ImageView) convertView.findViewById(R.id.ivStatus);
         int res;
         switch (p.getStatus()) {
@@ -172,16 +176,25 @@ public class PlayerGroupAdapter extends BaseExpandableListAdapter {
         tvName.setText(p.getName());
         TextView ivCount = (TextView) convertView.findViewById(R.id.tvCount);
         ivCount.setText(Integer.toString(p.getCount()));
-        ivCount.setVisibility(p.getCount() > 0 ? View.VISIBLE : View.GONE);
-        ivCount.setEnabled(p.getCount() > 0);
-        ivCount.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				HomeActivity.showChatActivity(context, p);
-			}
-			
-		});
+        if (p instanceof PlayerExtraInfo) {
+        	ivCount.setVisibility(View.VISIBLE);
+        	ivCount.setEnabled(true);
+        	ivCount.setOnClickListener(null);
+        	TextView tvExtra = (TextView) convertView.findViewById(R.id.tvExtra);
+        	tvExtra.setText(((PlayerExtraInfo) p).getExtra());
+        }
+        else {
+        	ivCount.setVisibility(p.getCount() > 0 ? View.VISIBLE : View.GONE);
+	        ivCount.setEnabled(p.getCount() > 0);
+	        ivCount.setOnClickListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					HomeActivity.showChatActivity(context, p);
+				}
+				
+			});
+        }
 		return convertView;
     }
     

@@ -54,4 +54,12 @@ public class PlayerInfo {
 		this.status = status;
 	}
 	
+	public void set(PlayerInfo pi) {
+		if (pi == null) return;
+		setName(pi.getName());
+		setCount(pi.getCount());
+		setGroup(pi.getGroup());
+		setStatus(pi.getStatus());
+	}
+	
 }
